@@ -1,0 +1,103 @@
+/* components/SphereImageGrid.css */
+
+.sphere-image-grid {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-70%, -90%); /* doesn't center perfectly, adjusted via eyeballing..DO NOT CHANGE
+
+  /* Use CSS custom property for dynamic container size */
+  width: var(--sig-container-size, 350px);
+  height: var(--sig-container-size, 350px);
+
+  pointer-events: auto;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sphere-image-grid:active {
+  cursor: grabbing;
+}
+
+.launch-icon-wrapper {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  width: var(--size);
+  height: var(--size);
+  cursor: pointer;
+}
+
+.launch-icon-inner {
+  width: 100%;
+  height: 100%;
+}
+
+.sphere-app-icon {
+  .sphere-image-grid svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Warp particle from LaunchIconWrapper.css (already in PortalLaunchAnimations)
+   will sit on top of this. */
+}
+/* ============================================
+   EXTRACTED FROM INLINE STYLES
+   ============================================ */
+
+/* Loading container */
+.sig-loading-container {
+  width: var(--sig-container-size);
+  height: var(--sig-container-size);
+  background-color: #f3f4f6; /* gray-100 */
+  border-radius: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Empty apps container */
+.sig-empty-container {
+  width: var(--sig-container-size);
+  height: var(--sig-container-size);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Sphere root container (replaces inline) */
+.sig-root-container {
+  width: var(--sig-container-size);
+  height: var(--sig-container-size);
+  perspective: var(--sig-perspective);
+  perspective-origin: center center;
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+/* Inner wrapper (replaces inline z-index) */
+.sig-inner-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  transform-style: preserve-3d;
+}
+
+/* Pulse animation used by loading state */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}

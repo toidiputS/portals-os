@@ -1,0 +1,2058 @@
+/* --- Grind / Operations Logic Icon Specifics --- */
+
+/* 1. Machine Housing Pulse */
+.grind-housing {
+  animation: grindHousingPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes grindHousingPulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 6px #00f3ff); }
+}
+
+/* 2. Left Gear Rotation (Clockwise) */
+.gear-left {
+  animation: grindGearLeft 3s linear infinite;
+  transform-origin: 24px 32px;
+}
+
+@keyframes grindGearLeft {
+  from { transform: translate(24px, 32px) rotate(0deg); }
+  to { transform: translate(24px, 32px) rotate(360deg); }
+}
+
+/* 3. Right Gear Rotation (Counter-clockwise) */
+.gear-right {
+  animation: grindGearRight 3s linear infinite;
+  transform-origin: 40px 32px;
+}
+
+@keyframes grindGearRight {
+  from { transform: translate(40px, 32px) rotate(0deg); }
+  to { transform: translate(40px, 32px) rotate(-360deg); }
+}
+
+/* 4. Gear Hub Glow */
+.gear-hub {
+  animation: grindHubGlow 1s ease-in-out infinite alternate;
+}
+
+@keyframes grindHubGlow {
+  from { fill: #ff6b00; }
+  to { fill: #ff9500; filter: drop-shadow(0 0 3px #ff6b00); }
+}
+
+/* 5. Messy Items Falling In */
+.grind-messy-item {
+  animation: grindItemFall 3s ease-in infinite;
+}
+
+.item-1 { animation-delay: 0.0s; }
+.item-2 { animation-delay: 1.0s; }
+.item-3 { animation-delay: 2.0s; }
+
+@keyframes grindItemFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  40% { transform: translateY(20px) rotate(15deg); opacity: 1; }
+  50% { opacity: 0; }
+  100% { transform: translateY(20px); opacity: 0; }
+}
+
+/* 6. Clean Items Emerging */
+.grind-clean-item {
+  animation: grindItemEmerge 3s ease-out infinite;
+}
+
+.clean-1 { animation-delay: 1.5s; }
+.clean-2 { animation-delay: 2.0s; }
+.clean-3 { animation-delay: 2.5s; }
+
+@keyframes grindItemEmerge {
+  0%, 40% { transform: translateY(-10px); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* 7. Grinding Particles */
+.grind-particle {
+  animation: grindParticleSpin 1s linear infinite;
+}
+
+.p-1 { animation-delay: 0.0s; animation-duration: 0.8s; }
+.p-2 { animation-delay: 0.2s; animation-duration: 1.0s; }
+.p-3 { animation-delay: 0.4s; animation-duration: 0.7s; }
+.p-4 { animation-delay: 0.6s; animation-duration: 0.9s; }
+.p-5 { animation-delay: 0.3s; animation-duration: 1.1s; }
+.p-6 { animation-delay: 0.5s; animation-duration: 0.85s; }
+
+@keyframes grindParticleSpin {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  25% { transform: translate(2px, -2px) scale(0.8); }
+  50% { transform: translate(-2px, 2px) scale(1.2); opacity: 0.7; }
+  75% { transform: translate(1px, 1px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+
+/* 8. Conveyor Belt Lines */
+.conveyor-line {
+  animation: grindConveyorMove 1s linear infinite;
+}
+
+.cl-1, .cl-2, .cl-3 { animation-direction: normal; }
+.cl-4, .cl-5, .cl-6 { animation-direction: reverse; }
+
+@keyframes grindConveyorMove {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -8; }
+}
+
+/* 9. Status Light Blink */
+.grind-status-light {
+  animation: grindStatusBlink 0.5s ease-in-out infinite;
+}
+
+@keyframes grindStatusBlink {
+  0%, 100% { fill: #ff6b00; opacity: 1; }
+  50% { fill: #ffcc00; opacity: 0.6; }
+}
+
+/* 10. Counter Increment Effect */
+.grind-counter {
+  animation: grindCounterFlash 2s ease-in-out infinite;
+}
+
+@keyframes grindCounterFlash {
+  0%, 90%, 100% { fill: #00ff88; }
+  95% { fill: #fff; }
+}
+
+/* 11. Exhaust Puffs */
+.exhaust-puff {
+  animation: grindExhaustRise 3s ease-out infinite;
+}
+
+.puff-1 { animation-delay: 0.0s; }
+.puff-2 { animation-delay: 1.0s; }
+.puff-3 { animation-delay: 0.5s; }
+
+@keyframes grindExhaustRise {
+  0% { transform: translateY(0) scale(1); opacity: 0.4; }
+  100% { transform: translateY(-10px) scale(1.5); opacity: 0; }
+}
+
+/* 12. Progress Bar Fill */
+.grind-progress-fill {
+  animation: grindProgressFill 4s ease-in-out infinite;
+}
+
+@keyframes grindProgressFill {
+  0% { width: 10px; }
+  50% { width: 50px; }
+  100% { width: 10px; }
+}
+
+/* 13. Funnel Pulse */
+.grind-funnel {
+  animation: grindFunnelPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes grindFunnelPulse {
+  from { stroke: #ff6b00; }
+  to { stroke: #ff9500; filter: drop-shadow(0 0 2px #ff6b00); }
+}
+
+/* 14. Grid Pulse */
+.grind-grid {
+  animation: grindGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes grindGridPulse {
+  from { opacity: 0.05; }
+  to { opacity: 0.15; }
+}
+
+/* 15. Glitch Effect */
+.grind-glitch {
+  display: none;
+  animation: grindGlitchEffect 6s infinite;
+}
+
+@keyframes grindGlitchEffect {
+  0%, 92% { display: none; }
+  93% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  94% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  95% { display: block; transform: translate(1px, 2px); opacity: 0.4; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- File Manager Icon Specifics --- */
+
+/* 1. Main Folder Pulse */
+.fm-folder-back, .fm-folder-front {
+  animation: fmFolderPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes fmFolderPulse {
+  from { stroke: #ffd700; filter: drop-shadow(0 0 2px #ffd700); }
+  to { stroke: #ffee88; filter: drop-shadow(0 0 6px #ffd700); }
+}
+
+/* 2. Folder Tab Shimmer */
+.fm-folder-tab {
+  animation: fmTabShimmer 4s ease-in-out infinite;
+}
+
+@keyframes fmTabShimmer {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; fill: #ffee88; }
+}
+
+/* 3. Sub Folders Hover Effect */
+.fm-sub-folder {
+  animation: fmSubFolderPulse 3s ease-in-out infinite;
+}
+
+.folder-1 { animation-delay: 0.0s; }
+.folder-2 { animation-delay: 0.5s; }
+.folder-3 { animation-delay: 1.0s; }
+.folder-4 { animation-delay: 1.5s; }
+
+@keyframes fmSubFolderPulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+/* 4. Active Folder Selection Bar */
+.fm-select-bar {
+  animation: fmSelectPulse 1s ease-in-out infinite;
+}
+
+@keyframes fmSelectPulse {
+  0%, 100% { opacity: 1; fill: #bf00ff; }
+  50% { opacity: 0.5; fill: #ff00ff; }
+}
+
+/* 5. File Badge Count Pulse */
+.fm-badge {
+  animation: fmBadgePulse 2s ease-in-out infinite;
+}
+
+@keyframes fmBadgePulse {
+  0%, 100% { r: 2.5px; fill: #00ff88; }
+  50% { r: 3px; fill: #80ffcc; filter: drop-shadow(0 0 2px #00ff88); }
+}
+
+/* 6. Files Float Animation */
+.fm-file {
+  animation: fmFileFloat 3s ease-in-out infinite;
+}
+
+.file-1 { animation-delay: 0.0s; }
+.file-2 { animation-delay: 0.3s; }
+.file-3 { animation-delay: 0.6s; }
+
+@keyframes fmFileFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* 7. Connection Lines Flow */
+.fm-connection {
+  animation: fmConnectionFlow 2s linear infinite;
+}
+
+.conn-1 { animation-delay: 0.0s; }
+.conn-2 { animation-delay: 0.5s; }
+.conn-3 { animation-delay: 1.0s; }
+.conn-4 { animation-delay: 1.5s; }
+
+@keyframes fmConnectionFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -8; }
+}
+
+/* 8. File Transfer Animation */
+.fm-transfer-file {
+  animation: fmTransferMove 3s ease-in-out infinite;
+}
+
+@keyframes fmTransferMove {
+  0% { transform: translate(8px, 14px); opacity: 0; }
+  20% { opacity: 1; }
+  50% { transform: translate(30px, 26px); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translate(52px, 52px); opacity: 0; }
+}
+
+/* 9. Search Cursor Blink */
+.fm-search-cursor {
+  animation: fmCursorBlink 0.8s step-end infinite;
+}
+
+@keyframes fmCursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* 10. Storage Fill Animation */
+.fm-storage-fill {
+  animation: fmStorageFill 5s ease-in-out infinite;
+}
+
+@keyframes fmStorageFill {
+  0%, 100% { width: 14px; fill: #00cc66; }
+  50% { width: 20px; fill: #00ff88; }
+}
+
+/* 11. Action Buttons Pulse */
+.fm-action circle {
+  animation: fmActionPulse 2s ease-in-out infinite;
+}
+
+.action-upload circle { animation-delay: 0s; }
+.action-download circle { animation-delay: 0.6s; }
+.action-delete circle { animation-delay: 1.2s; }
+
+@keyframes fmActionPulse {
+  0%, 100% { stroke-width: 1px; }
+  50% { stroke-width: 1.5px; filter: drop-shadow(0 0 2px currentColor); }
+}
+
+/* 12. Data Particles */
+.fm-particle {
+  animation: fmParticleFloat 4s ease-in-out infinite;
+}
+
+.p-1 { animation-delay: 0.0s; }
+.p-2 { animation-delay: 0.8s; }
+.p-3 { animation-delay: 1.6s; }
+.p-4 { animation-delay: 2.4s; }
+.p-5 { animation-delay: 3.2s; }
+
+@keyframes fmParticleFloat {
+  0%, 100% { transform: translate(0, 0); opacity: 0.6; }
+  25% { transform: translate(2px, -2px); opacity: 1; }
+  50% { transform: translate(0, -4px); opacity: 0.8; }
+  75% { transform: translate(-2px, -2px); opacity: 1; }
+}
+
+/* 13. Sync Ring Rotation */
+.fm-sync-ring {
+  animation: fmSyncRotate 2s linear infinite;
+  transform-origin: 4px 4px;
+}
+
+@keyframes fmSyncRotate {
+  from { transform: rotate(0deg); stroke-dashoffset: 0; }
+  to { transform: rotate(360deg); stroke-dashoffset: -12; }
+}
+
+/* 14. Grid Pulse */
+.fm-grid {
+  animation: fmGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes fmGridPulse {
+  from { opacity: 0.05; }
+  to { opacity: 0.15; }
+}
+
+/* 15. Glitch Effect */
+.fm-glitch {
+  display: none;
+  animation: fmGlitchEffect 6s infinite;
+}
+
+@keyframes fmGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- App Store / Module Loader Icon Specifics --- */
+
+/* 1. Frame Pulse */
+.as-frame {
+  animation: asFramePulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes asFramePulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 6px #00f3ff); }
+}
+
+/* 2. Background Icons Float */
+.as-app-icon {
+  animation: asIconFloat 3s ease-in-out infinite alternate;
+}
+
+.as-app-icon:nth-child(even) {
+  animation-delay: 1.5s;
+}
+
+@keyframes asIconFloat {
+  from { transform: translateY(0); opacity: 0.3; }
+  to { transform: translateY(-2px); opacity: 0.6; }
+}
+
+/* 3. Download Arrow Drop */
+.as-arrow {
+  animation: asArrowDrop 1.5s ease-in-out infinite;
+}
+
+@keyframes asArrowDrop {
+  0% { transform: translateY(-2px); opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(4px); opacity: 0; }
+}
+
+/* 4. Data Beam Flash */
+.as-beam {
+  animation: asBeamFlash 1.5s steps(5) infinite;
+}
+
+@keyframes asBeamFlash {
+  0%, 100% { opacity: 0.1; height: 10px; }
+  50% { opacity: 0.4; height: 14px; }
+}
+
+/* 5. Progress Bar Fill */
+.as-progress-bar {
+  width: 0;
+  animation: asInstallLoad 3s ease-in-out infinite;
+}
+
+@keyframes asInstallLoad {
+  0% { width: 0; opacity: 1; }
+  80% { width: 18px; opacity: 1; }
+  90% { width: 18px; opacity: 0; }
+  100% { width: 0; opacity: 0; }
+}
+
+/* 6. Active Install Container Bob */
+.as-active-install {
+  animation: asActiveBob 3s ease-in-out infinite alternate;
+}
+
+@keyframes asActiveBob {
+  from { transform: translate(26px, 22px); }
+  to { transform: translate(26px, 20px); }
+}
+
+/* 7. Data Particles */
+.as-particle {
+  animation: asParticleFall 1.5s linear infinite;
+  opacity: 0;
+}
+
+.p1 { animation-delay: 0.0s; cx: 32px; cy: 10px; }
+.p2 { animation-delay: 0.5s; cx: 30px; cy: 14px; }
+.p3 { animation-delay: 1.0s; cx: 34px; cy: 18px; }
+
+@keyframes asParticleFall {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(15px); opacity: 0; }
+}
+
+/* 8. Top Node Flash */
+.as-node {
+  animation: asNodePulse 2s infinite;
+}
+
+@keyframes asNodePulse {
+  0%, 100% { r: 2px; fill: #fff; }
+  50% { r: 3px; fill: #00f3ff; box-shadow: 0 0 5px #fff; }
+}
+
+/* 9. Glitch Effect */
+.as-glitch {
+  display: none;
+  animation: asGlitchEffect 6s infinite;
+}
+
+@keyframes asGlitchEffect {
+  0%, 94% { display: none; }
+  95% { display: block; transform: translate(2px, 0); opacity: 0.5; }
+  96% { display: block; transform: translate(-2px, 0); opacity: 0.5; }
+  97% { display: none; }
+  100% { display: none; }
+}
+
+/* --- X-Ray / Advanced Diagnostics Icon Specifics --- */
+
+/* 1. Scanner Frame Pulse */
+.xr-frame {
+  animation: xrFramePulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes xrFramePulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 8px #00f3ff); }
+}
+
+/* 2. X-Ray Beams Pulse */
+.xr-beam {
+  animation: xrBeamPulse 2s ease-in-out infinite alternate;
+}
+
+.beam-1 { animation-delay: 0s; }
+.beam-2 { animation-delay: 0.5s; }
+
+@keyframes xrBeamPulse {
+  from { stroke-opacity: 0.6; stroke-width: 3px; }
+  to { stroke-opacity: 1; stroke-width: 5px; filter: drop-shadow(0 0 6px #4dc9ff); }
+}
+
+/* 3. Center Core Pulse */
+.xr-center-core {
+  animation: xrCorePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes xrCorePulse {
+  0%, 100% { r: 3px; fill: #4dc9ff; }
+  50% { r: 4px; fill: #80e0ff; filter: drop-shadow(0 0 8px #4dc9ff); }
+}
+
+/* 4. Scanning Ring Rotation */
+.xr-scan-ring {
+  animation: xrRingRotate 6s linear infinite;
+  transform-origin: 32px 32px;
+}
+
+@keyframes xrRingRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 5. Scan Arc Glow */
+.xr-scan-arc {
+  animation: xrArcGlow 2s ease-in-out infinite;
+}
+
+@keyframes xrArcGlow {
+  0%, 100% { stroke-opacity: 0.8; }
+  50% { stroke-opacity: 1; filter: drop-shadow(0 0 4px #fff); }
+}
+
+/* 6. Scan Beam Movement */
+.xr-scan-beam {
+  animation: xrBeamScan 3s ease-in-out infinite;
+}
+
+@keyframes xrBeamScan {
+  0% { transform: translateY(-18px); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(18px); opacity: 0; }
+}
+
+/* 7. Risk Point Pulse */
+.xr-risk-pulse {
+  animation: xrRiskPulse 1s ease-in-out infinite;
+}
+
+@keyframes xrRiskPulse {
+  0%, 100% { r: 4px; fill: #ff4444; }
+  50% { r: 5px; fill: #ff6666; filter: drop-shadow(0 0 6px #ff4444); }
+}
+
+/* 8. Opportunity Point Pulse */
+.xr-opp-pulse {
+  animation: xrOppPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes xrOppPulse {
+  0%, 100% { r: 3px; fill: #00ff88; }
+  50% { r: 4px; fill: #80ffcc; filter: drop-shadow(0 0 4px #00ff88); }
+}
+
+/* 9. EKG Line Draw */
+.xr-ekg {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: xrEKGDraw 2s ease-in-out infinite;
+}
+
+@keyframes xrEKGDraw {
+  0% { stroke-dashoffset: 30; }
+  50% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -30; }
+}
+
+/* 10. BPM Flash */
+.xr-bpm {
+  animation: xrBPMFlash 1s ease-in-out infinite;
+}
+
+@keyframes xrBPMFlash {
+  0%, 100% { opacity: 1; fill: #00ff88; }
+  50% { opacity: 0.6; fill: #80ffcc; }
+}
+
+/* 11. Risk Indicator Movement */
+.xr-risk-indicator {
+  animation: xrRiskMove 4s ease-in-out infinite;
+}
+
+@keyframes xrRiskMove {
+  0%, 100% { transform: translateY(0); fill: #ffd700; }
+  25% { transform: translateY(-6px); fill: #00ff88; }
+  75% { transform: translateY(6px); fill: #ff6b00; }
+}
+
+/* 12. Readout Values Flash */
+.xr-value {
+  animation: xrValueFlash 3s ease-in-out infinite;
+}
+
+@keyframes xrValueFlash {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0.5; }
+}
+
+/* 13. Corner Brackets Pulse */
+.xr-brackets path {
+  animation: xrBracketPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes xrBracketPulse {
+  from { stroke: #00f3ff; opacity: 0.7; }
+  to { stroke: #80ffff; opacity: 1; }
+}
+
+/* 14. Analysis Particles */
+.xr-particle {
+  animation: xrParticleFloat 4s ease-in-out infinite;
+}
+
+.p-1 { animation-delay: 0.0s; }
+.p-2 { animation-delay: 0.8s; }
+.p-3 { animation-delay: 1.6s; }
+.p-4 { animation-delay: 2.4s; }
+.p-5 { animation-delay: 3.2s; }
+
+@keyframes xrParticleFloat {
+  0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+  25% { transform: translate(2px, -2px); opacity: 1; }
+  50% { transform: translate(0, -4px); opacity: 0.7; }
+  75% { transform: translate(-2px, -2px); opacity: 1; }
+}
+
+/* 15. Status Light Blink */
+.xr-status-light.active {
+  animation: xrStatusBlink 1s ease-in-out infinite;
+}
+
+@keyframes xrStatusBlink {
+  0%, 100% { fill: #00ff88; r: 2px; }
+  50% { fill: #80ffcc; r: 2.5px; filter: drop-shadow(0 0 3px #00ff88); }
+}
+
+/* 16. Skeleton Reveal */
+.xr-skeleton {
+  animation: xrSkeletonReveal 3s ease-in-out infinite;
+}
+
+@keyframes xrSkeletonReveal {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* 17. Orders Checklist */
+.xr-orders {
+  animation: xrOrdersFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes xrOrdersFloat {
+  from { transform: translate(48px, 48px) translateY(0); }
+  to { transform: translate(48px, 48px) translateY(-2px); }
+}
+
+/* 18. Grid Pulse */
+.xr-grid {
+  animation: xrGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes xrGridPulse {
+  from { opacity: 0.1; }
+  to { opacity: 0.2; }
+}
+
+/* 19. Glitch Effect */
+.xr-glitch {
+  display: none;
+  animation: xrGlitchEffect 6s infinite;
+}
+
+@keyframes xrGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: block; transform: translate(1px, 2px); opacity: 0.4; }
+  97% { display: none; }
+  100% { display: none; }
+}
+
+/* --- Draft / Copywriting Interface Icon Specifics --- */
+
+/* 1. Page Frame Pulse */
+.draft-page-bg {
+  animation: draftPagePulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes draftPagePulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 6px #00f3ff); }
+}
+
+/* 2. Typing Cursor Blink */
+.draft-cursor {
+  animation: draftCursorBlink 0.6s step-end infinite;
+}
+
+@keyframes draftCursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* 3. Headline Bar Shimmer */
+.draft-headline-bar {
+  animation: draftHeadlineShimmer 3s ease-in-out infinite;
+}
+
+@keyframes draftHeadlineShimmer {
+  0%, 100% { opacity: 0.8; fill: #ffd700; }
+  50% { opacity: 1; fill: #ffee88; filter: drop-shadow(0 0 4px #ffd700); }
+}
+
+/* 4. Body Copy Blocks Fade In */
+.draft-block {
+  animation: draftBlockFade 3s ease-in-out infinite;
+}
+
+.block-1 { animation-delay: 0s; }
+.block-2 { animation-delay: 0.5s; }
+
+@keyframes draftBlockFade {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* 5. CTA Button Pulse */
+.draft-cta-btn {
+  animation: draftCTAPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes draftCTAPulse {
+  from { filter: drop-shadow(0 0 2px #ff6b35); transform: scale(1); }
+  to { filter: drop-shadow(0 0 8px #ff6b35); transform: scale(1.02); }
+}
+
+/* 6. Click Ripple Effect */
+.draft-click-ripple {
+  animation: draftClickRipple 2s ease-out infinite;
+}
+
+@keyframes draftClickRipple {
+  0% { r: 2px; opacity: 0.8; }
+  100% { r: 15px; opacity: 0; }
+}
+
+/* 7. Pencil Writing Motion */
+.draft-pencil {
+  animation: draftPencilWrite 3s ease-in-out infinite;
+}
+
+@keyframes draftPencilWrite {
+  0%, 100% { transform: translate(50px, 20px) rotate(0deg); }
+  25% { transform: translate(48px, 22px) rotate(-2deg); }
+  50% { transform: translate(50px, 24px) rotate(1deg); }
+  75% { transform: translate(52px, 22px) rotate(-1deg); }
+}
+
+/* 8. Writing Trail */
+.draft-writing-trail {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: draftTrailDraw 3s ease-in-out infinite;
+}
+
+@keyframes draftTrailDraw {
+  0% { stroke-dashoffset: 20; opacity: 0; }
+  50% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: -20; opacity: 0; }
+}
+
+/* 9. Floating Characters */
+.draft-char {
+  animation: draftCharFloat 4s ease-in-out infinite;
+}
+
+.char-1 { animation-delay: 0.0s; }
+.char-2 { animation-delay: 0.8s; }
+.char-3 { animation-delay: 1.6s; }
+.char-4 { animation-delay: 2.4s; }
+.char-5 { animation-delay: 3.2s; }
+
+@keyframes draftCharFloat {
+  0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+  50% { transform: translate(-4px, -4px); opacity: 0.8; }
+}
+
+/* 10. Conversion Meter Fill */
+.draft-meter-fill {
+  animation: draftMeterFill 4s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+@keyframes draftMeterFill {
+  0% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(0.3); }
+}
+
+/* 11. Percentage Flash */
+.draft-percent {
+  animation: draftPercentFlash 4s ease-in-out infinite;
+}
+
+@keyframes draftPercentFlash {
+  0%, 40% { fill: #00ff88; }
+  50% { fill: #fff; text-shadow: 0 0 4px #00ff88; }
+  60%, 100% { fill: #00ff88; }
+}
+
+/* 12. Word Count Update */
+.draft-word-count {
+  animation: draftWordCount 2s ease-in-out infinite;
+}
+
+@keyframes draftWordCount {
+  0%, 90%, 100% { opacity: 0.8; }
+  95% { opacity: 1; fill: #80ffff; }
+}
+
+/* 13. AI Suggestion Pulse */
+.draft-ai-suggest {
+  animation: draftAIPulse 3s ease-in-out infinite;
+}
+
+@keyframes draftAIPulse {
+  0%, 100% { opacity: 0.7; transform: translate(36px, 2px) scale(1); }
+  50% { opacity: 1; transform: translate(36px, 2px) scale(1.05); }
+}
+
+/* 14. Flying Blocks (Assembly) */
+.draft-flying-block {
+  animation: draftBlockFly 4s ease-in-out infinite;
+}
+
+.block-a { animation-delay: 0s; }
+.block-b { animation-delay: 1.3s; }
+.block-c { animation-delay: 2.6s; }
+
+@keyframes draftBlockFly {
+  0% { transform: translate(0, 0); opacity: 0.7; }
+  50% { transform: translate(-20px, 0); opacity: 1; }
+  100% { transform: translate(-40px, 0); opacity: 0; }
+}
+
+/* 15. Scan Line */
+.draft-scan-line {
+  animation: draftScanLine 3s ease-in-out infinite;
+}
+
+@keyframes draftScanLine {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translateY(48px); opacity: 0; }
+}
+
+/* 16. Section Markers Blink */
+.draft-markers g {
+  animation: draftMarkerBlink 3s ease-in-out infinite;
+}
+
+.draft-markers g:nth-child(1) { animation-delay: 0s; }
+.draft-markers g:nth-child(2) { animation-delay: 1s; }
+.draft-markers g:nth-child(3) { animation-delay: 2s; }
+
+@keyframes draftMarkerBlink {
+  0%, 80%, 100% { opacity: 0.5; }
+  90% { opacity: 1; }
+}
+
+/* 17. Grid Pulse */
+.draft-grid {
+  animation: draftGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes draftGridPulse {
+  from { opacity: 0.05; }
+  to { opacity: 0.15; }
+}
+
+/* 18. Glitch Effect */
+.draft-glitch {
+  display: none;
+  animation: draftGlitchEffect 6s infinite;
+}
+
+@keyframes draftGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- Helper / Quick Assets Icon Specifics --- */
+
+/* 1. Hub Ring Pulse */
+.helper-hub circle:first-child {
+  animation: helperHubPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes helperHubPulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 8px #00f3ff); }
+}
+
+/* 2. Inner Ring Rotation */
+.helper-inner-ring {
+  animation: helperInnerRotate 4s linear infinite;
+  transform-origin: 32px 32px;
+}
+
+@keyframes helperInnerRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 3. Tool Spin */
+.helper-tool {
+  animation: helperToolSpin 6s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes helperToolSpin {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(15deg); }
+  75% { transform: rotate(-15deg); }
+}
+
+/* 4. Sparkle Twinkle */
+.helper-sparkle {
+  animation: helperSparkleTwinkle 1s ease-in-out infinite;
+}
+
+@keyframes helperSparkleTwinkle {
+  0%, 100% { opacity: 0.3; r: 0.5px; }
+  50% { opacity: 1; r: 1.5px; fill: #fff; }
+}
+
+/* 5. Core Pulse */
+.helper-core-pulse {
+  animation: helperCorePulse 2s ease-in-out infinite;
+}
+
+@keyframes helperCorePulse {
+  0%, 100% { r: 4px; opacity: 0.5; }
+  50% { r: 6px; opacity: 0.8; }
+}
+
+/* 6. Output Documents Float */
+.helper-output {
+  animation: helperOutputFloat 3s ease-in-out infinite;
+}
+
+.form-output { animation-delay: 0s; }
+.checklist-output { animation-delay: 0.5s; }
+.template-output { animation-delay: 1s; }
+.minidoc-output { animation-delay: 1.5s; }
+
+@keyframes helperOutputFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* 7. Form Cursor Blink */
+.helper-form-cursor {
+  animation: helperCursorBlink 0.6s step-end infinite;
+}
+
+@keyframes helperCursorBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* 8. Checkmarks Draw */
+.helper-checkmark {
+  stroke-dasharray: 10;
+  stroke-dashoffset: 10;
+  animation: helperCheckDraw 2s ease-out infinite;
+}
+
+.check-1 { animation-delay: 0s; }
+.check-2 { animation-delay: 0.5s; }
+
+@keyframes helperCheckDraw {
+  0%, 30% { stroke-dashoffset: 10; }
+  50%, 100% { stroke-dashoffset: 0; }
+}
+
+/* 9. Quick Badge Pulse */
+.helper-quick-badge {
+  animation: helperQuickPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes helperQuickPulse {
+  0%, 100% { r: 3px; fill: #ff9500; }
+  50% { r: 4px; fill: #ffaa00; filter: drop-shadow(0 0 4px #ff9500); }
+}
+
+/* 10. Particles Emanate */
+.helper-particle {
+  animation: helperParticleEmanate 2s ease-out infinite;
+}
+
+.p-1 { animation-delay: 0.0s; }
+.p-2 { animation-delay: 0.5s; }
+.p-3 { animation-delay: 1.0s; }
+.p-4 { animation-delay: 1.5s; }
+
+@keyframes helperParticleEmanate {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate(var(--tx, 0), var(--ty, -10px)) scale(0.5); opacity: 0; }
+}
+
+/* Direction overrides for particles */
+.p-1 { --tx: 0; --ty: -12px; }
+.p-2 { --tx: -12px; --ty: 0; }
+.p-3 { --tx: 12px; --ty: 0; }
+.p-4 { --tx: 0; --ty: 12px; }
+
+/* 11. Speed Particles */
+.helper-speed-particle {
+  animation: helperSpeedMove 1.5s linear infinite;
+}
+
+.sp-1 { animation-delay: 0s; }
+.sp-2 { animation-delay: 0.5s; }
+.sp-3 { animation-delay: 1s; }
+
+@keyframes helperSpeedMove {
+  0% { transform: translateX(0); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateX(-20px); opacity: 0; }
+}
+
+/* 12. Speed Lines Pulse */
+.helper-speed-lines line {
+  animation: helperSpeedLinePulse 2s ease-in-out infinite;
+}
+
+@keyframes helperSpeedLinePulse {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.4; }
+}
+
+/* 13. Status Light Blink */
+.helper-status-light {
+  animation: helperStatusBlink 1s ease-in-out infinite;
+}
+
+@keyframes helperStatusBlink {
+  0%, 100% { fill: #00ff88; r: 1.5px; }
+  50% { fill: #80ffcc; r: 2px; filter: drop-shadow(0 0 2px #00ff88); }
+}
+
+/* 14. Counter Update */
+.helper-count {
+  animation: helperCountFlash 3s ease-in-out infinite;
+}
+
+@keyframes helperCountFlash {
+  0%, 85%, 100% { fill: #00f3ff; }
+  90% { fill: #fff; }
+}
+
+/* 15. Action Buttons Hover */
+.helper-action-btn rect {
+  animation: helperBtnPulse 3s ease-in-out infinite;
+}
+
+.btn-form rect { animation-delay: 0s; }
+.btn-list rect { animation-delay: 0.5s; }
+.btn-tmpl rect { animation-delay: 1s; }
+.btn-quick rect { animation-delay: 1.5s; }
+
+@keyframes helperBtnPulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* 16. Connection Lines Flow */
+.helper-connect {
+  animation: helperConnectFlow 1.5s linear infinite;
+}
+
+@keyframes helperConnectFlow {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -4; }
+}
+
+/* 17. Progress Ring */
+.helper-progress-ring {
+  animation: helperProgressSpin 8s linear infinite;
+  transform-origin: center;
+}
+
+@keyframes helperProgressSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 18. Glitch Effect */
+.helper-glitch {
+  display: none;
+  animation: helperGlitchEffect 6s infinite;
+}
+
+@keyframes helperGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- Angle / Foundation Architect Icon Specifics --- */
+
+/* 1. Prism Shape Pulse */
+.angle-prism-shape {
+  animation: anglePrismPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes anglePrismPulse {
+  from { stroke-opacity: 0.8; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke-opacity: 1; filter: drop-shadow(0 0 8px #bf00ff); }
+}
+
+/* 2. Prism Inner Shimmer */
+.angle-prism-inner {
+  animation: anglePrismShimmer 3s ease-in-out infinite;
+}
+
+@keyframes anglePrismShimmer {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+/* 3. Prism Core Pulse */
+.angle-prism-core {
+  animation: angleCorePulse 2s ease-in-out infinite;
+}
+
+@keyframes angleCorePulse {
+  0%, 100% { r: 2px; fill: #fff; }
+  50% { r: 3px; fill: #00f3ff; filter: drop-shadow(0 0 4px #fff); }
+}
+
+/* 4. Input Beam Flow */
+.angle-input-beam {
+  stroke-dasharray: 20;
+  animation: angleInputFlow 1.5s linear infinite;
+}
+
+@keyframes angleInputFlow {
+  from { stroke-dashoffset: 40; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* 5. Input Pulse Travel */
+.angle-input-pulse {
+  animation: angleInputPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes angleInputPulse {
+  0% { cx: 4px; opacity: 0; r: 1px; }
+  50% { opacity: 1; r: 2.5px; }
+  100% { cx: 20px; opacity: 0; r: 1px; }
+}
+
+/* 6. Output Beams Pulse */
+.angle-beam {
+  animation: angleBeamPulse 2s ease-in-out infinite alternate;
+}
+
+.beam-1 { animation-delay: 0s; }
+.beam-2 { animation-delay: 0.3s; }
+.beam-3 { animation-delay: 0.6s; }
+
+@keyframes angleBeamPulse {
+  from { stroke-opacity: 0.7; stroke-width: 2px; }
+  to { stroke-opacity: 1; stroke-width: 3px; }
+}
+
+/* 7. Flagship Beam Glow */
+.flagship-beam {
+  animation: angleFlagshipGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes angleFlagshipGlow {
+  from { stroke-width: 3px; filter: drop-shadow(0 0 4px #ffd700); }
+  to { stroke-width: 5px; filter: drop-shadow(0 0 12px #ffd700); }
+}
+
+/* 8. Flagship Star Spin */
+.angle-star {
+  animation: angleStarSpin 4s ease-in-out infinite;
+  transform-origin: 58px 32px;
+}
+
+@keyframes angleStarSpin {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+}
+
+/* 9. Crown Float */
+.angle-crown {
+  animation: angleCrownFloat 2s ease-in-out infinite;
+}
+
+@keyframes angleCrownFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.8; }
+  50% { transform: translateY(-2px); opacity: 1; }
+}
+
+/* 10. Irresistible Pulses */
+.angle-pulse {
+  animation: angleIrresistiblePulse 3s ease-out infinite;
+}
+
+.pulse-1 { animation-delay: 0s; }
+.pulse-2 { animation-delay: 1s; }
+.pulse-3 { animation-delay: 2s; }
+
+@keyframes angleIrresistiblePulse {
+  0% { r: 4px; opacity: 0.8; stroke-width: 2px; }
+  100% { r: 20px; opacity: 0; stroke-width: 0.5px; }
+}
+
+/* 11. Trigger Icons Pulse */
+.angle-trigger {
+  animation: angleTriggerPulse 2s ease-in-out infinite;
+}
+
+.trigger-1 { animation-delay: 0s; }
+.trigger-2 { animation-delay: 0.5s; }
+.trigger-3 { animation-delay: 1s; }
+
+@keyframes angleTriggerPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* 12. Cut-Through Line */
+.angle-cut-line {
+  animation: angleCutThrough 2s ease-in-out infinite;
+}
+
+@keyframes angleCutThrough {
+  0% { stroke-dashoffset: 14; opacity: 0; }
+  50% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: -14; opacity: 0; }
+}
+
+/* 13. Differentiation Meter Fill */
+.angle-diff-fill {
+  animation: angleDiffFill 4s ease-in-out infinite;
+}
+
+@keyframes angleDiffFill {
+  0%, 100% { width: 6px; fill: #00cc66; }
+  50% { width: 12px; fill: #00ff88; }
+}
+
+/* 14. Angle Arc Rotation */
+.angle-arc {
+  animation: angleArcPulse 3s ease-in-out infinite;
+}
+
+@keyframes angleArcPulse {
+  0%, 100% { stroke-opacity: 0.3; }
+  50% { stroke-opacity: 0.7; }
+}
+
+/* 15. Particles Float */
+.angle-particle {
+  animation: angleParticleFloat 3s ease-in-out infinite;
+}
+
+.p-1 { animation-delay: 0.0s; --dir: -1; }
+.p-2 { animation-delay: 0.8s; --dir: 1; }
+.p-3 { animation-delay: 1.6s; --dir: -1; }
+.p-4 { animation-delay: 2.4s; --dir: 1; }
+
+@keyframes angleParticleFloat {
+  0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(calc(var(--dir) * 4px), -4px); opacity: 1; }
+}
+
+/* 16. Status Light */
+.angle-status-light {
+  animation: angleStatusGlow 1s ease-in-out infinite;
+}
+
+@keyframes angleStatusGlow {
+  0%, 100% { fill: #ffd700; r: 1.5px; }
+  50% { fill: #ffee88; r: 2px; filter: drop-shadow(0 0 3px #ffd700); }
+}
+
+/* 17. Grid Pulse */
+.angle-grid {
+  animation: angleGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes angleGridPulse {
+  from { opacity: 0.1; }
+  to { opacity: 0.2; }
+}
+
+/* 18. Glitch Effect */
+.angle-glitch {
+  display: none;
+  animation: angleGlitchEffect 6s infinite;
+}
+
+@keyframes angleGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- Interpreter / Structure Logic Icon Specifics --- */
+
+/* 1. Processor Body Pulse */
+.int-processor-body {
+  animation: intProcessorPulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes intProcessorPulse {
+  from { stroke: #bf00ff; filter: drop-shadow(0 0 2px #bf00ff); }
+  to { stroke: #ff00ff; filter: drop-shadow(0 0 8px #bf00ff); }
+}
+
+/* 2. Waveform Animation (Chaotic) */
+.int-wave {
+  animation: intWaveMove 2s ease-in-out infinite;
+}
+
+@keyframes intWaveMove {
+  0%, 100% {
+    d: path("M 0 8 Q 2 2, 4 8 Q 6 14, 8 6 Q 10 0, 12 10");
+  }
+  25% {
+    d: path("M 0 6 Q 2 12, 4 4 Q 6 10, 8 2 Q 10 8, 12 6");
+  }
+  50% {
+    d: path("M 0 10 Q 2 4, 4 10 Q 6 2, 8 12 Q 10 6, 12 4");
+  }
+  75% {
+    d: path("M 0 4 Q 2 10, 4 6 Q 6 8, 8 10 Q 10 2, 12 8");
+  }
+}
+
+/* 3. Scattered Thoughts Float */
+.int-thought {
+  animation: intThoughtFloat 3s ease-in-out infinite;
+}
+
+.t-1 { animation-delay: 0s; }
+.t-2 { animation-delay: 0.5s; }
+.t-3 { animation-delay: 1s; }
+.t-4 { animation-delay: 1.5s; }
+
+@keyframes intThoughtFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  50% { transform: translate(2px, -3px) scale(1.2); opacity: 0.8; }
+}
+
+/* 4. Brain Core Pulse */
+.int-brain-core {
+  animation: intBrainPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes intBrainPulse {
+  0%, 100% { r: 2px; fill: #bf00ff; }
+  50% { r: 3px; fill: #ff00ff; filter: drop-shadow(0 0 4px #bf00ff); }
+}
+
+/* 5. Neural Connections Flash */
+.int-neural {
+  animation: intNeuralFlash 2s ease-in-out infinite;
+}
+
+.n-1 { animation-delay: 0s; }
+.n-2 { animation-delay: 0.4s; }
+.n-3 { animation-delay: 0.8s; }
+
+@keyframes intNeuralFlash {
+  0%, 100% { opacity: 0.3; stroke: #bf00ff; }
+  50% { opacity: 1; stroke: #fff; }
+}
+
+/* 6. LED Indicators Sequence */
+.int-led {
+  animation: intLEDSequence 1s linear infinite;
+}
+
+.led-1 { animation-delay: 0s; }
+.led-2 { animation-delay: 0.25s; }
+.led-3 { animation-delay: 0.5s; }
+.led-4 { animation-delay: 0.75s; }
+
+@keyframes intLEDSequence {
+  0%, 20% { fill: #bf00ff; opacity: 1; }
+  21%, 100% { fill: #bf00ff; opacity: 0.2; }
+}
+
+/* 7. Documents Emerge */
+.int-doc {
+  animation: intDocEmerge 3s ease-in-out infinite;
+}
+
+.doc-summary { animation-delay: 0s; }
+.doc-brief { animation-delay: 0.5s; }
+.doc-tasks { animation-delay: 1s; }
+
+@keyframes intDocEmerge {
+  0%, 100% { transform: translateX(0); opacity: 0.8; }
+  50% { transform: translateX(2px); opacity: 1; filter: drop-shadow(0 0 2px #00ff88); }
+}
+
+/* 8. Checkmarks Draw */
+.int-check {
+  stroke-dasharray: 6;
+  stroke-dashoffset: 6;
+  animation: intCheckDraw 2s ease-out infinite;
+}
+
+.check-1 { animation-delay: 0s; }
+.check-2 { animation-delay: 0.5s; }
+
+@keyframes intCheckDraw {
+  0%, 30% { stroke-dashoffset: 6; }
+  50%, 100% { stroke-dashoffset: 0; }
+}
+
+/* 9. Chaos Particles Enter */
+.chaos-p {
+  animation: intChaosEnter 2s ease-in infinite;
+}
+
+.cp-1 { animation-delay: 0s; }
+.cp-2 { animation-delay: 0.3s; }
+.cp-3 { animation-delay: 0.6s; }
+
+@keyframes intChaosEnter {
+  0% { transform: translateX(-10px) rotate(0deg); opacity: 0; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translateX(10px) rotate(180deg); opacity: 0; }
+}
+
+/* 10. Order Particles Exit */
+.order-p {
+  animation: intOrderExit 2s ease-out infinite;
+}
+
+.op-1 { animation-delay: 1s; }
+.op-2 { animation-delay: 1.3s; }
+.op-3 { animation-delay: 1.6s; }
+
+@keyframes intOrderExit {
+  0% { transform: translateX(-5px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateX(10px); opacity: 0; }
+}
+
+/* 11. Input Characters Shake */
+.char-in {
+  animation: intCharShake 2s ease-in-out infinite;
+}
+
+.c-1 { animation-delay: 0s; }
+.c-2 { animation-delay: 0.3s; }
+.c-3 { animation-delay: 0.6s; }
+
+@keyframes intCharShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+}
+
+/* 12. Output Characters Appear */
+.char-out {
+  animation: intCharAppear 2s ease-in-out infinite;
+}
+
+.c-4 { animation-delay: 1s; }
+.c-5 { animation-delay: 1.3s; }
+.c-6 { animation-delay: 1.6s; }
+
+@keyframes intCharAppear {
+  0%, 40% { opacity: 0; transform: translateY(5px); }
+  50%, 100% { opacity: 0.7; transform: translateY(0); }
+}
+
+/* 13. Processing Ring Rotation */
+.int-process-ring {
+  animation: intRingRotate 10s linear infinite;
+  transform-origin: 32px 32px;
+}
+
+@keyframes intRingRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 14. Status Lights */
+.int-status-in {
+  animation: intStatusInPulse 1s ease-in-out infinite;
+}
+
+@keyframes intStatusInPulse {
+  0%, 100% { fill: #ff6b6b; r: 1.5px; }
+  50% { fill: #ff9999; r: 2px; }
+}
+
+.int-status-out {
+  animation: intStatusOutPulse 1s ease-in-out infinite;
+}
+
+@keyframes intStatusOutPulse {
+  0%, 100% { fill: #00ff88; r: 1.5px; }
+  50% { fill: #80ffcc; r: 2px; filter: drop-shadow(0 0 2px #00ff88); }
+}
+
+/* 15. Clarity Meter Fill */
+.int-clarity-fill {
+  animation: intClarityFill 4s ease-in-out infinite;
+}
+
+@keyframes intClarityFill {
+  0% { width: 2px; }
+  50% { width: 11px; }
+  100% { width: 2px; }
+}
+
+/* 16. Voice Icon Pulse */
+.int-voice circle {
+  animation: intVoicePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes intVoicePulse {
+  0%, 100% { stroke-width: 0.8px; }
+  50% { stroke-width: 1.2px; filter: drop-shadow(0 0 2px #ff6b6b); }
+}
+
+/* 17. Brain Halves Pulse */
+.int-brain-left, .int-brain-right {
+  animation: intBrainHalfPulse 2s ease-in-out infinite alternate;
+}
+
+.int-brain-right {
+  animation-delay: 1s;
+}
+
+@keyframes intBrainHalfPulse {
+  from { stroke: #bf00ff; }
+  to { stroke: #ff00ff; }
+}
+
+/* 18. Grid Background */
+.int-grid {
+  animation: intGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes intGridPulse {
+  from { opacity: 0.05; }
+  to { opacity: 0.15; }
+}
+
+/* 19. Glitch Effect */
+.int-glitch {
+  display: none;
+  animation: intGlitchEffect 6s infinite;
+}
+
+@keyframes intGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- Envoy / Outreach Interface Icon Specifics --- */
+
+/* 1. Main Structure Breathing */
+.envoy-structure path {
+  animation: envoyStructurePulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes envoyStructurePulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 6px #00f3ff); }
+}
+
+/* 2. Emitters Firing */
+.envoy-emitter {
+  animation: envoyEmitFlash 2s infinite;
+}
+
+.e1 { animation-delay: 0.0s; }
+.e2 { animation-delay: 0.3s; }
+.e3 { animation-delay: 0.6s; }
+
+@keyframes envoyEmitFlash {
+  0%, 100% { r: 1.5px; fill: #fff; opacity: 0.5; }
+  10% { r: 3px; fill: #00f3ff; opacity: 1; filter: drop-shadow(0 0 4px #00f3ff); }
+  20% { r: 1.5px; fill: #fff; opacity: 0.5; }
+}
+
+/* 3. Signal Waves Moving */
+.envoy-wave {
+  stroke-dasharray: 10;
+  stroke-dashoffset: 10;
+  animation: envoyWaveFlow 2s linear infinite;
+}
+
+.wave-1 { animation-delay: 0.1s; }
+.wave-2 { animation-delay: 0.4s; }
+.wave-3 { animation-delay: 0.7s; }
+
+@keyframes envoyWaveFlow {
+  0% { stroke-dashoffset: 10; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { stroke-dashoffset: -10; opacity: 0; }
+}
+
+/* 4. Message Packets Flying */
+.envoy-packet {
+  animation: envoyPacketFly 2s cubic-bezier(0.1, 0.7, 1.0, 0.1) infinite;
+  opacity: 0;
+}
+
+.pkt-1 { animation-delay: 0.1s; }
+.pkt-2 { animation-delay: 0.4s; }
+.pkt-3 { animation-delay: 0.7s; }
+
+@keyframes envoyPacketFly {
+  0% { transform: translateX(0) scale(0.5); opacity: 0; }
+  10% { opacity: 1; transform: translateX(0) scale(1); }
+  80% { opacity: 1; transform: translateX(12px) scale(1); }
+  90% { transform: translateX(14px) scale(0.5); opacity: 0; }
+  100% { transform: translateX(14px); opacity: 0; }
+}
+
+/* 5. Target Nodes Catching Signals */
+.envoy-node circle:first-child {
+  animation: envoyNodeCatch 2s infinite;
+}
+
+.node-1 circle:first-child { animation-delay: 0.9s; }
+.node-2 circle:first-child { animation-delay: 1.2s; }
+.node-3 circle:first-child { animation-delay: 1.5s; }
+
+@keyframes envoyNodeCatch {
+  0% { fill: #001a1a; stroke: #bf00ff; }
+  10% { fill: #bf00ff; stroke: #fff; filter: drop-shadow(0 0 5px #bf00ff); }
+  30% { fill: #001a1a; stroke: #bf00ff; }
+}
+
+/* 6. Success Leads Rippling */
+.envoy-lead {
+  animation: envoyLeadRipple 2s infinite;
+  opacity: 0;
+  transform-origin: center;
+}
+
+.lead-1 { animation-delay: 1.0s; transform-origin: 54px 12px; }
+.lead-2 { animation-delay: 1.3s; transform-origin: 54px 32px; }
+.lead-3 { animation-delay: 1.6s; transform-origin: 54px 52px; }
+
+@keyframes envoyLeadRipple {
+  0% { r: 4px; opacity: 0.8; stroke-width: 2px; }
+  100% { r: 12px; opacity: 0; stroke-width: 0px; }
+}
+
+/* 7. Code/Script Typing */
+.envoy-code-line {
+  animation: envoyTyping 1.5s step-end infinite;
+}
+
+.l1, .l4, .l6 { animation-delay: 0s; }
+.l2, .l5 { animation-delay: 0.2s; }
+.l3 { animation-delay: 0.4s; }
+
+@keyframes envoyTyping {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
+/* 8. Radar Pulse */
+.envoy-radar circle {
+  animation: envoyRadarPulse 4s linear infinite;
+  transform-origin: 14px 32px;
+}
+
+@keyframes envoyRadarPulse {
+  0% { transform: scale(0.5); opacity: 0.3; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* 9. Follow-Up Loop */
+.envoy-loop {
+  stroke-dasharray: 10;
+  animation: envoyLoopFlow 3s linear infinite;
+}
+
+@keyframes envoyLoopFlow {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* 10. Glitch Effect */
+.envoy-glitch {
+  display: none;
+  animation: envoyGlitchEffect 5s infinite;
+}
+
+@keyframes envoyGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(3px, 0); opacity: 0.5; }
+  95% { display: block; transform: translate(-3px, 0); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
+/* --- File Viewer Icon Specifics --- */
+
+/* 1. Base Floating */
+.fv-base {
+  animation: fvBaseFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes fvBaseFloat {
+  from { transform: translateY(4px); }
+  to { transform: translateY(6px); }
+}
+
+/* 2. Eye Pupil Scan */
+.fv-eye-pupil {
+  animation: fvPupilScan 3s ease-in-out infinite;
+}
+
+@keyframes fvPupilScan {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* 3. Projection Beam Pulse */
+.fv-beam {
+  animation: fvBeamPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes fvBeamPulse {
+  from { opacity: 0.3; }
+  to { opacity: 0.6; }
+}
+
+/* 4. Screen Hover */
+.fv-screen {
+  animation: fvScreenHover 4s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes fvScreenHover {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
+}
+
+/* 5. Text Lines Loading (Width expand) */
+.fv-line {
+  animation: fvLineLoad 3s ease-in-out infinite;
+}
+
+.l1 { animation-delay: 0.2s; }
+.l2 { animation-delay: 0.4s; }
+.l3 { animation-delay: 0.6s; }
+.l4 { animation-delay: 0.8s; }
+
+@keyframes fvLineLoad {
+  0% { width: 0; opacity: 0; }
+  20% { width: 0; opacity: 1; }
+  40% { width: 100%; opacity: 1; } /* Full width based on rect def */
+  90% { width: 100%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
+}
+
+/* 6. Scan Line (Top to Bottom of Screen) */
+.fv-scan-line {
+  animation: fvScan 3s linear infinite;
+}
+
+@keyframes fvScan {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(34px); opacity: 0; }
+}
+
+/* 7. Node Blink */
+.fv-node {
+  animation: fvNodeBlink 2s infinite;
+}
+
+.top { animation-delay: 0s; }
+.side { animation-delay: 1s; }
+
+@keyframes fvNodeBlink {
+  0%, 100% { r: 1.5px; opacity: 0.5; }
+  50% { r: 2.5px; opacity: 1; fill: #fff; filter: drop-shadow(0 0 3px #fff); }
+}
+
+/* 8. Glitch Effect */
+.fv-glitch {
+  display: none;
+  animation: fvGlitchEffect 5s infinite;
+}
+
+@keyframes fvGlitchEffect {
+  0%, 94% { display: none; }
+  95% { display: block; transform: translate(2px, 0); opacity: 0.5; }
+  96% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  97% { display: none; }
+  100% { display: none; }
+}
+
+/* --- Angle / Foundation Architect Icon Specifics --- */
+
+/* 1. Prism Shape Pulse */
+.angle-prism-shape {
+  animation: anglePrismPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes anglePrismPulse {
+  from { stroke-opacity: 0.8; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke-opacity: 1; filter: drop-shadow(0 0 8px #bf00ff); }
+}
+
+/* 2. Prism Inner Shimmer */
+.angle-prism-inner {
+  animation: anglePrismShimmer 3s ease-in-out infinite;
+}
+
+@keyframes anglePrismShimmer {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}
+
+/* 3. Prism Core Pulse */
+.angle-prism-core {
+  animation: angleCorePulse 2s ease-in-out infinite;
+}
+
+@keyframes angleCorePulse {
+  0%, 100% { r: 2px; fill: #fff; }
+  50% { r: 3px; fill: #00f3ff; filter: drop-shadow(0 0 4px #fff); }
+}
+
+/* 4. Input Beam Flow */
+.angle-input-beam {
+  stroke-dasharray: 20;
+  animation: angleInputFlow 1.5s linear infinite;
+}
+
+@keyframes angleInputFlow {
+  from { stroke-dashoffset: 40; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* 5. Input Pulse Travel */
+.angle-input-pulse {
+  animation: angleInputPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes angleInputPulse {
+  0% { cx: 4px; opacity: 0; r: 1px; }
+  50% { opacity: 1; r: 2.5px; }
+  100% { cx: 20px; opacity: 0; r: 1px; }
+}
+
+/* 6. Output Beams Pulse */
+.angle-beam {
+  animation: angleBeamPulse 2s ease-in-out infinite alternate;
+}
+
+.beam-1 { animation-delay: 0s; }
+.beam-2 { animation-delay: 0.3s; }
+.beam-3 { animation-delay: 0.6s; }
+
+@keyframes angleBeamPulse {
+  from { stroke-opacity: 0.7; stroke-width: 2px; }
+  to { stroke-opacity: 1; stroke-width: 3px; }
+}
+
+/* 7. Flagship Beam Glow */
+.flagship-beam {
+  animation: angleFlagshipGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes angleFlagshipGlow {
+  from { stroke-width: 3px; filter: drop-shadow(0 0 4px #ffd700); }
+  to { stroke-width: 5px; filter: drop-shadow(0 0 12px #ffd700); }
+}
+
+/* 8. Flagship Star Spin */
+.angle-star {
+  animation: angleStarSpin 4s ease-in-out infinite;
+  transform-origin: 58px 32px;
+}
+
+@keyframes angleStarSpin {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+}
+
+/* 9. Crown Float */
+.angle-crown {
+  animation: angleCrownFloat 2s ease-in-out infinite;
+}
+
+@keyframes angleCrownFloat {
+  0%, 100% { transform: translateY(0); opacity: 0.8; }
+  50% { transform: translateY(-2px); opacity: 1; }
+}
+
+/* 10. Irresistible Pulses */
+.angle-pulse {
+  animation: angleIrresistiblePulse 3s ease-out infinite;
+}
+
+.pulse-1 { animation-delay: 0s; }
+.pulse-2 { animation-delay: 1s; }
+.pulse-3 { animation-delay: 2s; }
+
+@keyframes angleIrresistiblePulse {
+  0% { r: 4px; opacity: 0.8; stroke-width: 2px; }
+  100% { r: 20px; opacity: 0; stroke-width: 0.5px; }
+}
+
+/* 11. Trigger Icons Pulse */
+.angle-trigger {
+  animation: angleTriggerPulse 2s ease-in-out infinite;
+}
+
+.trigger-1 { animation-delay: 0s; }
+.trigger-2 { animation-delay: 0.5s; }
+.trigger-3 { animation-delay: 1s; }
+
+@keyframes angleTriggerPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* 12. Cut-Through Line */
+.angle-cut-line {
+  stroke-dasharray: 14;
+  animation: angleCutThrough 2s ease-in-out infinite;
+}
+
+@keyframes angleCutThrough {
+  0% { stroke-dashoffset: 14; opacity: 0; }
+  50% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: -14; opacity: 0; }
+}
+
+/* 13. Differentiation Meter Fill */
+.angle-diff-fill {
+  animation: angleDiffFill 4s ease-in-out infinite;
+}
+
+@keyframes angleDiffFill {
+  0%, 100% { width: 6px; fill: #00cc66; }
+  50% { width: 12px; fill: #00ff88; }
+}
+
+/* 14. Angle Arc Rotation */
+.angle-arc {
+  animation: angleArcPulse 3s ease-in-out infinite;
+}
+
+@keyframes angleArcPulse {
+  0%, 100% { stroke-opacity: 0.3; }
+  50% { stroke-opacity: 0.7; }
+}
+
+/* 15. Particles Float */
+.angle-particle {
+  animation: angleParticleFloat 3s ease-in-out infinite;
+}
+
+.p-1 { animation-delay: 0s; --dir: -1; }
+.p-2 { animation-delay: 0.8s; --dir: 1; }
+.p-3 { animation-delay: 1.6s; --dir: -1; }
+.p-4 { animation-delay: 2.4s; --dir: 1; }
+
+@keyframes angleParticleFloat {
+  0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+  50% { transform: translate(calc(var(--dir) * 4px), -4px); opacity: 1; }
+}
+
+/* 16. Status Light */
+.angle-status-light {
+  animation: angleStatusGlow 1s ease-in-out infinite;
+}
+
+@keyframes angleStatusGlow {
+  0%, 100% { fill: #ffd700; r: 1.5px; }
+  50% { fill: #ffee88; r: 2px; filter: drop-shadow(0 0 3px #ffd700); }
+}
+
+/* 17. Grid Pulse */
+.angle-grid {
+  animation: angleGridPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes angleGridPulse {
+  from { opacity: 0.1; }
+  to { opacity: 0.2; }
+}
+
+/* 18. Glitch Effect */
+.angle-glitch {
+  display: none;
+  animation: angleGlitchEffect 6s infinite;
+}
+
+@keyframes angleGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}

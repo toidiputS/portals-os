@@ -1,0 +1,63 @@
+/* src/components/PortalLaunchAnimations.css */
+
+/* Wrapper that sits around each clickable icon */
+.launch-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Icon element inside (svg, etc.) */
+.launch-icon-inner {
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+/* When launching, play pull-in + implosion on the icon itself */
+.launch-icon-wrapper--launching .launch-icon-inner {
+  animation: icon-pull-in 0.18s ease-out,
+    icon-implosion 0.28s ease-in 0.18s forwards;
+}
+
+/* The warp particle that flies to the center of the screen */
+.launch-warp-particle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(77, 227, 255, 1);
+  box-shadow: 0 0 16px rgba(77, 227, 255, 0.95);
+  pointer-events: none;
+  transform-origin: center;
+  /* Use CSS custom properties for dynamic positioning */
+  transform: translate3d(var(--warp-x, 0px), var(--warp-y, 0px), 0px) scale(var(--warp-scale, 0.8));
+  opacity: var(--warp-opacity, 0);
+  transition: transform 0.35s ease-out, opacity 0.35s ease-out;
+  z-index: 9999;
+}
+
+/* Keyframes */
+
+@keyframes icon-pull-in {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.15);
+  }
+}
+
+@keyframes icon-implosion {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  60% {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.05);
+    opacity: 0;
+  }
+}
