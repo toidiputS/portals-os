@@ -4,7 +4,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-71, -90%); /* doesn't center perfectly, adjusted via eyeballing..DO NOT CHANGE
+  transform: translate(-50%, -50%);
 
   /* Use CSS custom property for dynamic container size */
   width: var(--sig-container-size, 350px);
