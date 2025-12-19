@@ -1430,6 +1430,120 @@
   100% { opacity: 0; }
 }
 
+/* --- Jam / Conversation Layer Icon Specifics --- */
+
+/* 1. Audio Bars Equalizer */
+.jam-bar {
+  animation: jamAudioPulse 1.5s ease-in-out infinite alternate;
+  transform-origin: bottom;
+}
+
+.bar-1 { animation-delay: 0.0s; --scale: 1.5; }
+.bar-2 { animation-delay: 0.2s; --scale: 1.2; }
+.bar-3 { animation-delay: 0.4s; --scale: 1.8; }
+.bar-4 { animation-delay: 0.1s; --scale: 1.6; }
+.bar-5 { animation-delay: 0.3s; --scale: 1.3; }
+.bar-6 { animation-delay: 0.5s; --scale: 1.4; }
+
+@keyframes jamAudioPulse {
+  0% { transform: scaleY(0.5); opacity: 0.3; }
+  50% { transform: scaleY(var(--scale)); opacity: 0.8; }
+  100% { transform: scaleY(0.5); opacity: 0.3; }
+}
+
+/* 2. Scrolling Script (Teleprompter) */
+.jam-script-content {
+  animation: jamScriptScroll 4s linear infinite;
+}
+
+@keyframes jamScriptScroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-30px); }
+}
+
+/* 3. Live Dot Blink */
+.jam-rec-dot {
+  animation: jamRecBlink 1s step-end infinite;
+}
+
+@keyframes jamRecBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* 4. Bubble Float */
+.jam-bubble {
+  animation: jamBubbleFloat 3s ease-in-out infinite;
+}
+
+.bubble-user { animation-delay: 0s; }
+.bubble-prospect { animation-delay: 1.5s; }
+
+@keyframes jamBubbleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+/* 5. Mic Pulse */
+.jam-mic-pulse {
+  animation: jamMicRipple 2s ease-out infinite;
+}
+
+@keyframes jamMicRipple {
+  0% { r: 6px; opacity: 0.8; stroke-width: 1px; }
+  100% { r: 14px; opacity: 0; stroke-width: 0.1px; }
+}
+
+/* 6. Objection Shield Activation */
+.jam-shield-body, .jam-shield-icon {
+  animation: jamShieldAlert 4s ease-in-out infinite;
+}
+
+@keyframes jamShieldAlert {
+  0%, 80% { opacity: 0; transform: scale(0.8); }
+  85% { opacity: 1; transform: scale(1.1); }
+  90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.8); }
+}
+
+/* 7. Cheatsheet Checkmark */
+.jam-check {
+  stroke-dasharray: 10;
+  stroke-dashoffset: 10;
+  animation: jamCheckDraw 4s ease-in-out infinite;
+}
+
+@keyframes jamCheckDraw {
+  0%, 40% { stroke-dashoffset: 10; }
+  50% { stroke-dashoffset: 0; }
+  90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* 8. Cheatsheet Float */
+.jam-cheatsheet {
+  animation: jamSheetFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes jamSheetFloat {
+  from { transform: translate(46px, 28px) translateY(0); }
+  to { transform: translate(46px, 28px) translateY(-3px); }
+}
+
+/* 9. Glitch Effect */
+.jam-glitch {
+  display: none;
+  animation: jamGlitchEffect 6s infinite;
+}
+
+@keyframes jamGlitchEffect {
+  0%, 93% { display: none; }
+  94% { display: block; transform: translate(2px, -1px); opacity: 0.5; }
+  95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
+  96% { display: none; }
+  100% { display: none; }
+}
+
 /* --- Interpreter / Structure Logic Icon Specifics --- */
 
 /* 1. Processor Body Pulse */

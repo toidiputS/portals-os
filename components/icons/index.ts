@@ -46,6 +46,7 @@ export { YIcon } from './YIcon';
 export { ZIcon } from './ZIcon';
 export { EnvoyIcon } from './EnvoyIcon';
 export { InterpreterIcon } from './InterpreterIcon';
+export { JamIcon } from './JamIcon';
 
 // New holographic 3D icons
 export { WIcon as HolographicWIcon } from './WIcon';
