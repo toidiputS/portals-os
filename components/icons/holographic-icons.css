@@ -1432,105 +1432,232 @@
 
 /* --- Jam / Conversation Layer Icon Specifics --- */
 
-/* 1. Audio Bars Equalizer */
-.jam-bar {
-  animation: jamAudioPulse 1.5s ease-in-out infinite alternate;
-  transform-origin: bottom;
+/* 1. Hub Ring Pulse */
+.jam-hub-ring {
+  animation: jamHubPulse 2s ease-in-out infinite alternate;
 }
 
-.bar-1 { animation-delay: 0.0s; --scale: 1.5; }
-.bar-2 { animation-delay: 0.2s; --scale: 1.2; }
-.bar-3 { animation-delay: 0.4s; --scale: 1.8; }
-.bar-4 { animation-delay: 0.1s; --scale: 1.6; }
-.bar-5 { animation-delay: 0.3s; --scale: 1.3; }
-.bar-6 { animation-delay: 0.5s; --scale: 1.4; }
-
-@keyframes jamAudioPulse {
-  0% { transform: scaleY(0.5); opacity: 0.3; }
-  50% { transform: scaleY(var(--scale)); opacity: 0.8; }
-  100% { transform: scaleY(0.5); opacity: 0.3; }
+@keyframes jamHubPulse {
+  from { stroke: #00f3ff; filter: drop-shadow(0 0 2px #00f3ff); }
+  to { stroke: #80ffff; filter: drop-shadow(0 0 8px #00f3ff); }
 }
 
-/* 2. Scrolling Script (Teleprompter) */
-.jam-script-content {
-  animation: jamScriptScroll 4s linear infinite;
+/* 2. Pulse Ring Expand */
+.jam-pulse-ring {
+  animation: jamPulseExpand 1.5s ease-out infinite;
 }
 
-@keyframes jamScriptScroll {
-  from { transform: translateY(0); }
-  to { transform: translateY(-30px); }
+@keyframes jamPulseExpand {
+  0% { r: 7px; opacity: 0.5; }
+  100% { r: 14px; opacity: 0; }
 }
 
-/* 3. Live Dot Blink */
-.jam-rec-dot {
-  animation: jamRecBlink 1s step-end infinite;
+/* 3. Sound Waves */
+.jam-wave {
+  animation: jamSoundWave 1.5s ease-out infinite;
 }
 
-@keyframes jamRecBlink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+.sw-1 { animation-delay: 0s; }
+.sw-2 { animation-delay: 0.3s; }
+.sw-3 { animation-delay: 0.15s; }
+
+@keyframes jamSoundWave {
+  0% { opacity: 0; transform: scaleX(0.8); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: scaleX(1.3); }
 }
 
-/* 4. Bubble Float */
-.jam-bubble {
-  animation: jamBubbleFloat 3s ease-in-out infinite;
+/* 4. Your Speech Bubble Glow */
+.bubble-you {
+  animation: jamBubbleYouPulse 2s ease-in-out infinite alternate;
 }
 
-.bubble-user { animation-delay: 0s; }
-.bubble-prospect { animation-delay: 1.5s; }
-
-@keyframes jamBubbleFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
+@keyframes jamBubbleYouPulse {
+  from { stroke: #4facfe; filter: drop-shadow(0 0 2px #4facfe); }
+  to { stroke: #80c0ff; filter: drop-shadow(0 0 6px #4facfe); }
 }
 
-/* 5. Mic Pulse */
-.jam-mic-pulse {
-  animation: jamMicRipple 2s ease-out infinite;
+/* 5. Speaking Dot Blink */
+.jam-speaking-dot {
+  animation: jamSpeakingBlink 0.5s ease-in-out infinite;
 }
 
-@keyframes jamMicRipple {
-  0% { r: 6px; opacity: 0.8; stroke-width: 1px; }
-  100% { r: 14px; opacity: 0; stroke-width: 0.1px; }
+@keyframes jamSpeakingBlink {
+  0%, 100% { opacity: 1; r: 1px; }
+  50% { opacity: 0.3; r: 0.5px; }
 }
 
-/* 6. Objection Shield Activation */
-.jam-shield-body, .jam-shield-icon {
-  animation: jamShieldAlert 4s ease-in-out infinite;
+/* 6. Shield Pulse */
+.jam-shield {
+  animation: jamShieldPulse 2s ease-in-out infinite alternate;
 }
 
-@keyframes jamShieldAlert {
-  0%, 80% { opacity: 0; transform: scale(0.8); }
-  85% { opacity: 1; transform: scale(1.1); }
-  90% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(0.8); }
+@keyframes jamShieldPulse {
+  from { opacity: 0.2; }
+  to { opacity: 0.5; filter: drop-shadow(0 0 3px #ff9500); }
 }
 
-/* 7. Cheatsheet Checkmark */
-.jam-check {
-  stroke-dasharray: 10;
-  stroke-dashoffset: 10;
-  animation: jamCheckDraw 4s ease-in-out infinite;
+/* 7. Shield Checkmark Draw */
+.jam-shield-check {
+  stroke-dasharray: 12;
+  stroke-dashoffset: 12;
+  animation: jamCheckDraw 2s ease-out infinite;
 }
 
 @keyframes jamCheckDraw {
-  0%, 40% { stroke-dashoffset: 10; }
-  50% { stroke-dashoffset: 0; }
-  90% { stroke-dashoffset: 0; opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
+  0%, 30% { stroke-dashoffset: 12; }
+  60%, 100% { stroke-dashoffset: 0; }
 }
 
-/* 8. Cheatsheet Float */
-.jam-cheatsheet {
-  animation: jamSheetFloat 3s ease-in-out infinite alternate;
+/* 8. Close Button Pulse */
+.jam-close-btn {
+  animation: jamClosePulse 2s ease-in-out infinite alternate;
 }
 
-@keyframes jamSheetFloat {
-  from { transform: translate(46px, 28px) translateY(0); }
-  to { transform: translate(46px, 28px) translateY(-3px); }
+@keyframes jamClosePulse {
+  from { filter: drop-shadow(0 0 2px #00ff88); transform: scale(1); }
+  to { filter: drop-shadow(0 0 6px #00ff88); transform: scale(1.02); }
 }
 
-/* 9. Glitch Effect */
+/* 9. Sparkle Animation */
+.jam-sparkle {
+  animation: jamSparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes jamSparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 10. Confidence Meter Fill */
+.jam-conf-fill {
+  animation: jamConfFill 4s ease-in-out infinite;
+}
+
+@keyframes jamConfFill {
+  0% { width: 6px; }
+  50% { width: 16px; }
+  100% { width: 6px; }
+}
+
+/* 11. Confidence Marker Move */
+.jam-conf-marker {
+  animation: jamMarkerMove 4s ease-in-out infinite;
+}
+
+@keyframes jamMarkerMove {
+  0% { transform: translateX(-8px); }
+  50% { transform: translateX(2px); }
+  100% { transform: translateX(-8px); }
+}
+
+/* 12. Live Dot Pulse */
+.jam-live-dot {
+  animation: jamLivePulse 1s ease-in-out infinite;
+}
+
+@keyframes jamLivePulse {
+  0%, 100% { opacity: 1; r: 1.5px; }
+  50% { opacity: 0.3; r: 1px; }
+}
+
+/* 13. Timer Tick */
+.jam-time {
+  animation: jamTimerTick 1s step-end infinite;
+}
+
+@keyframes jamTimerTick {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* 14. Word Particles Flow */
+.jam-word-particle {
+  animation: jamWordFlow 2s ease-out infinite;
+}
+
+.wp-1 { animation-delay: 0s; --dx: 4px; --dy: -6px; }
+.wp-2 { animation-delay: 0.3s; --dx: 6px; --dy: -4px; }
+.wp-3 { animation-delay: 0.5s; --dx: -4px; --dy: 6px; }
+.wp-4 { animation-delay: 0.8s; --dx: -6px; --dy: 4px; }
+
+@keyframes jamWordFlow {
+  0% { transform: translate(0, 0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+
+/* 15. Hint Buttons Hover */
+.jam-hint {
+  animation: jamHintPulse 3s ease-in-out infinite;
+}
+
+.hint-1 { animation-delay: 0s; }
+.hint-2 { animation-delay: 1.5s; }
+
+@keyframes jamHintPulse {
+  0%, 80%, 100% { opacity: 0.6; }
+  90% { opacity: 1; }
+}
+
+/* 16. Audio Waveform Bars */
+.jam-bar {
+  animation: jamBarPulse 0.8s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.bar-1 { animation-delay: 0s; }
+.bar-2 { animation-delay: 0.1s; }
+.bar-3 { animation-delay: 0.2s; }
+.bar-4 { animation-delay: 0.3s; }
+.bar-5 { animation-delay: 0.4s; }
+
+@keyframes jamBarPulse {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.5); }
+}
+
+/* 17. Background Waves */
+.jam-bg-waves path {
+  animation: jamBgWave 4s ease-in-out infinite;
+}
+
+@keyframes jamBgWave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(2px); }
+}
+
+/* 18. Talking Points Highlight */
+.jam-talking-points circle {
+  animation: jamPointHighlight 3s ease-in-out infinite;
+}
+
+@keyframes jamPointHighlight {
+  0%, 100% { fill: #4facfe; opacity: 0.7; }
+  50% { fill: #80c0ff; opacity: 1; }
+}
+
+/* 19. Microphone Glow */
+.jam-mic rect {
+  animation: jamMicGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes jamMicGlow {
+  from { fill: #4facfe; }
+  to { fill: #80c0ff; filter: drop-shadow(0 0 3px #4facfe); }
+}
+
+/* 20. Flow State Indicator */
+.jam-flow-state rect {
+  animation: jamFlowPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes jamFlowPulse {
+  from { stroke: #00ff88; }
+  to { stroke: #80ffcc; filter: drop-shadow(0 0 3px #00ff88); }
+}
+
+/* 21. Glitch Effect */
 .jam-glitch {
   display: none;
   animation: jamGlitchEffect 6s infinite;
@@ -2259,4 +2386,289 @@
   95% { display: block; transform: translate(-2px, 1px); opacity: 0.5; }
   96% { display: none; }
   100% { display: none; }
+}
+
+/* === KIN ICON HOLOGRAPHIC EFFECTS === */
+
+.kin-icon {
+  filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.4))
+          drop-shadow(0 0 16px rgba(255, 0, 255, 0.3));
+  animation: holoFloat 6s ease-in-out infinite;
+}
+
+@keyframes holoFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(1deg); }
+}
+
+/* Energy Field Pulse */
+.k-energy-field {
+  filter: blur(8px);
+  mix-blend-mode: screen;
+}
+
+/* Orbital Rings */
+.k-orbits circle {
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* Constellation Stars */
+.k-star {
+  animation: starTwinkle 3s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+/* Main Structure Animations */
+.k-spine {
+  filter: drop-shadow(0 0 4px #00f3ff);
+  animation: spineGlow 3s ease-in-out infinite;
+}
+
+@keyframes spineGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px #00f3ff); }
+  50% { filter: drop-shadow(0 0 8px #ff00ff); }
+}
+
+.k-arm-top,
+.k-arm-bottom {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: drawArm 4s ease-in-out infinite;
+}
+
+.k-arm-bottom {
+  animation-delay: 2s;
+}
+
+@keyframes drawArm {
+  0%, 100% { stroke-dashoffset: 100; opacity: 0.6; }
+  50% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* Timeline Markers */
+.k-marker {
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+/* Heart Pulse */
+.k-heart {
+  transform-origin: 20px 32px;
+  animation: heartBeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.15); }
+  30% { transform: scale(1); }
+}
+
+/* Node Glows */
+.k-node-glow {
+  filter: drop-shadow(0 0 4px currentColor);
+  animation: nodeBreath 2s ease-in-out infinite;
+}
+
+@keyframes nodeBreath {
+  0%, 100% { filter: drop-shadow(0 0 4px currentColor); }
+  50% { filter: drop-shadow(0 0 8px currentColor); }
+}
+
+.k-tip-pulse {
+  filter: drop-shadow(0 0 6px #ffffff);
+}
+
+/* Glitch Effect */
+.k-glitch {
+  display: none;
+  animation: glitchFlash 8s step-end infinite;
+}
+
+@keyframes glitchFlash {
+  0%, 94%, 100% { opacity: 0; transform: translate(0, 0); }
+  94.5% { opacity: 0.8; transform: translate(-2px, 1px); }
+  95% { opacity: 0.6; transform: translate(2px, -1px); }
+  95.5% { opacity: 0; transform: translate(0, 0); }
+}
+
+/* Shimmer Effect */
+.k-shimmer {
+  mix-blend-mode: screen;
+  animation: shimmerPulse 3s ease-in-out infinite;
+}
+
+@keyframes shimmerPulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.8; }
+}
+
+/* Data Streams */
+.k-data-streams circle {
+  mix-blend-mode: screen;
+}
+
+/* Particles */
+.k-particles circle {
+  mix-blend-mode: screen;
+}
+
+/* Hover State - Intensify Everything */
+.kin-icon:hover {
+  filter: drop-shadow(0 0 16px rgba(0, 243, 255, 0.8))
+          drop-shadow(0 0 24px rgba(255, 0, 255, 0.6))
+          drop-shadow(0 0 32px rgba(255, 255, 0, 0.4));
+  animation: holoFloat 3s ease-in-out infinite;
+}
+
+.kin-icon:hover .k-energy-field {
+  animation: energyBlast 0.6s ease-out;
+}
+
+@keyframes energyBlast {
+  0% { r: 28; opacity: 0.6; }
+  50% { r: 35; opacity: 1; }
+  100% { r: 28; opacity: 0.6; }
+}
+
+.kin-icon:hover .k-heart {
+  animation: heartBeat 0.8s ease-in-out infinite;
+}
+
+/* Accessibility: Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .kin-icon,
+  .kin-icon * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* === KIN ICON HOLOGRAPHIC EFFECTS === */
+
+:root {
+  --holo-primary: #00f3ff;
+  --holo-secondary: #7C16FF;
+  --holo-size: 64px;
+  --kin-play: running; /* set from inline styles to 'paused' when animations off */
+}
+
+/* wrapper keeps sizing / CSS variables */
+.kin-holo-wrap {
+  width: var(--holo-size);
+  height: var(--holo-size);
+  display: inline-block;
+  position: relative;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* SVG base */
+.holographic-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Packets: scaling pulse while animateMotion handles path moving */
+.k-packet {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: packetPulse 2.8s linear infinite;
+  animation-play-state: var(--kin-play);
+  mix-blend-mode: screen;
+}
+
+/* heartbeat core */
+.k-heartbeat {
+  transform-box: fill-box;
+  transform-origin: 20px 32px;
+  animation: heartbeat 1.5s cubic-bezier(.2,.7,.2,1) infinite;
+  animation-play-state: var(--kin-play);
+  mix-blend-mode: screen;
+}
+
+/* sheen that sweeps across */
+.k-sheen {
+  mix-blend-mode: screen;
+  opacity: 0.95;
+  transform-origin: center;
+  animation: sheenMove 2.6s linear infinite;
+  animation-play-state: var(--kin-play);
+}
+
+/* scanlines */
+.k-lines {
+  animation: scan 8s linear infinite;
+  animation-play-state: var(--kin-play);
+  will-change: transform;
+}
+
+/* subtle glitch for the outlines */
+.k-glitch {
+  animation: glitch 4s infinite;
+  animation-play-state: var(--kin-play);
+  will-change: transform;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(124,22,255,0.12));
+}
+
+/* small styling for label if displayed */
+.kin-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  margin-top: 6px;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Keyframes */
+@keyframes packetPulse {
+  0%   { transform: scale(0.7); opacity: 0; }
+  25%  { transform: scale(1.12); opacity: 1; }
+  60%  { transform: scale(1.0); opacity: 1; }
+  100% { transform: scale(0.7); opacity: 0; }
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1); opacity: 1; }
+  42%  { transform: scale(1.22); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes sheenMove {
+  0% { transform: translateX(-40px) rotate(8deg); opacity: 0.9; }
+  10% { opacity: 0.95; }
+  100% { transform: translateX(80px) rotate(8deg); opacity: 0.9; }
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-20px); }
+}
+
+@keyframes glitch {
+  0%   { transform: translateX(0) skewX(0); opacity: 0.2; }
+  6%   { transform: translateX(1px) skewX(.6deg); opacity: 0.28; }
+  12%  { transform: translateX(-1px) skewX(-.6deg); opacity: 0.18; }
+  100% { transform: translateX(0) skewX(0); opacity: 0.2; }
+}
+
+/* Respect OS reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .k-packet,
+  .k-heartbeat,
+  .k-sheen,
+  .k-lines,
+  .k-glitch {
+    animation: none !important;
+  }
 }

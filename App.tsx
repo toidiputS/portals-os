@@ -13,6 +13,8 @@ import { getAllApps } from "./apps.config";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
+import { TwentyFirstToolbar } from "@21st-extension/toolbar-react";
+import { ReactPlugin } from "@21st-extension/react";
 
 const App: React.FC = () => {
   const windows = useKernel((state) => state.windows);
@@ -65,6 +67,7 @@ const App: React.FC = () => {
           <Taskbar />
           <VoiceAssistant />
           <VoiceAssistantOverlay />
+          <TwentyFirstToolbar config={{ plugins: [ReactPlugin] }} />
         </motion.div>
       )}
       <Analytics />

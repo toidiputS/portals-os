@@ -113,7 +113,9 @@ export interface WindowInstance {
 
 export type GeminiModel =
   | "gemini-1.5-flash"
-  | "gemini-1.5-pro";
+  | "gemini-1.5-pro"
+  | "claude-haiku-4.5";
+  | "local-assistant";
 
 export interface ChatMessage {
   role: "user" | "model";

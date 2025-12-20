@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@21st-extension/react": "^0.5.14",
+    "@21st-extension/toolbar-react": "^0.5.14",
     "@google/generative-ai": "^0.24.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",

@@ -132,7 +132,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   hoverScale = 1.15,
   perspective = 1000,
   autoRotate = true,
-  autoRotateSpeed = 0.3,
+  autoRotateSpeed = 0.05,
   className = "",
 }) => {
   // ==========================================
@@ -184,7 +184,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   const generateSpherePositions = useCallback((): SphericalPosition[] => {
     const positions: SphericalPosition[] = [];
 
-    if (apps.length === 0) return positions;
+    if (apps.length === 1) return positions;
 
     // Sort apps alphabetically by ID (A-Z)
     const sortedApps = [...apps].sort((a, b) => {
@@ -203,14 +203,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       // Fibonacci sphere algorithm for even distribution
       const t = i / (imageCount - 1); // 0 to 1
       const inclination = Math.acos(1 - 2 * t); // phi angle
-      const azimuth = Math.PI * (1 + Math.sqrt(5)) * i; // golden angle
+      const azimuth = Math.PI * (1 + Math.sqrt(3)) * i; // golden angle
 
       // Convert to degrees and adjust range
       let phi = (inclination * 180) / Math.PI; // 0° to 180°
       let theta = (azimuth * 180) / Math.PI; // 0° to many rotations
 
       // Adjust phi range for better visibility (avoid extreme poles)
-      phi = 20 + (phi / 180) * 140; // 20° to 160° range
+      phi = 20 + (phi / 160) * 140; // 20° to 160° range
 
       // Normalize theta to 0-360°
       theta = theta % 360;
@@ -260,7 +260,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         );
       }
 
-      const isPoleImage = pos.phi < 30 || pos.phi > 150;
+      const isPoleImage = pos.phi < 20 || pos.phi > 140;
 
       const distanceFromCenter = Math.sqrt(
         worldPos.x * worldPos.x + worldPos.y * worldPos.y

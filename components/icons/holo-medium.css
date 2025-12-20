@@ -1,0 +1,164 @@
+:root {
+  --holo-accent: #8fa3a8;
+  --holo-muted: rgba(255,255,255,0.08);
+  --holo-size: 72px;
+  --holo-play: running;
+  --holo-text: #e9f2f3;
+  --holo-subtext: rgba(233,242,243,0.82);
+}
+
+/* container + layout */
+.holo-medium {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  --holo-size: var(--holo-size);
+  animation: float 6s ease-in-out infinite;
+  animation-play-state: var(--holo-play);
+  will-change: transform;
+}
+
+/* svg wrapper gives extra safe area (pad from component prop) */
+.svg-wrap {
+  display: inline-block;
+}
+.svg-wrap svg {
+  display: block;
+  width: var(--holo-size);
+  height: var(--holo-size);
+  overflow: visible; /* important to avoid clipping */
+}
+
+/* label block */
+.holo-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.holo-emoji {
+  font-size: calc(var(--holo-size) * 0.45);
+  line-height: 1;
+  transform-origin: center;
+  animation: emojiBreath 6s ease-in-out infinite;
+  animation-play-state: var(--holo-play);
+}
+.holo-text { display:flex; flex-direction: column; gap: 2px; }
+.holo-title { font-weight: 700; font-size: calc(var(--holo-size) * 0.2); color: var(--holo-text); letter-spacing: -0.02em; }
+.holo-sub { font-size: calc(var(--holo-size) * 0.12); color: var(--holo-subtext); }
+
+/* small helpers */
+[stroke] { vector-effect: non-scaling-stroke; }
+
+/* ---------- Reused medium animations (map, nerve, optimize, polish) ---------- */
+.map-rotor, .polish-rays {
+  transform-box: fill-box;
+  transform-origin: 32px 32px;
+  animation: rotateSlow 7.4s linear infinite;
+  animation-play-state: var(--holo-play);
+}
+.icon-map .sheen, .icon-polish .sheen {
+  transform-box: fill-box;
+  animation: sheenSlide 3s linear infinite;
+  animation-play-state: var(--holo-play);
+}
+.icon-nerve .nerve-line {
+  stroke-dasharray: 26;
+  stroke-dashoffset: 26;
+  animation: dashFlow 2.6s linear infinite;
+  animation-play-state: var(--holo-play);
+}
+.icon-nerve .nerve-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 1.8s ease-in-out infinite;
+  animation-play-state: var(--holo-play);
+}
+.opt-bar {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: barBreathe 3.6s ease-in-out infinite;
+  animation-play-state: var(--holo-play);
+}
+.opt-trend {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: dashFlow 2.6s linear infinite;
+  animation-play-state: var(--holo-play);
+}
+.opt-marker { transform-box: fill-box; transform-origin: center; animation: markerPop 2.4s ease-in-out infinite; animation-play-state: var(--holo-play); }
+.polish-dot { transform-box: fill-box; transform-origin: center; animation: dotPulse 2.8s ease-in-out infinite; animation-play-state: var(--holo-play); }
+
+/* ---------- NEW: QUICK ---------- */
+.icon-quick .quick-bolt { stroke: var(--holo-accent); }
+.quick-gear {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: gearSpin 2.2s linear infinite;
+  animation-play-state: var(--holo-play);
+}
+.quick-streaks .streak { transform-box: fill-box; transform-origin: left center; opacity: 0.0; }
+.quick-streaks .s1 { animation: quickStreak 0.9s linear infinite; animation-delay: 0s; animation-play-state: var(--holo-play); }
+.quick-streaks .s2 { animation: quickStreak 1.0s linear infinite; animation-delay: 0.08s; animation-play-state: var(--holo-play); }
+.quick-streaks .s3 { animation: quickStreak 1.1s linear infinite; animation-delay: 0.16s; animation-play-state: var(--holo-play); }
+
+/* ---------- NEW: RESEARCH ---------- */
+.research-ring { transform-box: fill-box; transform-origin: 32px 28px; animation: ringRotate 5.6s linear infinite; animation-play-state: var(--holo-play); opacity: 0.6; }
+.research-pulse { transform-box: fill-box; transform-origin: 32px 28px; animation: pulse 1.6s ease-in-out infinite; animation-play-state: var(--holo-play); }
+
+/* ---------- NEW: SCROLL ---------- */
+.scroll-lines { transform-box: fill-box; transform-origin: 32px 32px; animation: scrollFlow 2.8s linear infinite; animation-play-state: var(--holo-play); }
+.scroll-dot { transform-box: fill-box; transform-origin: center; animation: dotPulse 3.2s ease-in-out infinite; animation-play-state: var(--holo-play); }
+
+/* ---------- NEW: TIMELINE ---------- */
+.timeline-pulse {
+  transform-box: fill-box;
+  transform-origin: 20px 12px;
+  animation: timelineSlide 3.4s linear infinite;
+  animation-play-state: var(--holo-play);
+}
+
+/* ---------- Generic / small animations ---------- */
+@keyframes float { 0% { transform: translateY(0); } 50% { transform: translateY(-3px); } 100% { transform: translateY(0); } }
+@keyframes emojiBreath { 0%,100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+@keyframes rotateSlow { to { transform: rotate(360deg); } }
+@keyframes sheenSlide { 0% { transform: translateX(-40px); opacity: 0; } 10% { opacity: 0.06; } 50% { transform: translateX(10px); opacity: 0.06; } 100% { transform: translateX(48px); opacity: 0; } }
+@keyframes dashFlow { to { stroke-dashoffset: 0; } }
+@keyframes pulse { 0% { transform: scale(1); opacity: 0.96; } 45% { transform: scale(1.36); opacity: 1; } 100% { transform: scale(1); opacity: 0.96; } }
+@keyframes barBreathe { 0% { transform: scaleY(0.86); } 45% { transform: scaleY(1.12); } 100% { transform: scaleY(0.9); } }
+@keyframes markerPop { 0% { transform: translateY(0) scale(0.9); opacity: 0.9; } 45% { transform: translateY(-3px) scale(1.12); opacity: 1; } 100% { transform: translateY(0) scale(0.9); opacity: 0.9; } }
+@keyframes dotPulse { 0% { transform: scale(0.9); opacity: 0.86; } 45% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.86; } }
+
+/* QUICK keyframes */
+@keyframes quickStreak {
+  0% { transform: translateX(-6px) scaleX(0.9); opacity: 0; }
+  18% { opacity: 0.9; transform: translateX(0) scaleX(1.02); }
+  100% { transform: translateX(10px) scaleX(1.06); opacity: 0; }
+}
+@keyframes gearSpin { to { transform: rotate(360deg); } }
+
+/* RESEARCH ring */
+@keyframes ringRotate { to { transform: rotate(360deg); } }
+
+/* SCROLL lines */
+@keyframes scrollFlow { 0% { transform: translateY(0); } 50% { transform: translateY(-2.4px); } 100% { transform: translateY(0); } }
+
+/* TIMELINE slide */
+@keyframes timelineSlide {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(40px); opacity: 0; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .holo-medium, .map-rotor, .icon-map .sheen, .icon-nerve .nerve-line, .icon-nerve .nerve-pulse,
+  .opt-bar, .opt-trend, .opt-marker, .polish-rays, .diamond, .polish-dot,
+  .quick-gear, .quick-streaks .streak, .research-ring, .research-pulse,
+  .scroll-lines, .scroll-dot, .timeline-pulse, .holo-emoji {
+    animation: none !important;
+    transition: none !important;
+  }
+}

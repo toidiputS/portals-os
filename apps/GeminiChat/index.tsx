@@ -124,7 +124,7 @@ const GeminiChat: React.FC = () => {
               <h2 className="text-sm font-semibold">{currentSession?.title || 'New Conversation'}</h2>
               <p className="text-xs text-[hsl(var(--muted-foreground-hsl))] flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
-                {gemini.model === 'gemini-1.5-flash' ? 'Gemini Flash' : 'Gemini Pro'}
+                {gemini.model === 'gemini-1.5-flash' ? 'Gemini Flash' : gemini.model === 'gemini-1.5-pro' ? 'Gemini Pro' : gemini.model === 'claude-haiku-4.5' ? 'Claude Haiku 4.5' : gemini.model}
               </p>
             </div>
           </div>
@@ -153,6 +153,8 @@ const GeminiChat: React.FC = () => {
             >
               <option value="gemini-1.5-flash">Flash 1.5</option>
               <option value="gemini-1.5-pro">Pro 1.5</option>
+              <option value="claude-haiku-4.5">Claude Haiku 4.5</option>
+              <option value="local-assistant">Local Assistant</option>
             </select>
           </div>
         </header>
