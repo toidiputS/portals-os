@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { AppId, BuiltInAppId, AppDefinition, ProjectFolder } from './types';
 import { FileText, Store, Folder, FolderOpen } from 'lucide-react';
-import { TerminalIcon, SettingsIcon, ProjectsIcon, GeminiIcon, ContactIcon, OracleIcon, MinimalAngleIcon, MinimalBlueprintIcon, MinimalCalculatorIcon, MinimalDraftIcon, EnvoyIcon, FloIcon, GrindIcon, HelperIcon, InterpreterIcon, JamIcon, KinIcon, ListenIcon, TypoMapIcon, TypoNerveIcon, TypoOptimizeIcon, TypoPolishIcon, TypoQuickIcon, TypoResearchIcon, TypoScrollIcon, TypoTimelineIcon, UIcon, VIcon, WIcon, XIcon, YIcon, ZIcon, FileManagerIcon, AppStoreIcon, FileViewerIcon } from './components/icons';
+import { TerminalIcon, SettingsIcon, ProjectsIcon, GeminiIcon, ContactIcon, OracleIcon, MinimalAngleIcon, MinimalBlueprintIcon, MinimalCalculatorIcon, MinimalDraftIcon, EnvoyIcon, FloIcon, GrindIcon, HelperIcon, InterpreterIcon, JamIcon, KinIcon, ListenIcon, TypoMapIcon, TypoNerveIcon, TypoOptimizeIcon, TypoPolishIcon, TypoQuickIcon, TypoResearchIcon, TypoScrollIcon, TypoTimelineIcon, U, V, W, X, Y, Z, FileManagerIcon, AppStoreIcon, FileViewerIcon } from './components/icons';
 
 export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
   geminiChat: {
@@ -211,42 +211,42 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
   u: {
     id: 'u',
     name: 'Unfold',
-    icon: UIcon,
+    icon: U,
     component: lazy(() => import('./apps/U')),
     description: 'Tasks - Task unfolding and project management',
   },
   v: {
     id: 'v',
     name: 'Velocity',
-    icon: VIcon,
+    icon: V,
     component: lazy(() => import('./apps/V')),
     description: 'Performance - Speed optimization and performance metrics',
   },
   w: {
     id: 'w',
     name: 'Warp',
-    icon: WIcon,
+    icon: W,
     component: lazy(() => import('./apps/W')),
     description: 'Power-User - Advanced user tools and power features',
   },
   x: {
     id: 'x',
     name: 'X-Ray',
-    icon: XIcon,
+    icon: X,
     component: lazy(() => import('./apps/X')),
     description: 'Advanced - Deep system analysis and diagnostics',
   },
   y: {
     id: 'y',
     name: 'Yield',
-    icon: YIcon,
+    icon: Y,
     component: lazy(() => import('./apps/Y')),
     description: 'Profitability - Financial yield analysis and optimization',
   },
   z: {
     id: 'z',
     name: 'Zone',
-    icon: ZIcon,
+    icon: Z,
     component: lazy(() => import('./apps/Z')),
     description: 'Experimental - Cutting-edge experimental features',
   }

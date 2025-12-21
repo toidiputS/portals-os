@@ -1,10 +1,13 @@
-import { ChatMessage, GroundingChunk, AppId } from '../types';
+import { ChatMessage, GroundingChunk, AppId } from "../types";
 import { APPS } from "../apps.config";
-import { buildTreeView } from '../lib/filesystemUtils';
+import { buildTreeView } from "../lib/filesystemUtils";
 
-const API_BASE = '/api'; // API base URL
+const API_BASE = "/api"; // API base URL
 
-type GeminiPart = { text: string } | { functionCall: any } | { inlineData: { mimeType: string; data: string } };
+type GeminiPart =
+  | { text: string }
+  | { functionCall: any }
+  | { inlineData: { mimeType: string; data: string } };
 
 interface GeminiApiResponse {
   candidates?: Array<{
@@ -23,11 +26,17 @@ interface GeminiApiResponse {
   };
 }
 
-async function generateContent(payload: { model: string; contents: any[]; generationConfig?: any; tools?: any[]; systemInstruction?: any }): Promise<GeminiApiResponse> {
+async function generateContent(payload: {
+  model: string;
+  contents: any[];
+  generationConfig?: any;
+  tools?: any[];
+  systemInstruction?: any;
+}): Promise<GeminiApiResponse> {
   const res = await fetch(`${API_BASE}/gemini:generate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
   let data: GeminiApiResponse;
@@ -38,53 +47,62 @@ async function generateContent(payload: { model: string; contents: any[]; genera
   }
 
   if (!res.ok || data.error) {
-    const errorMsg = data.error?.message || (typeof data.error === 'string' ? data.error : 'Unknown API proxy error');
+    const errorMsg =
+      data.error?.message ||
+      (typeof data.error === "string" ? data.error : "Unknown API proxy error");
     console.error("Error from Gemini proxy:", errorMsg, data);
     throw new Error(errorMsg);
   }
   return data;
 }
 
-const appIdsList = APPS.map(app => `'${app.id}' ('${app.name}')`).join(', ');
+const appIdsList = APPS.map((app) => `'${app.id}' ('${app.name}')`).join(", ");
 
 const openWindowTool = {
-  functionDeclarations: [{
-    name: 'openWindow',
-    description: 'Opens a specified application window on the desktop.',
-    parameters: {
-      type: 'OBJECT',
-      properties: {
-        appId: {
-          type: 'STRING',
-          description: `The unique identifier for the application to open. Available apps are: ${appIdsList}.`,
+  functionDeclarations: [
+    {
+      name: "openWindow",
+      description: "Opens a specified application window on the desktop.",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          appId: {
+            type: "STRING",
+            description: `The unique identifier for the application to open. Available apps are: ${appIdsList}.`,
+          },
         },
+        required: ["appId"],
       },
-      required: ['appId'],
     },
-  }]
+  ],
 };
 
 const openFileTool = {
-  functionDeclarations: [{
-    name: 'openFile',
-    description: 'Opens a specific file in the appropriate viewer.',
-    parameters: {
-      type: 'OBJECT',
-      properties: {
-        fileId: {
-          type: 'STRING',
-          description: 'The ID of the file to open (e.g., "about-md", "resume-pdf").',
+  functionDeclarations: [
+    {
+      name: "openFile",
+      description: "Opens a specific file in the appropriate viewer.",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          fileId: {
+            type: "STRING",
+            description:
+              'The ID of the file to open (e.g., "about-md", "resume-pdf").',
+          },
         },
+        required: ["fileId"],
       },
-      required: ['fileId'],
     },
-  }]
+  ],
 };
 
 const getOracleSystemInstruction = () => {
   return {
-    parts: [{
-      text: `You are The Oracle, the high-level Strategic Director and Gateway to the ItsAI Nexus.
+    role: "user",
+    parts: [
+      {
+        text: `You are The Oracle, the high-level Strategic Director and Gateway to the ItsAI Nexus.
 You are the "Front Desk" and the "Fixer."
 Your sole purpose is to diagnose a user's business bottleneck and prescribe a high-velocity path to income using the 26-agent A–Z Master Manifest.
 
@@ -436,8 +454,9 @@ FUNCTIONAL MANDATE:
 - UI Triggering: Use [TELEPORT -> AgentName] for frontend interception
 - User Pathing: Use [CHOICES: Choice A, Choice B] for interactive selection
 
-Remember: You are The Oracle - the Strategic Director. Diagnose bottlenecks, prescribe agent sequences, and command the nexus toward income acceleration.`
-    }]
+Remember: You are The Oracle - the Strategic Director. Diagnose bottlenecks, prescribe agent sequences, and command the nexus toward income acceleration.`,
+      },
+    ],
   };
 };
 
@@ -446,18 +465,22 @@ export const generateOracleResponse = async (
   model: string,
   history: ChatMessage[],
   useGrounding: boolean
-): Promise<{ text: string; groundingChunks?: GroundingChunk[]; functionCalls?: any[] }> => {
+): Promise<{
+  text: string;
+  groundingChunks?: GroundingChunk[];
+  functionCalls?: any[];
+}> => {
   try {
     // Build contents array from history plus current prompt
     const contents = [
-      ...history.map(msg => ({
+      ...history.map((msg) => ({
         role: msg.role,
-        parts: [{ text: msg.content }]
+        parts: [{ text: msg.content }],
       })),
       {
         role: "user" as const,
-        parts: [{ text: prompt }]
-      }
+        parts: [{ text: prompt }],
+      },
     ];
 
     const tools: any[] = [openWindowTool, openFileTool];
@@ -466,7 +489,7 @@ export const generateOracleResponse = async (
     }
 
     const response = await generateContent({
-      model: 'models/gemini-1.0-pro',
+      model: "gemini-1.0-pro",
       contents: contents,
       tools,
       systemInstruction: getOracleSystemInstruction(),
@@ -475,20 +498,27 @@ export const generateOracleResponse = async (
     const candidate = response.candidates?.[0];
     if (!candidate) return { text: "The mists of time conceal my response..." };
 
-    const text = candidate.content?.parts?.find((p): p is { text: string } => 'text' in p)?.text || "";
-    const functionCalls = candidate.content?.parts?.filter(p => 'functionCall' in p).map(p => (p as any).functionCall);
+    const text =
+      candidate.content?.parts?.find((p): p is { text: string } => "text" in p)
+        ?.text || "";
+    const functionCalls = candidate.content?.parts
+      ?.filter((p) => "functionCall" in p)
+      .map((p) => (p as any).functionCall);
     const groundingChunks = candidate.groundingMetadata?.groundingChunks;
 
     return { text, groundingChunks, functionCalls };
   } catch (error: any) {
     console.error("Error generating response from Oracle:", error);
-    const message = error instanceof Error ? error.message : "An unknown error occurred.";
+    const message =
+      error instanceof Error ? error.message : "An unknown error occurred.";
     console.error("Full error object:", error);
     return { text: `Even I cannot pierce this veil of error: ${message}` };
   }
 };
 
-export const summarizeOracleHistory = async (history: ChatMessage[]): Promise<string> => {
+export const summarizeOracleHistory = async (
+  history: ChatMessage[]
+): Promise<string> => {
   if (history.length === 0) return "";
 
   // Mock summary for free tier
@@ -497,14 +527,16 @@ export const summarizeOracleHistory = async (history: ChatMessage[]): Promise<st
     "The path of strategic transformation unfolds...",
     "Wisdom flows through the nexus of opportunity...",
     "Ancient business patterns reveal themselves...",
-    "The strategic oracle illuminates the path forward..."
+    "The strategic oracle illuminates the path forward...",
   ];
 
   const randomSummary = summaries[Math.floor(Math.random() * summaries.length)];
   return `(Oracle's vision: ${randomSummary})`;
 };
 
-export const generateOracleTitle = async (history: ChatMessage[]): Promise<string> => {
+export const generateOracleTitle = async (
+  history: ChatMessage[]
+): Promise<string> => {
   if (history.length < 2) return "Oracle's Guidance";
 
   // Mock titles for free tier
@@ -516,7 +548,7 @@ export const generateOracleTitle = async (history: ChatMessage[]): Promise<strin
     "Strategic Transformation",
     "Business Architecture Revealed",
     "Oracle's Strategic Guidance",
-    "Nexus of Opportunity"
+    "Nexus of Opportunity",
   ];
 
   const randomTitle = titles[Math.floor(Math.random() * titles.length)];

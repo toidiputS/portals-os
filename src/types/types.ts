@@ -50,19 +50,19 @@ export interface ProjectFolder {
 
 // Virtual portfolio filesystem
 export type VirtualFileType =
-  | 'folder'
-  | 'markdown'    // .md files - project READMEs
-  | 'link'        // .link files - external URLs
-  | 'image'       // .png, .jpg - screenshots
-  | 'pdf'         // .pdf - resumes, docs
-  | 'text';       // .txt - plain text
+  | "folder"
+  | "markdown" // .md files - project READMEs
+  | "link" // .link files - external URLs
+  | "image" // .png, .jpg - screenshots
+  | "pdf" // .pdf - resumes, docs
+  | "text"; // .txt - plain text
 
 export interface VirtualFile {
   id: string;
-  name: string;           // "README.md"
+  name: string; // "README.md"
   type: VirtualFileType;
-  path: string;           // "/projects/portfolio-os/README.md"
-  parentPath: string;     // "/projects/portfolio-os"
+  path: string; // "/projects/portfolio-os/README.md"
+  parentPath: string; // "/projects/portfolio-os"
 
   content?: {
     markdown?: string;
@@ -73,11 +73,11 @@ export interface VirtualFile {
     alt?: string;
   };
 
-  size?: string;          // "2.4 KB" (for display)
+  size?: string; // "2.4 KB" (for display)
   createdAt: string;
   modifiedAt: string;
   icon?: string;
-  color?: string;         // For folders
+  color?: string; // For folders
 }
 
 export interface AppDefinition {
@@ -98,14 +98,14 @@ export interface WindowInstance {
   zIndex: number;
   minimized: boolean;
   snapState:
-  | "none"
-  | "maximized"
-  | "topLeft"
-  | "topRight"
-  | "bottomLeft"
-  | "bottomRight"
-  | "left"
-  | "right";
+    | "none"
+    | "maximized"
+    | "topLeft"
+    | "topRight"
+    | "bottomLeft"
+    | "bottomRight"
+    | "left"
+    | "right";
   preSnapPosition?: { x: number; y: number };
   preSnapSize?: { width: number; height: number };
   metadata?: any; // Optional data passed to app (e.g., file path)
@@ -114,7 +114,7 @@ export interface WindowInstance {
 export type GeminiModel =
   | "gemini-1.5-flash"
   | "gemini-1.5-pro"
-  | "claude-haiku-4.5";
+  | "claude-haiku-4.5"
   | "local-assistant";
 
 export interface ChatMessage {

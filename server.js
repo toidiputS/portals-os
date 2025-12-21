@@ -47,6 +47,14 @@ app.post("/api/gemini:generate", async (req, res) => {
       "Contents preview:",
       JSON.stringify(contents?.slice(0, 2), null, 2)
     );
+    console.log(
+      "Full request body:",
+      JSON.stringify(
+        { model: modelName, contents, generationConfig, systemInstruction },
+        null,
+        2
+      )
+    );
     // If the requested model is an Anthropic/Claude model, route to Anthropic API
     if (modelName && modelName.toLowerCase().startsWith("claude")) {
       // If the requested model is a local assistant, proxy to the configured local endpoint
@@ -158,7 +166,7 @@ app.post("/api/gemini:generate", async (req, res) => {
 
     // Default: use Google Generative AI
     const model = genAI.getGenerativeModel({
-      model: modelName || "models/gemini-1.0-pro",
+      model: modelName || "gemini-1.5-flash",
       generationConfig,
       tools,
       systemInstruction,

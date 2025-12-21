@@ -4,7 +4,7 @@ import { ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { GlowCard } from '../../components/GlowCard';
 import Icon from '../../components/Icon';
-import { AIcon, BIcon, CIcon, DIcon, EIcon, FIcon, GIcon, HIcon, IIcon, JIcon, KIcon, LIcon, MIcon, NIcon, OIcon, PIcon, QIcon, RIcon, SIcon, TIcon, UIcon, VIcon, WIcon, XRayIcon, YIcon, ZIcon } from '../../components/icons';
+import { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z } from '../../components/icons';
 import { AppDefinition } from '../../types';
 
 // --- New Custom Icons for App Variety ---
@@ -66,32 +66,32 @@ const ZenGardenIcon = ({ className }: { className?: string }) => (
 
 
 const AGENT_APPS = [
-  { id: 'a', name: 'Angle', title: 'Foundation', icon: AIcon },
-  { id: 'b', name: 'Blueprint', title: 'Strategy', icon: BIcon },
-  { id: 'c', name: 'Calculator', title: 'Economics', icon: CIcon },
-  { id: 'd', name: 'Draft', title: 'Copywriting', icon: DIcon },
-  { id: 'e', name: 'Envoy', title: 'Outreach', icon: EIcon },
-  { id: 'f', name: 'Flo', title: 'Content', icon: FIcon },
-  { id: 'g', name: 'Grind', title: 'Operations', icon: GIcon },
-  { id: 'h', name: 'Helper', title: 'Assets', icon: HIcon },
-  { id: 'i', name: 'Interpreter', title: 'Structure', icon: IIcon },
-  { id: 'j', name: 'Jam', title: 'Conversation', icon: JIcon },
-  { id: 'k', name: 'Kin', title: 'In-Touch', icon: KIcon },
-  { id: 'l', name: 'Listen', title: 'Insight', icon: LIcon },
-  { id: 'm', name: 'Map', title: 'Workflow', icon: MIcon },
-  { id: 'n', name: 'Nerve', title: 'Nerve', icon: NIcon },
-  { id: 'o', name: 'Optimize', title: 'Bottleneck', icon: OIcon },
-  { id: 'p', name: 'Polish', title: 'Refinement', icon: PIcon },
-  { id: 'q', name: 'Quick', title: 'Momentum', icon: QIcon },
-  { id: 'r', name: 'Research', title: 'Market', icon: RIcon },
-  { id: 's', name: 'Scroll', title: 'Knowledge', icon: SIcon },
-  { id: 't', name: 'Timeline', title: 'History', icon: TIcon },
-  { id: 'u', name: 'Unfold', title: 'Tasks', icon: UIcon },
-  { id: 'v', name: 'Velocity', title: 'Performance', icon: VIcon },
-  { id: 'w', name: 'Warp', title: 'Power-User', icon: WIcon },
-  { id: 'x', name: 'X-Ray', title: 'Advanced', icon: XRayIcon },
-  { id: 'y', name: 'Yield', title: 'Profitability', icon: YIcon },
-  { id: 'z', name: 'Zone', title: 'Experimental', icon: ZIcon },
+  { id: 'a', name: 'Angle', title: 'Foundation', icon: A },
+  { id: 'b', name: 'Blueprint', title: 'Strategy', icon: B },
+  { id: 'c', name: 'Calculator', title: 'Economics', icon: C },
+  { id: 'd', name: 'Draft', title: 'Copywriting', icon: D },
+  { id: 'e', name: 'Envoy', title: 'Outreach', icon: E },
+  { id: 'f', name: 'Flo', title: 'Content', icon: F },
+  { id: 'g', name: 'Grind', title: 'Operations', icon: G },
+  { id: 'h', name: 'Helper', title: 'Assets', icon: H },
+  { id: 'i', name: 'Interpreter', title: 'Structure', icon: I },
+  { id: 'j', name: 'Jam', title: 'Conversation', icon: J },
+  { id: 'k', name: 'Kin', title: 'In-Touch', icon: K },
+  { id: 'l', name: 'Listen', title: 'Insight', icon: L },
+  { id: 'm', name: 'Map', title: 'Workflow', icon: M },
+  { id: 'n', name: 'Nerve', title: 'Nerve', icon: N },
+  { id: 'o', name: 'Optimize', title: 'Bottleneck', icon: O},
+  { id: 'p', name: 'Polish', title: 'Refinement', icon: P },
+  { id: 'q', name: 'Quick', title: 'Momentum', icon: Q },
+  { id: 'r', name: 'Research', title: 'Market', icon: R },
+  { id: 's', name: 'Scroll', title: 'Knowledge', icon: S },
+  { id: 't', name: 'Timeline', title: 'History', icon: T },
+  { id: 'u', name: 'Unfold', title: 'Tasks', icon: U },
+  { id: 'v', name: 'Velocity', title: 'Performance', icon: V },
+  { id: 'w', name: 'Warp', title: 'Power-User', icon: W },
+  { id: 'x', name: 'X-Ray', title: 'Advanced', icon: X },
+  { id: 'y', name: 'Yield', title: 'Profitability', icon: Y },
+  { id: 'z', name: 'Zone', title: 'Experimental', icon: Z },
 ];
 
 const AppStore: React.FC = () => {
