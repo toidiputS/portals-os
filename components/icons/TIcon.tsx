@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface TIconProps {
   className?: string;
@@ -7,89 +7,254 @@ interface TIconProps {
 }
 
 export const TIcon: React.FC<TIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon terminal-icon ${className}`}
+      className={`holo-t-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientT" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="1" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.3" />
+        <linearGradient id="gradientT" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2196f3" stopOpacity="1" />
+          <stop offset="100%" stopColor="#2196f3" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowT">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
 
-        {/* Clip for stem interior */}
-        <clipPath id="stemClip">
-          <rect x="26" y="16" width="12" height="42" />
-        </clipPath>
+        <pattern
+          id="gearPatternT"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(33, 150, 243, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(33, 150, 243, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- BROADCAST WAVES (Emanating from top bar) --- */}
-      <g className="t-waves" opacity="0.5">
-        <path d="M 10 8 Q 32 -4 54 8" fill="none" stroke="#00f3ff" strokeWidth="1" className="t-wave w1" />
-        <path d="M 14 4 Q 32 -6 50 4" fill="none" stroke="#00f3ff" strokeWidth="1" className="t-wave w2" />
-        <path d="M 18 0 Q 32 -8 46 0" fill="none" stroke="#00f3ff" strokeWidth="1" className="t-wave w3" />
-      </g>
-
-      {/* --- THE TOP BAR (Emitter) --- */}
-      <rect
-        x="8" y="10" width="48" height="8"
-        stroke="url(#holoGradientT)"
-        strokeWidth="2"
-        fill="none"
-        filter="url(#glowT)"
-        className="t-top-bar"
+      <circle
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
+        strokeWidth="1"
+        className="glass-bg"
       />
 
-      {/* Emitter Nodes on the bar */}
-      <circle cx="14" cy="14" r="2" fill="#00f3ff" className="t-emitter-node en1" />
-      <circle cx="32" cy="14" r="2" fill="#00f3ff" className="t-emitter-node en2" />
-      <circle cx="50" cy="14" r="2" fill="#00f3ff" className="t-emitter-node en3" />
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternT)" opacity="0.4" />
 
-      {/* --- THE STEM (Mast/Tower) --- */}
-      <rect
-        x="26" y="16" width="12" height="42"
-        stroke="url(#holoGradientT)"
-        strokeWidth="2"
-        fill="none"
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#2196f3"
         filter="url(#glowT)"
-        className="t-stem"
+        className="agent-letter"
+      >
+        T
+      </text>
+
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Thread
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.threads
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
+        fill="none"
+        stroke="rgba(33, 150, 243, 0.6)"
+        strokeWidth="2"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="22s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(33, 150, 243, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="18s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="22s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="22s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="22s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="22s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
       />
-
-      {/* Internal Data Flow (Rising blocks inside stem) */}
-      <g clipPath="url(#stemClip)" className="t-data-flow">
-        <rect x="28" y="50" width="8" height="6" fill="#fff" opacity="0.7" className="t-data-block db1" />
-        <rect x="28" y="38" width="8" height="6" fill="#fff" opacity="0.7" className="t-data-block db2" />
-        <rect x="28" y="26" width="8" height="6" fill="#fff" opacity="0.7" className="t-data-block db3" />
-      </g>
-
-      {/* --- BASE ANCHOR --- */}
-      <rect x="22" y="56" width="20" height="4" fill="#00f3ff" className="t-base" />
-
-      {/* --- CONNECTION NODES --- */}
-      <circle cx="26" cy="18" r="2" fill="#fff" className="t-node n1" />
-      <circle cx="38" cy="18" r="2" fill="#fff" className="t-node n2" />
-
-      {/* --- GLITCH LAYER --- */}
-      <g className="t-glitch">
-        <rect x="8" y="10" width="48" height="8" stroke="#fff" strokeWidth="1" fill="none" opacity="0.4" />
-        <rect x="26" y="16" width="12" height="42" stroke="#fff" strokeWidth="1" fill="none" opacity="0.4" />
-      </g>
-
     </svg>
   );
 };

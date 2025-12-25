@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface VIconProps {
   className?: string;
@@ -7,82 +7,253 @@ interface VIconProps {
 }
 
 export const VIcon: React.FC<VIconProps> = ({
-  className = '',
-  size = 24
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon velocity-icon ${className}`}
+      className={`holo-v-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* V letter structure */}
-      <path
-        className="velocity-backbone"
-        d="M 16 20 L 32 44 L 48 20"
-        strokeWidth="3"
-        fill="none"
-      />
-      
-      {/* Speed lines */}
-      <line className="speed-line line-1" x1="8" y1="16" x2="20" y2="16" strokeWidth="1" />
-      <line className="speed-line line-2" x1="8" y1="24" x2="22" y2="24" strokeWidth="1" />
-      <line className="speed-line line-3" x1="8" y1="32" x2="24" y2="32" strokeWidth="1" />
-      <line className="speed-line line-4" x1="8" y1="40" x2="22" y2="40" strokeWidth="1" />
-      <line className="speed-line line-5" x1="8" y1="48" x2="20" y2="48" strokeWidth="1" />
-      
-      <line className="speed-line line-6" x1="44" y1="16" x2="56" y2="16" strokeWidth="1" />
-      <line className="speed-line line-7" x1="42" y1="24" x2="56" y2="24" strokeWidth="1" />
-      <line className="speed-line line-8" x1="40" y1="32" x2="56" y2="32" strokeWidth="1" />
-      <line className="speed-line line-9" x1="42" y1="40" x2="56" y2="40" strokeWidth="1" />
-      <line className="speed-line line-10" x1="44" y1="48" x2="56" y2="48" strokeWidth="1" />
-      
-      {/* Motion trails */}
-      <path
-        className="motion-trail trail-1"
-        d="M 12 18 L 28 42"
-        strokeWidth="2"
-        fill="none"
-        opacity="0.4"
-      />
-      
-      <path
-        className="motion-trail trail-2"
-        d="M 36 42 L 52 18"
-        strokeWidth="2"
-        fill="none"
-        opacity="0.4"
-      />
-      
-      {/* Speed particles */}
-      <circle className="speed-particle particle-1" cx="10" cy="16" r="0.8" />
-      <circle className="speed-particle particle-2" cx="10" cy="24" r="0.8" />
-      <circle className="speed-particle particle-3" cx="10" cy="32" r="0.8" />
-      <circle className="speed-particle particle-4" cx="10" cy="40" r="0.8" />
-      <circle className="speed-particle particle-5" cx="10" cy="48" r="0.8" />
-      
-      <circle className="speed-particle particle-6" cx="54" cy="16" r="0.8" />
-      <circle className="speed-particle particle-7" cx="54" cy="24" r="0.8" />
-      <circle className="speed-particle particle-8" cx="54" cy="32" r="0.8" />
-      <circle className="speed-particle particle-9" cx="54" cy="40" r="0.8" />
-      <circle className="speed-particle particle-10" cx="54" cy="48" r="0.8" />
-      
-      {/* Velocity core */}
-      <circle cx="32" cy="32" r="3" className="velocity-core" />
-      <circle cx="32" cy="32" r="1.5" className="velocity-inner" />
-      
-      {/* Motion blur effect */}
-      <ellipse
-        className="motion-blur"
+      <defs>
+        <linearGradient id="gradientV" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#673ab7" stopOpacity="1" />
+          <stop offset="100%" stopColor="#673ab7" stopOpacity="0.3" />
+        </linearGradient>
+
+        <filter id="glowV">
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <pattern
+          id="gearPatternV"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(103, 58, 183, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(103, 58, 183, 0.2)" />
+        </pattern>
+      </defs>
+
+      <circle
         cx="32"
         cy="32"
-        rx="8"
-        ry="2"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
+        strokeWidth="1"
+        className="glass-bg"
+      />
+
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternV)" opacity="0.4" />
+
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#673ab7"
+        filter="url(#glowV)"
+        className="agent-letter"
+      >
+        V
+      </text>
+
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Vector
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.video
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
         fill="none"
-        opacity="0.3"
-        transform="rotate(-45 32 32)"
+        stroke="rgba(103, 58, 183, 0.6)"
+        strokeWidth="2"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="24s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(103, 58, 183, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="20s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#673ab7"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="24s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#673ab7"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="24s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#673ab7"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="24s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#673ab7"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="24s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#673ab7"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#673ab7"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#673ab7"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#673ab7"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="5s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
       />
     </svg>
   );

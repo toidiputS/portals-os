@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const Y_URL = "https://y.itsai.services";
+const Y_URL = "https://yield.itsai.vip";
 
 const YEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const YEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={Y_URL}
-        className="flex-1 w-full border-0"
-        title="Y"
-      />
+      <iframe src={Y_URL} className="flex-1 w-full border-0" title="Y" />
     </div>
   );
 };

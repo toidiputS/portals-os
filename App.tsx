@@ -9,12 +9,15 @@ import Sidebar from "./components/Sidebar";
 import VoiceAssistant from "./components/VoiceAssistant";
 import VoiceAssistantOverlay from "./components/VoiceAssistantOverlay";
 import OracleChatWidget from "./components/OracleChatWidget";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { getAllApps } from "./apps.config";
+import { usePerformanceMonitor, performanceMonitor } from "./lib/performanceUtils";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
-import { TwentyFirstToolbar } from "@21st-extension/toolbar-react";
-import { ReactPlugin } from "@21st-extension/react";
+// Conditionally import 21st extension only if VSCode integration is needed
+// import { TwentyFirstToolbar } from "@21st-extension/toolbar-react";
+// import { ReactPlugin } from "@21st-extension/react";
 
 const App: React.FC = () => {
   const windows = useKernel((state) => state.windows);
@@ -24,13 +27,31 @@ const App: React.FC = () => {
 
   const theme = useKernel((state) => state.theme);
 
+  // Performance monitoring
+  usePerformanceMonitor((metrics) => {
+    if (metrics.fps < 30) {
+      console.warn(`Performance warning: ${metrics.fps}fps`);
+    }
+    if (metrics.memoryUsage && metrics.memoryUsage > 150) {
+      console.warn(`Memory usage high: ${metrics.memoryUsage}MB`);
+    }
+  });
+
   useEffect(() => {
+    // Start performance monitoring
+    performanceMonitor.start();
+
     const root = document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");
     } else {
       root.classList.remove("dark");
     }
+
+    // Cleanup performance monitoring on unmount
+    return () => {
+      performanceMonitor.stop();
+    };
   }, [theme]);
 
   return (
@@ -67,7 +88,8 @@ const App: React.FC = () => {
           <Taskbar />
           <VoiceAssistant />
           <VoiceAssistantOverlay />
-          <TwentyFirstToolbar config={{ plugins: [ReactPlugin] }} />
+          {/* TwentyFirstToolbar disabled to prevent WebSocket reconnection lag */}
+          {/* <TwentyFirstToolbar config={{ plugins: [ReactPlugin] }} /> */}
         </motion.div>
       )}
       <Analytics />

@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface IIconProps {
   className?: string;
@@ -7,21 +7,21 @@ interface IIconProps {
 }
 
 export const IIcon: React.FC<IIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon i-hologram ${className}`}
+      className={`holo-i-icon ${className}`}
       width={size}
       height={size}
-      viewBox="0 0 100 150"
+      viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientI" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.15" />
+        <linearGradient id="gradientI" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00bcd4" stopOpacity="1" />
+          <stop offset="100%" stopColor="#00bcd4" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowI">
@@ -31,62 +31,230 @@ export const IIcon: React.FC<IIconProps> = ({
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+
+        <pattern
+          id="gearPatternI"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(0, 188, 212, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(0, 188, 212, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- Background Glow --- */}
-      <rect x="37.5" y="0" width="25" height="150" fill="url(#holoGradientI)" opacity="0.1">
-        <animate attributeName="opacity" values="0.05;0.15;0.05" dur="3s" repeatCount="indefinite" />
-      </rect>
+      <circle
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
+        strokeWidth="1"
+        className="glass-bg"
+      />
 
-      {/* --- The Letter 'I' Construction --- */}
-      {/* The Vertical Stem */}
-      <rect
-        x="37.5" y="25" width="25" height="100"
-        fill="rgba(0, 243, 255, 0.15)"
-        stroke="rgba(0, 243, 255, 0.6)"
-        strokeWidth="2"
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternI)" opacity="0.4" />
+
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#00bcd4"
         filter="url(#glowI)"
-        className="i-stem"
-      />
+        className="agent-letter"
+      >
+        I
+      </text>
 
-      {/* The Top and Bottom Bars (Serifs) - Makes it look like an I */}
-      <rect
-        x="20" y="23" width="60" height="4"
-        fill="rgba(0, 243, 255, 0.15)"
-        stroke="rgba(0, 243, 255, 0.6)"
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Insight
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.analytics
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
+        fill="none"
+        stroke="rgba(0, 188, 212, 0.6)"
         strokeWidth="2"
-        filter="url(#glowI)"
-        className="i-serif"
-      />
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="10s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(0, 188, 212, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="7s"
+          repeatCount="indefinite"
+        />
+      </circle>
 
-      <rect
-        x="20" y="123" width="60" height="4"
-        fill="rgba(0, 243, 255, 0.15)"
-        stroke="rgba(0, 243, 255, 0.6)"
-        strokeWidth="2"
-        filter="url(#glowI)"
-        className="i-serif"
-      />
-
-      {/* --- Scanline Effect (The moving lines) --- */}
-      <rect
-        x="15" y="15" width="70" height="4"
-        fill="rgba(0, 243, 255, 0.5)"
-        opacity="0.3"
-        className="i-scanlines"
-      />
-
-      {/* --- The Projection Base (Optional light source) --- */}
-      <ellipse cx="50" cy="140" rx="20" ry="5" fill="#000" stroke="#333" strokeWidth="1" />
-
-      {/* --- The Light Beam --- */}
       <polygon
-        points="40,140 60,140 55,10 45,10"
-        fill="rgba(0, 243, 255, 0.1)"
-        filter="url(#glowI)"
-        className="i-beam"
-      />
+        points="32,14 34,18 32,16 30,18"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="10s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="10s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="10s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="10s"
+          repeatCount="indefinite"
+        />
+      </polygon>
 
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="1.8s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="1.8s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="1.8s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#00bcd4"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="1.8s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
+      />
     </svg>
   );
 };

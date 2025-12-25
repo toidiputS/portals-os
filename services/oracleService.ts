@@ -1,6 +1,7 @@
 import { ChatMessage, GroundingChunk, AppId } from "../types";
 import { APPS } from "../apps.config";
 import { buildTreeView } from "../lib/filesystemUtils";
+import { USE_LM_STUDIO } from "../constants";
 
 const API_BASE = "/api"; // API base URL
 
@@ -33,7 +34,11 @@ async function generateContent(payload: {
   tools?: any[];
   systemInstruction?: any;
 }): Promise<GeminiApiResponse> {
-  const res = await fetch(`${API_BASE}/gemini:generate`, {
+  const apiPath = USE_LM_STUDIO
+    ? `${API_BASE}/lmstudio:generate`
+    : `${API_BASE}/gemini:generate`;
+
+  const res = await fetch(apiPath, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

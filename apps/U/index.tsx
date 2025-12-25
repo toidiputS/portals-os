@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const U_URL = "https://u.itsai.online";
+const U_URL = "https://unfold.itsai.life";
 
 const UEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const UEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={U_URL}
-        className="flex-1 w-full border-0"
-        title="U"
-      />
+      <iframe src={U_URL} className="flex-1 w-full border-0" title="U" />
     </div>
   );
 };

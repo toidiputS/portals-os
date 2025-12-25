@@ -2,58 +2,101 @@ import React from 'react';
 import './holographic-icons.css';
 
 interface ProjectsIconProps {
-    className?: string;
-    size?: number;
+  className?: string;
+  size?: number;
 }
 
 export const ProjectsIcon: React.FC<ProjectsIconProps> = ({
-    className = '',
-    size = 24
+  className = '',
+  size = 64
 }) => {
-    return (
-        <svg
-            className={`holographic-icon projects-icon ${className}`}
-            width={size}
-            height={size}
-            viewBox="0 0 64 64"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            {/* Wireframe octahedron - 3D perspective */}
-            {/* Top pyramid */}
-            <polyline
-                className="octahedron-edge"
-                points="32,12 18,32 32,52"
-                strokeWidth="1.5"
-            />
-            <polyline
-                className="octahedron-edge"
-                points="32,12 46,32 32,52"
-                strokeWidth="1.5"
-            />
-            <line
-                className="octahedron-edge"
-                x1="18"
-                y1="32"
-                x2="46"
-                y2="32"
-                strokeWidth="1.5"
-            />
+  return (
+    <svg
+      className={`holographic-icon projects-icon ${className}`}
+      width={size}
+      height={size}
+      viewBox="0 0 64 64"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="holoGradientProjects" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#9b59b6" stopOpacity="1" />
+          <stop offset="100%" stopColor="#9b59b6" stopOpacity="0.3" />
+        </linearGradient>
 
-            {/* Back edges (fainter) */}
-            <line
-                className="octahedron-edge octahedron-back"
-                x1="32"
-                y1="12"
-                x2="32"
-                y2="52"
-                strokeWidth="1.5"
-            />
+        <filter id="glowProjects">
+          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
 
-            {/* Vertex nodes */}
-            <circle className="vertex-node" cx="32" cy="12" r="1.5" />
-            <circle className="vertex-node" cx="18" cy="32" r="1.5" />
-            <circle className="vertex-node" cx="46" cy="32" r="1.5" />
-            <circle className="vertex-node" cx="32" cy="52" r="1.5" />
-        </svg>
-    );
+      {/* Folder Stack */}
+      <g className="projects-folders">
+        {/* Back folder */}
+        <rect
+          x="12" y="20" width="40" height="28"
+          stroke="url(#holoGradientProjects)"
+          strokeWidth="2"
+          fill="none"
+          filter="url(#glowProjects)"
+          className="folder-back"
+        />
+        
+        {/* Back folder tab */}
+        <rect
+          x="12" y="20" width="12" height="4"
+          fill="url(#holoGradientProjects)"
+          className="folder-back-tab"
+        />
+        
+        {/* Middle folder */}
+        <rect
+          x="16" y="24" width="40" height="28"
+          stroke="url(#holoGradientProjects)"
+          strokeWidth="2"
+          fill="none"
+          filter="url(#glowProjects)"
+          className="folder-middle"
+        />
+        
+        {/* Middle folder tab */}
+        <rect
+          x="16" y="24" width="12" height="4"
+          fill="url(#holoGradientProjects)"
+          className="folder-middle-tab"
+        />
+        
+        {/* Front folder */}
+        <rect
+          x="20" y="28" width="40" height="28"
+          stroke="url(#holoGradientProjects)"
+          strokeWidth="2"
+          fill="none"
+          filter="url(#glowProjects)"
+          className="folder-front"
+        />
+        
+        {/* Front folder tab */}
+        <rect
+          x="20" y="28" width="12" height="4"
+          fill="url(#holoGradientProjects)"
+          className="folder-front-tab"
+        />
+
+        {/* Project dots on front folder */}
+        <circle cx="28" cy="36" r="1.5" fill="#9b59b6" className="project-dot" />
+        <circle cx="34" cy="36" r="1.5" fill="#9b59b6" className="project-dot" />
+        <circle cx="40" cy="36" r="1.5" fill="#9b59b6" className="project-dot" />
+        
+        {/* Project lines on front folder */}
+        <rect x="28" y="42" width="24" height="2" fill="#9b59b6" opacity="0.7" className="project-line" />
+        <rect x="28" y="46" width="18" height="2" fill="#9b59b6" opacity="0.5" className="project-line" />
+        <rect x="28" y="50" width="20" height="2" fill="#9b59b6" opacity="0.3" className="project-line" />
+      </g>
+
+    </svg>
+  );
 };

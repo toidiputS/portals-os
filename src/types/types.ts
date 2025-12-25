@@ -9,6 +9,8 @@ export type BuiltInAppId =
   | "fileManager"
   | "fileViewer"
   | "oracle"
+  | "agentCards"
+  | "notionLike"
   | "a"
   | "b"
   | "c"

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const T_URL = "https://t.itsai.life";
+const T_URL = "https://timeline.itsai.wiki";
 
 const TEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const TEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={T_URL}
-        className="flex-1 w-full border-0"
-        title="T"
-      />
+      <iframe src={T_URL} className="flex-1 w-full border-0" title="T" />
     </div>
   );
 };

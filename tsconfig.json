@@ -13,10 +13,6 @@
     ],
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "types": [
-      "node",
-      "vite/client"
-    ],
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -28,6 +24,7 @@
       ]
     },
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "noEmit": true
   },
   "include": [

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const Q_URL = "https://q.itsai.help";
+const Q_URL = "https://quick.itsaiagents.online";
 
 const QEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const QEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={Q_URL}
-        className="flex-1 w-full border-0"
-        title="Q"
-      />
+      <iframe src={Q_URL} className="flex-1 w-full border-0" title="Q" />
     </div>
   );
 };

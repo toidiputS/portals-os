@@ -1,97 +1,262 @@
-import React from 'react';
-import { useKernel } from '../../store/kernel';
-import { ShoppingCart } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { GlowCard } from '../../components/GlowCard';
-import Icon from '../../components/Icon';
-import { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z } from '../../components/icons';
-import { AppDefinition } from '../../types';
+import React from "react";
+import { useKernel } from "../../store/kernel";
+import { ShoppingCart } from "lucide-react";
+import { motion } from "framer-motion";
+import { GlowCard } from "../../components/GlowCard";
+import Icon from "../../components/Icon";
+import {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+  K,
+  L,
+  M,
+  N,
+  O,
+  P,
+  Q,
+  R,
+  S,
+  T,
+  U,
+  V,
+  W,
+  X,
+  Y,
+  Z,
+} from "../../components/icons";
+import { AppDefinition } from "../../types";
 
 // --- New Custom Icons for App Variety ---
 
 const CalculatorIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
-        <line x1="8" y1="6" x2="16" y2="6"></line>
-        <line x1="8" y1="10" x2="8" y2="10"></line>
-        <line x1="12" y1="10" x2="12" y2="10"></line>
-        <line x1="16" y1="10" x2="16" y2="10"></line>
-        <line x1="8" y1="14" x2="8" y2="14"></line>
-        <line x1="12" y1="14" x2="12" y2="14"></line>
-        <line x1="16" y1="14" x2="16" y2="14"></line>
-        <line x1="8" y1="18" x2="12" y2="18"></line>
-        <line x1="16" y1="18" x2="16" y2="18"></line>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+    <line x1="8" y1="6" x2="16" y2="6"></line>
+    <line x1="8" y1="10" x2="8" y2="10"></line>
+    <line x1="12" y1="10" x2="12" y2="10"></line>
+    <line x1="16" y1="10" x2="16" y2="10"></line>
+    <line x1="8" y1="14" x2="8" y2="14"></line>
+    <line x1="12" y1="14" x2="12" y2="14"></line>
+    <line x1="16" y1="14" x2="16" y2="14"></line>
+    <line x1="8" y1="18" x2="12" y2="18"></line>
+    <line x1="16" y1="18" x2="16" y2="18"></line>
+  </svg>
 );
 
 const WeatherIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
-      <path d="M22 10a3 3 0 0 0-3-3h-2.207a5.502 5.502 0 0 0-10.702.5"></path>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+    <path d="M22 10a3 3 0 0 0-3-3h-2.207a5.502 5.502 0 0 0-10.702.5"></path>
+  </svg>
 );
 
 const MusicIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <circle cx="12" cy="12" r="10"></circle>
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M12 12L17 10"></path>
-        <path d="M9 9l-2.5-1.5"></path>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <circle cx="12" cy="12" r="3"></circle>
+    <path d="M12 12L17 10"></path>
+    <path d="M9 9l-2.5-1.5"></path>
+  </svg>
 );
 
 const CodeEditorIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M7 8l-4 4 4 4"></path>
-        <path d="M17 8l4 4-4 4"></path>
-        <path d="M14 4l-4 16"></path>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M7 8l-4 4 4 4"></path>
+    <path d="M17 8l4 4-4 4"></path>
+    <path d="M14 4l-4 16"></path>
+  </svg>
 );
 
 const ModelViewerIcon = ({ className }: { className?: string }) => (
-     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-        <line x1="12" y1="22.08" x2="12" y2="12"></line>
-     </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+    <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+    <line x1="12" y1="22.08" x2="12" y2="12"></line>
+  </svg>
 );
 
 const ZenGardenIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9Z"></path>
-        <path d="M20.2 16.5A4.5 4.5 0 0 0 15.7 12a4.5 4.5 0 0 0-4.5 4.5"></path>
-        <path d="M3.8 7.5A4.5 4.5 0 0 1 8.3 12a4.5 4.5 0 0 1-4.5 4.5"></path>
-    </svg>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 9 9 9 9 0 0 1-9 9 9 9 0 0 1-9-9Z"></path>
+    <path d="M20.2 16.5A4.5 4.5 0 0 0 15.7 12a4.5 4.5 0 0 0-4.5 4.5"></path>
+    <path d="M3.8 7.5A4.5 4.5 0 0 1 8.3 12a4.5 4.5 0 0 1-4.5 4.5"></path>
+  </svg>
 );
 
+// Domain mapping function based on the agent teams
+const getDomainForApp = (appId: string): string => {
+  const domains: Record<string, string> = {
+    // Group 1: The Money Team (itsai.services)
+    a: "itsai.services",
+    b: "itsai.services",
+    c: "itsai.services",
+
+    // Group 2: The Interface Team (itsai.online)
+    d: "itsai.online",
+    e: "itsai.online",
+    f: "itsai.online",
+
+    // Group 3: The Support Team (itsai.help)
+    g: "itsai.help",
+    h: "itsai.help",
+    i: "itsai.help",
+
+    // Group 4: The Conversation Team (itsai.chat)
+    j: "itsai.chat",
+    k: "itsai.chat",
+    l: "itsai.chat",
+
+    // Group 5: The Operations Team (itsaiagent.solutions)
+    m: "itsaiagent.solutions",
+    n: "itsaiagent.solutions",
+    o: "itsaiagent.solutions",
+
+    // Group 6: The Modular Team (itsaiagents.online)
+    p: "itsaiagents.online",
+    q: "itsaiagents.online",
+    r: "itsaiagents.online",
+
+    // Group 7: The Knowledge Team (itsai.wiki)
+    s: "itsai.wiki",
+    t: "itsai.wiki",
+
+    // Group 8: The Personal Team (itsai.life)
+    u: "itsai.life",
+    v: "itsai.life",
+
+    // Group 9: The Elite Team (itsai.vip)
+    w: "itsai.vip",
+    x: "itsai.vip",
+    y: "itsai.vip",
+    z: "itsai.vip",
+  };
+
+  return domains[appId] || "itsai.services";
+};
+
+// Agent name mapping for URLs
+const getAgentNameForApp = (appId: string): string => {
+  const names: Record<string, string> = {
+    a: "angle",
+    b: "blueprint",
+    c: "calculator",
+    d: "draft",
+    e: "envoy",
+    f: "flow",
+    g: "grind",
+    h: "helper",
+    i: "interpreter",
+    j: "jam",
+    k: "kin",
+    l: "listen",
+    m: "map",
+    n: "nerve",
+    o: "optimize",
+    p: "polish",
+    q: "quick",
+    r: "research",
+    s: "scroll",
+    t: "timeline",
+    u: "unfold",
+    v: "velocity",
+    w: "warp",
+    x: "x-ray",
+    y: "yield",
+    z: "zone",
+  };
+
+  return names[appId] || appId;
+};
 
 const AGENT_APPS = [
-  { id: 'a', name: 'Angle', title: 'Foundation', icon: A },
-  { id: 'b', name: 'Blueprint', title: 'Strategy', icon: B },
-  { id: 'c', name: 'Calculator', title: 'Economics', icon: C },
-  { id: 'd', name: 'Draft', title: 'Copywriting', icon: D },
-  { id: 'e', name: 'Envoy', title: 'Outreach', icon: E },
-  { id: 'f', name: 'Flo', title: 'Content', icon: F },
-  { id: 'g', name: 'Grind', title: 'Operations', icon: G },
-  { id: 'h', name: 'Helper', title: 'Assets', icon: H },
-  { id: 'i', name: 'Interpreter', title: 'Structure', icon: I },
-  { id: 'j', name: 'Jam', title: 'Conversation', icon: J },
-  { id: 'k', name: 'Kin', title: 'In-Touch', icon: K },
-  { id: 'l', name: 'Listen', title: 'Insight', icon: L },
-  { id: 'm', name: 'Map', title: 'Workflow', icon: M },
-  { id: 'n', name: 'Nerve', title: 'Nerve', icon: N },
-  { id: 'o', name: 'Optimize', title: 'Bottleneck', icon: O},
-  { id: 'p', name: 'Polish', title: 'Refinement', icon: P },
-  { id: 'q', name: 'Quick', title: 'Momentum', icon: Q },
-  { id: 'r', name: 'Research', title: 'Market', icon: R },
-  { id: 's', name: 'Scroll', title: 'Knowledge', icon: S },
-  { id: 't', name: 'Timeline', title: 'History', icon: T },
-  { id: 'u', name: 'Unfold', title: 'Tasks', icon: U },
-  { id: 'v', name: 'Velocity', title: 'Performance', icon: V },
-  { id: 'w', name: 'Warp', title: 'Power-User', icon: W },
-  { id: 'x', name: 'X-Ray', title: 'Advanced', icon: X },
-  { id: 'y', name: 'Yield', title: 'Profitability', icon: Y },
-  { id: 'z', name: 'Zone', title: 'Experimental', icon: Z },
+  { id: "a", name: "Angle", title: "Foundation", icon: A },
+  { id: "b", name: "Blueprint", title: "Strategy", icon: B },
+  { id: "c", name: "Calculator", title: "Economics", icon: C },
+  { id: "d", name: "Draft", title: "Copywriting", icon: D },
+  { id: "e", name: "Envoy", title: "Outreach", icon: E },
+  { id: "f", name: "Flow", title: "Content", icon: F },
+  { id: "g", name: "Grind", title: "Operations", icon: G },
+  { id: "h", name: "Helper", title: "Assets", icon: H },
+  { id: "i", name: "Interpreter", title: "Structure", icon: I },
+  { id: "j", name: "Jam", title: "Conversation", icon: J },
+  { id: "k", name: "Kin", title: "In-Touch", icon: K },
+  { id: "l", name: "Listen", title: "Insight", icon: L },
+  { id: "m", name: "Map", title: "Workflow", icon: M },
+  { id: "n", name: "Nerve", title: "Nerve", icon: N },
+  { id: "o", name: "Optimize", title: "Bottleneck", icon: O },
+  { id: "p", name: "Polish", title: "Refinement", icon: P },
+  { id: "q", name: "Quick", title: "Momentum", icon: Q },
+  { id: "r", name: "Research", title: "Market", icon: R },
+  { id: "s", name: "Scroll", title: "Knowledge", icon: S },
+  { id: "t", name: "Timeline", title: "History", icon: T },
+  { id: "u", name: "Unfold", title: "Tasks", icon: U },
+  { id: "v", name: "Velocity", title: "Performance", icon: V },
+  { id: "w", name: "Warp", title: "Power-User", icon: W },
+  { id: "x", name: "X-Ray", title: "Advanced", icon: X },
+  { id: "y", name: "Yield", title: "Profitability", icon: Y },
+  { id: "z", name: "Zone", title: "Experimental", icon: Z },
 ];
 
 const AppStore: React.FC = () => {
@@ -99,8 +264,9 @@ const AppStore: React.FC = () => {
 
   return (
     <div className="app-store-content h-full overflow-y-auto relative z-10">
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           .app-store-content {
             background: black !important;
             backdrop-filter: none !important;
@@ -114,14 +280,17 @@ const AppStore: React.FC = () => {
           .glow-card::after {
             display: none !important;
           }
-        `
-      }} />
+        `,
+        }}
+      />
       <div className="p-6">
         <header className="flex items-center gap-4 mb-6">
           <ShoppingCart size={32} className="text-blue-400" />
           <div>
             <h1 className="text-2xl font-bold text-white">App Store</h1>
-            <p className="text-gray-400 text-sm">Discover and launch agent applications.</p>
+            <p className="text-gray-400 text-sm">
+              Discover and launch agent applications.
+            </p>
           </div>
         </header>
 
@@ -139,7 +308,11 @@ const AppStore: React.FC = () => {
               <Icon
                 key={app.id}
                 app={appDef}
-                onDoubleClick={() => window.open(`https://${app.id}.itsai.services`, '_blank')}
+                onDoubleClick={() => {
+                  const domain = getDomainForApp(app.id);
+                  const agentName = getAgentNameForApp(app.id);
+                  window.open(`https://${agentName}.${domain}`, "_blank");
+                }}
               />
             );
           })}

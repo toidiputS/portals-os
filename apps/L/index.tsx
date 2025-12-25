@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const L_URL = "https://l.itsai.chat";
+const L_URL = "https://listen.itsai.chat";
 
 const LEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const LEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={L_URL}
-        className="flex-1 w-full border-0"
-        title="L"
-      />
+      <iframe src={L_URL} className="flex-1 w-full border-0" title="L" />
     </div>
   );
 };

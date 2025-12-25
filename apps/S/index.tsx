@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const S_URL = "https://s.itsai.wiki";
+const S_URL = "https://scroll.itsai.wiki";
 
 const SEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const SEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={S_URL}
-        className="flex-1 w-full border-0"
-        title="S"
-      />
+      <iframe src={S_URL} className="flex-1 w-full border-0" title="S" />
     </div>
   );
 };

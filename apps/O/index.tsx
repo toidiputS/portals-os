@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const O_URL = "https://o.itsaiagent.solutions";
+const O_URL = "https://optimize.itsaiagent.solutions";
 
 const OEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const OEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={O_URL}
-        className="flex-1 w-full border-0"
-        title="O"
-      />
+      <iframe src={O_URL} className="flex-1 w-full border-0" title="O" />
     </div>
   );
 };

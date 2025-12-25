@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const D_URL = "https://d.itsai.online";
+const D_URL = "https://draft.itsai.online";
 
 const DEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const DEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={D_URL}
-        className="flex-1 w-full border-0"
-        title="D"
-      />
+      <iframe src={D_URL} className="flex-1 w-full border-0" title="D" />
     </div>
   );
 };

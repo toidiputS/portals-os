@@ -9,6 +9,34 @@ import Taskbar from "./Taskbar";
 import StartMenu from "./StartMenu";
 import { getAllApps } from "../apps.config";
 import { PORTAL_BACKGROUNDS } from "../constants";
+import {
+  A,
+  B,
+  C,
+  D,
+  E,
+  F,
+  G,
+  H,
+  I,
+  J,
+  K,
+  L,
+  M,
+  N,
+  O,
+  P,
+  Q,
+  R,
+  S,
+  T,
+  U,
+  V,
+  W,
+  X,
+  Y,
+  Z,
+} from "./icons";
 
 interface ContextMenuState {
   visible: boolean;
@@ -65,11 +93,11 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
   }, [bgIndex, setWallpaper, wallpaper]);
 
-  // Auto-cycle background every 30 seconds
+  // Auto-cycle background every 60 seconds (reduced frequency for performance)
   useEffect(() => {
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % PORTAL_BACKGROUNDS.length);
-    }, 30000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
@@ -77,8 +105,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const nextWallpaper = () => {
     setBgIndex((prev) => (prev + 1) % PORTAL_BACKGROUNDS.length);
   };
-
-
 
   // Disabled parallax effect to keep sphere in fixed position
   // useEffect(() => {
@@ -108,7 +134,7 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Handle window resize (including zoom) to keep sphere centered
   useEffect(() => {
     const handleResize = () => {
-      setSphereKey(prev => prev + 1);
+      setSphereKey((prev) => prev + 1);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -136,29 +162,191 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {isMatrixEffectActive && <MatrixRain />}
       <div
         ref={wallpaperRef}
-        className={`wallpaper absolute inset-5 bg-cover bg-center transition-transform duration-300 ease-out ${isMatrixEffectActive ? "matrix-effect" : ""
-          }`}
+        className={`wallpaper absolute inset-5 bg-cover bg-center transition-transform duration-300 ease-out ${
+          isMatrixEffectActive ? "matrix-effect" : ""
+        }`}
       />
 
       <SphereImageGrid
         key={sphereKey}
         apps={(() => {
           const allApps = getAllApps(projectFolders);
+          // Filter out all alphabet apps (a-z) except "c" (calculator) - they will be replaced with agent icons
+          const coreApps = allApps.filter((app) => !["a", "b", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(app.id));
+
+          // Add all agent apps with glassmorphic icons (keeping Calculator C as original)
+          const agentApps = [
+            {
+              id: "a" as const,
+              name: "Angle",
+              icon: A,
+              description: "Audience Analysis Agent",
+            },
+            {
+              id: "b" as const,
+              name: "Blueprint",
+              icon: B,
+              description: "Blueprint Design Agent",
+            },
+            {
+              id: "d" as const,
+              name: "Draft",
+              icon: D,
+              description: "Content Drafting Agent",
+            },
+            {
+              id: "e" as const,
+              name: "Envoy",
+              icon: E,
+              description: "Outreach Communication Agent",
+            },
+            {
+              id: "f" as const,
+              name: "Flo",
+              icon: F,
+              description: "Content Flow Agent",
+            },
+            {
+              id: "g" as const,
+              name: "Grind",
+              icon: G,
+              description: "Operations Grind Agent",
+            },
+            {
+              id: "h" as const,
+              name: "Halo",
+              icon: H,
+              description: "Digital Halo Agent",
+            },
+            {
+              id: "i" as const,
+              name: "Insight",
+              icon: I,
+              description: "Analytics Insight Agent",
+            },
+            {
+              id: "j" as const,
+              name: "Judge",
+              icon: J,
+              description: "Legal Judge Agent",
+            },
+            {
+              id: "k" as const,
+              name: "Kite",
+              icon: K,
+              description: "Cloud Kite Agent",
+            },
+            {
+              id: "l" as const,
+              name: "Lumen",
+              icon: L,
+              description: "Life Lumen Agent",
+            },
+            {
+              id: "m" as const,
+              name: "Matrix",
+              icon: M,
+              description: "Markets Matrix Agent",
+            },
+            {
+              id: "n" as const,
+              name: "Nexus",
+              icon: N,
+              description: "Networks Nexus Agent",
+            },
+            {
+              id: "o" as const,
+              name: "Oracle",
+              icon: O,
+              description: "Oracle Agent",
+            },
+            {
+              id: "p" as const,
+              name: "Pixel",
+              icon: P,
+              description: "Photo Pixel Agent",
+            },
+            {
+              id: "q" as const,
+              name: "Quest",
+              icon: Q,
+              description: "Quest Agent",
+            },
+            {
+              id: "r" as const,
+              name: "Rise",
+              icon: R,
+              description: "Robots Rise Agent",
+            },
+            {
+              id: "s" as const,
+              name: "Spark",
+              icon: S,
+              description: "Systems Spark Agent",
+            },
+            {
+              id: "t" as const,
+              name: "Thread",
+              icon: T,
+              description: "Threads Agent",
+            },
+            {
+              id: "u" as const,
+              name: "Unity",
+              icon: U,
+              description: "Unified Unity Agent",
+            },
+            {
+              id: "v" as const,
+              name: "Vector",
+              icon: V,
+              description: "Video Vector Agent",
+            },
+            {
+              id: "w" as const,
+              name: "Wave",
+              icon: W,
+              description: "Worlds Wave Agent",
+            },
+            {
+              id: "x" as const,
+              name: "Xenon",
+              icon: X,
+              description: "Experiments Xenon Agent",
+            },
+            {
+              id: "y" as const,
+              name: "Yonder",
+              icon: Y,
+              description: "Your Yonder Agent",
+            },
+            {
+              id: "z" as const,
+              name: "Zenith",
+              icon: Z,
+              description: "Zone Zenith Agent",
+            },
+          ];
+
+          // Combine core apps with agent apps
+          const combinedApps = [...coreApps, ...agentApps];
+
           // Put Oracle first for center positioning
-          const oracleIndex = allApps.findIndex(app => app.id === 'oracle');
+          const oracleIndex = combinedApps.findIndex(
+            (app) => app.id === "oracle"
+          );
           if (oracleIndex > 0) {
-            const oracle = allApps.splice(oracleIndex, 1)[0];
-            allApps.unshift(oracle);
+            const oracle = combinedApps.splice(oracleIndex, 1)[0];
+            combinedApps.unshift(oracle);
           }
-          return allApps;
+
+          return combinedApps;
         })()}
         onAppClick={openWindow}
         containerSize={Math.min(window.innerWidth, window.innerHeight) * 0.8}
         sphereRadius={Math.min(window.innerWidth, window.innerHeight) * 0.25}
         autoRotate={true}
       />
-
-
 
       {children}
 
@@ -173,10 +361,11 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
       {/* AI Presence Indicator */}
       <div
-        className={`ai-indicator fixed top-4 right-4 h-6 w-6 rounded-full bg-[hsl(var(--accent-hsl))] transition-all duration-500 ease-in-out z-30 ${gemini.isLoading
-          ? "opacity-100 scale-100 loading"
-          : "opacity-0 scale-0"
-          }`}
+        className={`ai-indicator fixed top-4 right-4 h-6 w-6 rounded-full bg-[hsl(var(--accent-hsl))] transition-all duration-500 ease-in-out z-30 ${
+          gemini.isLoading
+            ? "opacity-100 scale-100 loading"
+            : "opacity-0 scale-0"
+        }`}
       />
 
       <StartMenu />

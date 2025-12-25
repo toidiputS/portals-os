@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { LaunchIconWrapper } from "./LaunchIconWrapper";
 import "./SphereImageGrid.css";
 import { AppId } from "../types";
+import { performanceMonitor, throttle } from "../lib/performanceUtils";
 
 /**
  * SphereImageGrid - Interactive 3D App Icon Sphere
@@ -124,13 +125,13 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   apps = [],
   onAppClick,
   containerSize = 500,
-  sphereRadius = 300,
+  sphereRadius = 500,
   dragSensitivity = 0.5,
   momentumDecay = 0.95,
   maxRotationSpeed = 5,
   baseImageScale = 0.1,
-  hoverScale = 1.15,
-  perspective = 1000,
+  hoverScale = 2,
+  perspective = 300,
   autoRotate = true,
   autoRotateSpeed = 0.05,
   className = "",
@@ -226,6 +227,9 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   }, [apps, actualSphereRadius]);
 
   const calculateWorldPositions = useCallback((): WorldPosition[] => {
+    // Early return if no positions
+    if (imagePositions.length === 0) return [];
+
     const positions = imagePositions.map((pos, index) => {
       const thetaRad = SPHERE_MATH.degreesToRadians(pos.theta);
       const phiRad = SPHERE_MATH.degreesToRadians(pos.phi);
@@ -283,7 +287,9 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       };
     });
 
+    // Simplified collision detection - only check nearby items
     const adjustedPositions = [...positions];
+    const visiblePositions = positions.filter(pos => pos.isVisible);
 
     for (let i = 0; i < adjustedPositions.length; i++) {
       const pos = adjustedPositions[i];
@@ -292,17 +298,21 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       let adjustedScale = pos.scale;
       const imageSize = baseImageSize * adjustedScale;
 
-      for (let j = 0; j < adjustedPositions.length; j++) {
-        if (i === j) continue;
+      // Only check collision with nearby visible items (optimization)
+      for (let j = 0; j < visiblePositions.length; j++) {
+        const other = visiblePositions[j];
+        if (pos.originalIndex === other.originalIndex) continue;
 
-        const other = adjustedPositions[j];
-        if (!other.isVisible) continue;
-
-        const otherSize = baseImageSize * other.scale;
-
+        // Skip if too far apart to collide
         const dx = pos.x - other.x;
         const dy = pos.y - other.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const distanceSquared = dx * dx + dy * dy;
+        const maxCheckDistance = (imageSize + baseImageSize * other.scale) / 2 + 50;
+        
+        if (distanceSquared > maxCheckDistance * maxCheckDistance) continue;
+
+        const otherSize = baseImageSize * other.scale;
+        const distance = Math.sqrt(distanceSquared);
 
         const minDistance = (imageSize + otherSize) / 2 + 25;
 
@@ -382,6 +392,11 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
     autoRotateSpeed,
   ]);
 
+  // Throttled version of updateMomentum to improve performance
+  const throttledUpdateMomentum = useCallback(() => {
+    updateMomentum();
+  }, [updateMomentum]);
+
   // ==========================================
   // EVENT HANDLERS
   // ==========================================
@@ -394,7 +409,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   }, []);
 
   const handleMouseMove = useCallback(
-    (e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
+    throttle((e: MouseEvent | React.MouseEvent<HTMLDivElement>) => {
       if (!isDragging) return;
 
       const deltaX = e.clientX - lastMousePos.current.x;
@@ -421,7 +436,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       });
 
       lastMousePos.current = { x: e.clientX, y: e.clientY };
-    },
+    }, 16), // ~60fps throttling
     [isDragging, dragSensitivity, clampRotationSpeed]
   );
 
@@ -492,9 +507,26 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   }, [generateSpherePositions]);
 
   useEffect(() => {
-    const animate = () => {
-      updateMomentum();
-      animationFrame.current = requestAnimationFrame(animate);
+    let lastTime = 0;
+    const targetFPS = 60;
+    const frameInterval = 1000 / targetFPS;
+
+    const animate = (currentTime: number) => {
+      // Only animate if there's movement or auto-rotation is active
+      const hasVelocity = Math.abs(velocity.x) > 0.01 || Math.abs(velocity.y) > 0.01;
+      const shouldAnimate = autoRotate || hasVelocity || isDragging;
+
+      if (shouldAnimate && currentTime - lastTime >= frameInterval) {
+        updateMomentum();
+        lastTime = currentTime;
+      }
+
+      // Continue animation loop if needed, otherwise stop
+      if (shouldAnimate) {
+        animationFrame.current = requestAnimationFrame(animate);
+      } else {
+        animationFrame.current = null;
+      }
     };
 
     if (isMounted) {
@@ -506,7 +538,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         cancelAnimationFrame(animationFrame.current);
       }
     };
-  }, [isMounted, updateMomentum]);
+  }, [isMounted, updateMomentum, autoRotate, velocity.x, velocity.y, isDragging]);
 
   useEffect(() => {
     if (!isMounted) return;

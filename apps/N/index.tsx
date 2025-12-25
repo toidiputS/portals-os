@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const N_URL = "https://n.itsaiagent.solutions";
+const N_URL = "https://nerve.itsaiagent.solutions";
 
 const NEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const NEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={N_URL}
-        className="flex-1 w-full border-0"
-        title="N"
-      />
+      <iframe src={N_URL} className="flex-1 w-full border-0" title="N" />
     </div>
   );
 };

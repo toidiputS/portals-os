@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface SIconProps {
   className?: string;
@@ -7,22 +7,21 @@ interface SIconProps {
 }
 
 export const SIcon: React.FC<SIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon s-icon ${className}`}
+      className={`holo-s-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientS" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="0.8" />
-          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.8" />
+        <linearGradient id="gradientS" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ff9800" stopOpacity="1" />
+          <stop offset="100%" stopColor="#ff9800" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowS">
@@ -33,73 +32,229 @@ export const SIcon: React.FC<SIconProps> = ({
           </feMerge>
         </filter>
 
-        {/* Clip path to keep scanlines inside the S shape */}
-        <clipPath id="clipS">
-             <path d="M 48 16 H 22 C 18 16 16 18 16 22 V 26 C 16 30 18 32 22 32 H 42 C 46 32 48 34 48 38 V 42 C 48 46 46 48 42 48 H 16" />
-        </clipPath>
+        <pattern
+          id="gearPatternS"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(255, 152, 0, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(255, 152, 0, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- BACKGROUND GLOW --- */}
-      <circle cx="32" cy="32" r="25" fill="url(#holoGradientS)" opacity="0.05">
-        <animate attributeName="opacity" values="0.05;0.1;0.05" dur="3s" repeatCount="indefinite" />
-      </circle>
-
-      {/* --- MAIN STRUCTURE (The S) --- */}
-      {/* Defined as a techy, boxy S with rounded corners */}
-      <path
-        id="sPath"
-        className="holo-s-structure"
-        d="M 48 16 H 22 C 18 16 16 18 16 22 V 26 C 16 30 18 32 22 32 H 42 C 46 32 48 34 48 38 V 42 C 48 46 46 48 42 48 H 16"
-        stroke="url(#holoGradientS)"
-        strokeWidth="4"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        filter="url(#glowS)"
-      />
-
-      {/* --- INTERIOR SCANLINES (Clipped to S) --- */}
-      <g clipPath="url(#clipS)" opacity="0.5">
-         <line x1="0" y1="0" x2="64" y2="0" stroke="#fff" strokeWidth="2" className="s-scanline" />
-      </g>
-
-      {/* --- ANIMATED DATA PACKET (Travels the path) --- */}
-      <circle r="3" fill="#fff" filter="url(#glowS)">
-        <animateMotion dur="3s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1">
-          <mpath href="#sPath" />
-        </animateMotion>
-        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="3s" repeatCount="indefinite" />
-      </circle>
-
-      {/* --- DECORATIVE NODES --- */}
-      {/* Start Point */}
-      <circle cx="48" cy="16" r="2" fill="#00f3ff" className="s-node" />
-      {/* End Point */}
-      <circle cx="16" cy="48" r="2" fill="#00f3ff" className="s-node" />
-
-      {/* Corner Nodes */}
-      <circle cx="16" cy="22" r="1.5" fill="#00f3ff" opacity="0.6" />
-      <circle cx="48" cy="42" r="1.5" fill="#00f3ff" opacity="0.6" />
-
-      {/* --- GLITCH / GHOST EFFECT --- */}
-      <path
-        className="holo-s-glitch"
-        d="M 48 16 H 22 C 18 16 16 18 16 22 V 26 C 16 30 18 32 22 32 H 42 C 46 32 48 34 48 38 V 42 C 48 46 46 48 42 48 H 16"
-        stroke="#fff"
+      <circle
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
         strokeWidth="1"
-        fill="none"
-        opacity="0.3"
+        className="glass-bg"
       />
 
-      {/* --- ORBITING PARTICLES --- */}
-      {/* These rotate around the center */}
-      <g className="s-orbit">
-         <circle cx="32" cy="10" r="1" fill="#00f3ff" opacity="0.8" />
-         <circle cx="32" cy="54" r="1" fill="#00f3ff" opacity="0.8" />
-         <circle cx="10" cy="32" r="1" fill="#00f3ff" opacity="0.8" />
-         <circle cx="54" cy="32" r="1" fill="#00f3ff" opacity="0.8" />
-      </g>
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternS)" opacity="0.4" />
 
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#ff9800"
+        filter="url(#glowS)"
+        className="agent-letter"
+      >
+        S
+      </text>
+
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Spark
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.systems
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
+        fill="none"
+        stroke="rgba(255, 152, 0, 0.6)"
+        strokeWidth="2"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="21s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(255, 152, 0, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="17s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#ff9800"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="21s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#ff9800"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="21s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#ff9800"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="21s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#ff9800"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="21s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#ff9800"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#ff9800"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#ff9800"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#ff9800"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
+      />
     </svg>
   );
 };

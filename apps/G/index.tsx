@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const G_URL = "https://g.itsai.help";
+const G_URL = "https://grind.itsai.help";
 
 const GEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const GEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={G_URL}
-        className="flex-1 w-full border-0"
-        title="G"
-      />
+      <iframe src={G_URL} className="flex-1 w-full border-0" title="G" />
     </div>
   );
 };

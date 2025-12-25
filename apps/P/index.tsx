@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const P_URL = "https://p.itsai.life";
+const P_URL = "https://polish.itsaiagents.online";
 
 const PEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const PEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={P_URL}
-        className="flex-1 w-full border-0"
-        title="P"
-      />
+      <iframe src={P_URL} className="flex-1 w-full border-0" title="P" />
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface NIconProps {
   className?: string;
@@ -7,117 +7,254 @@ interface NIconProps {
 }
 
 export const NIcon: React.FC<NIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon neural-icon ${className}`}
+      className={`holo-n-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientN" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.2" />
+        <linearGradient id="gradientN" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2196f3" stopOpacity="1" />
+          <stop offset="100%" stopColor="#2196f3" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowN">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
 
-        {/* Clip path for the vertical towers */}
-        <clipPath id="towerClip">
-           <rect x="12" y="10" width="10" height="44" />
-           <rect x="42" y="10" width="10" height="44" />
-        </clipPath>
+        <pattern
+          id="gearPatternN"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(33, 150, 243, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(33, 150, 243, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- BACKGROUND NETWORK MESH --- */}
-      <path
-        d="M 17 10 L 47 54 M 17 30 L 47 30"
-        stroke="#00f3ff"
-        strokeWidth="0.5"
-        opacity="0.1"
-        strokeDasharray="2 4"
-      />
-
-      {/* --- VERTICAL TOWERS (The Legs) --- */}
-      <g filter="url(#glowN)">
-        {/* Left Leg */}
-        <path
-          d="M 12 10 H 22 V 54 H 12 V 10"
-          stroke="url(#holoGradientN)" strokeWidth="2" fill="none"
-        />
-        {/* Right Leg */}
-        <path
-          d="M 42 10 H 52 V 54 H 42 V 10"
-          stroke="url(#holoGradientN)" strokeWidth="2" fill="none"
-        />
-      </g>
-
-      {/* --- INTERNAL TOWER DATA (Scanners) --- */}
-      <g clipPath="url(#towerClip)">
-        <rect x="12" y="10" width="10" height="2" fill="#fff" opacity="0.5" className="n-scanner scan-left" />
-        <rect x="42" y="10" width="10" height="2" fill="#fff" opacity="0.5" className="n-scanner scan-right" />
-      </g>
-
-      {/* --- DIAGONAL SYNAPSE (The Connection) --- */}
-      <path
-        id="nSynapsePath"
-        d="M 17 12 L 47 52"
-        stroke="#00f3ff"
-        strokeWidth="3"
-        fill="none"
-        opacity="0.3"
-      />
-
-      {/* --- FIRING NEURONS (Particles on Diagonal) --- */}
-      {/* Primary Pulse */}
-      <circle r="3" fill="#fff" filter="url(#glowN)" className="n-neuron primary">
-        <animateMotion
-          dur="2s"
-          repeatCount="indefinite"
-          path="M 17 12 L 47 52"
-          keyPoints="0;1"
-          keyTimes="0;1"
-          calcMode="linear"
-        />
-        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="2s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Secondary Pulse (Echo) */}
-      <circle r="1.5" fill="#00f3ff" className="n-neuron secondary">
-         <animateMotion
-          dur="2s"
-          begin="0.5s"
-          repeatCount="indefinite"
-          path="M 17 12 L 47 52"
-          calcMode="linear"
-        />
-        <animate attributeName="opacity" values="0;0.8;0" dur="2s" begin="0.5s" repeatCount="indefinite" />
-      </circle>
-
-      {/* --- CONNECTION NODES --- */}
-      <rect x="15" y="8" width="4" height="4" fill="#fff" className="n-node top-left" />
-      <rect x="45" y="52" width="4" height="4" fill="#fff" className="n-node bot-right" />
-
-      {/* --- GLITCH LAYER --- */}
-      <path
-        className="n-glitch"
-        d="M 12 10 V 54 M 42 10 V 54 M 17 12 L 47 52"
-        stroke="#fff"
+      <circle
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
         strokeWidth="1"
-        fill="none"
-        opacity="0.4"
+        className="glass-bg"
       />
 
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternN)" opacity="0.4" />
+
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#2196f3"
+        filter="url(#glowN)"
+        className="agent-letter"
+      >
+        N
+      </text>
+
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Nexus
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.networks
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
+        fill="none"
+        stroke="rgba(33, 150, 243, 0.6)"
+        strokeWidth="2"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="16s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(33, 150, 243, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="12s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="16s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="16s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="16s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#2196f3"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="16s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="3.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="3.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="3.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#2196f3"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="3.4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
+      />
     </svg>
   );
 };

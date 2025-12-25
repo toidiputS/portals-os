@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface CIconProps {
   className?: string;
@@ -7,44 +7,24 @@ interface CIconProps {
 }
 
 export const CIcon: React.FC<CIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon calculator-icon ${className}`}
+      className={`holo-c-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientCalc" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="1" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.4" />
+        <linearGradient id="gradientC" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#32cd32" stopOpacity="1" />
+          <stop offset="100%" stopColor="#32cd32" stopOpacity="0.3" />
         </linearGradient>
 
-        {/* Green gradient for profit/growth */}
-        <linearGradient id="profitGradient" x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#00ff88" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#00ff88" stopOpacity="1" />
-        </linearGradient>
-
-        {/* Gold gradient for currency/value */}
-        <linearGradient id="currencyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#ffd700" stopOpacity="1" />
-          <stop offset="100%" stopColor="#ffaa00" stopOpacity="0.8" />
-        </linearGradient>
-
-        <filter id="glowCalc">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-
-        <filter id="glowGreen">
+        <filter id="glowC">
           <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
@@ -52,210 +32,313 @@ export const CIcon: React.FC<CIconProps> = ({
           </feMerge>
         </filter>
 
-        <filter id="glowGold">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
+        <filter id="shadowC">
+          <feDropShadow dx="2" dy="2" stdDeviation="3" floodColor="#000000" floodOpacity="0.4"/>
         </filter>
 
-        {/* Clip for calculator screen */}
-        <clipPath id="screenClip">
-          <rect x="10" y="12" width="28" height="12" rx="1" />
-        </clipPath>
+        <pattern
+          id="screenPatternC"
+          x="0"
+          y="0"
+          width="4"
+          height="4"
+          patternUnits="userSpaceOnUse"
+        >
+          <rect x="0" y="0" width="2" height="2" fill="rgba(50, 205, 50, 0.1)" />
+        </pattern>
       </defs>
 
-      {/* --- BACKGROUND GRID (Financial Graph Paper) --- */}
-      <g className="calc-grid" opacity="0.15">
-        <line x1="0" y1="16" x2="64" y2="16" stroke="#00f3ff" strokeWidth="0.5" />
-        <line x1="0" y1="32" x2="64" y2="32" stroke="#00f3ff" strokeWidth="0.5" />
-        <line x1="0" y1="48" x2="64" y2="48" stroke="#00f3ff" strokeWidth="0.5" />
-        <line x1="16" y1="0" x2="16" y2="64" stroke="#00f3ff" strokeWidth="0.5" />
-        <line x1="32" y1="0" x2="32" y2="64" stroke="#00f3ff" strokeWidth="0.5" />
-        <line x1="48" y1="0" x2="48" y2="64" stroke="#00f3ff" strokeWidth="0.5" />
-      </g>
+      {/* Calculator Body - 3D Effect */}
+      <rect
+        x="14"
+        y="14"
+        width="36"
+        height="36"
+        rx="6"
+        fill="rgba(255, 255, 255, 0.9)"
+        stroke="rgba(200, 200, 200, 0.8)"
+        strokeWidth="1"
+        className="calc-body"
+        filter="url(#shadowC)"
+      />
+      
+      {/* Calculator Screen - 3D Effect */}
+      <rect
+        x="18"
+        y="18"
+        width="28"
+        height="12"
+        rx="3"
+        fill="rgba(0, 0, 0, 0.8)"
+        stroke="rgba(50, 205, 50, 0.6)"
+        strokeWidth="1"
+        className="calc-screen"
+      />
 
-      {/* --- CALCULATOR BODY --- */}
-      <g className="calc-body">
-        {/* Main Housing */}
+      {/* Screen Content */}
+      <rect
+        x="20"
+        y="20"
+        width="24"
+        height="8"
+        rx="2"
+        fill="url(#screenPatternC)"
+        stroke="rgba(50, 205, 50, 0.3)"
+        strokeWidth="0.5"
+        className="calc-display"
+      />
+
+      {/* Main Display Text */}
+      <text
+        x="32"
+        y="26"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="700"
+        fill="#32cd32"
+        filter="url(#glowC)"
+        className="calc-text"
+      >
+        123.45
+      </text>
+
+      {/* Letter C */}
+      <text
+        x="32"
+        y="38"
+        textAnchor="middle"
+        fontSize="16"
+        fontWeight="700"
+        fill="#32cd32"
+        filter="url(#glowC)"
+        className="agent-letter"
+      >
+        C
+      </text>
+
+      {/* Agent Name */}
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Calculator
+      </text>
+
+      {/* Domain */}
+      <text
+        x="32"
+        y="50"
+        textAnchor="middle"
+        fontSize="4"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.services
+      </text>
+
+      {/* 3D Button Grid */}
+      <g className="button-grid">
+        {/* Button 1 */}
         <rect
-          className="calc-housing"
-          x="6" y="8" width="36" height="48" rx="3"
-          fill="#001a1a"
-          stroke="url(#holoGradientCalc)"
-          strokeWidth="2"
-          filter="url(#glowCalc)"
-        />
-
-        {/* Display Screen */}
-        <rect
-          className="calc-screen"
-          x="10" y="12" width="28" height="12" rx="1"
-          fill="#000d0d"
-          stroke="#00f3ff"
-          strokeWidth="1"
-        />
-
-        {/* Screen Content (Numbers) */}
-        <g clipPath="url(#screenClip)">
-          <text
-            className="calc-display-text"
-            x="36" y="21"
-            textAnchor="end"
-            fontSize="8"
-            fill="#00ff88"
-            fontFamily="monospace"
-            fontWeight="bold"
-          >
-            $24,750
-          </text>
-
-          {/* Scanning Line */}
-          <line
-            className="calc-scan-line"
-            x1="10" y1="12"
-            x2="38" y2="12"
-            stroke="#00f3ff"
-            strokeWidth="1"
-            opacity="0.5"
+          x="20"
+          y="32"
+          width="6"
+          height="4"
+          rx="1"
+          fill="rgba(255, 255, 255, 0.9)"
+          stroke="rgba(200, 200, 200, 0.8)"
+          strokeWidth="0.5"
+          className="calc-button"
+          filter="url(#shadowC)"
+        >
+          <animate
+            attributeName="opacity"
+            values="0.7;0.9;0.7"
+            dur="2s"
+            repeatCount="indefinite"
           />
-        </g>
-
-        {/* Button Grid */}
-        <g className="calc-buttons">
-          {/* Row 1 */}
-          <rect x="10" y="28" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-1" />
-          <rect x="18" y="28" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-2" />
-          <rect x="26" y="28" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-3" />
-
-          {/* Row 2 */}
-          <rect x="10" y="35" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-4" />
-          <rect x="18" y="35" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-5" />
-          <rect x="26" y="35" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-6" />
-
-          {/* Row 3 */}
-          <rect x="10" y="42" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-7" />
-          <rect x="18" y="42" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-8" />
-          <rect x="26" y="42" width="6" height="5" rx="0.5" fill="#00f3ff" opacity="0.3" className="calc-btn btn-9" />
-
-          {/* Row 4 - Equals Button */}
-          <rect x="10" y="49" width="14" height="5" rx="0.5" fill="#00ff88" opacity="0.5" className="calc-btn btn-equals" />
-          <rect x="26" y="49" width="6" height="5" rx="0.5" fill="#ffd700" opacity="0.5" className="calc-btn btn-dollar" />
-
-          {/* Button Labels */}
-          <text x="13" y="32" fontSize="3" fill="#fff" opacity="0.8">7</text>
-          <text x="21" y="32" fontSize="3" fill="#fff" opacity="0.8">8</text>
-          <text x="29" y="32" fontSize="3" fill="#fff" opacity="0.8">9</text>
-          <text x="13" y="39" fontSize="3" fill="#fff" opacity="0.8">4</text>
-          <text x="21" y="39" fontSize="3" fill="#fff" opacity="0.8">5</text>
-          <text x="29" y="39" fontSize="3" fill="#fff" opacity="0.8">6</text>
-          <text x="13" y="46" fontSize="3" fill="#fff" opacity="0.8">1</text>
-          <text x="21" y="46" fontSize="3" fill="#fff" opacity="0.8">2</text>
-          <text x="29" y="46" fontSize="3" fill="#fff" opacity="0.8">3</text>
-          <text x="16" y="53" fontSize="4" fill="#001a1a" fontWeight="bold">=</text>
-          <text x="28" y="53" fontSize="4" fill="#001a1a" fontWeight="bold">$</text>
-        </g>
-      </g>
-
-      {/* --- PROFIT CHART (Right Side) --- */}
-      <g className="calc-chart" transform="translate(44, 8)">
-        {/* Chart Background */}
-        <rect x="0" y="0" width="18" height="32" fill="none" stroke="#00f3ff" strokeWidth="0.5" opacity="0.3" />
-
-        {/* Rising Bars */}
-        <rect x="2" y="24" width="3" height="8" fill="url(#profitGradient)" className="calc-bar bar-1" />
-        <rect x="7" y="18" width="3" height="14" fill="url(#profitGradient)" className="calc-bar bar-2" />
-        <rect x="12" y="10" width="3" height="22" fill="url(#profitGradient)" className="calc-bar bar-3" />
-
-        {/* Growth Arrow */}
-        <path
-          className="calc-growth-arrow"
-          d="M 3 26 L 8 18 L 13 8"
-          fill="none"
-          stroke="#00ff88"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          filter="url(#glowGreen)"
-        />
-        <polygon
-          className="calc-arrow-head"
-          points="13,4 16,8 13,8 10,8"
-          fill="#00ff88"
-          filter="url(#glowGreen)"
-        />
-
-        {/* Percentage Label */}
-        <text x="9" y="38" textAnchor="middle" fontSize="4" fill="#00ff88" className="calc-percent">+42%</text>
-      </g>
-
-      {/* --- CURRENCY FLOW (Floating Coins) --- */}
-      <g className="calc-currency">
-        <g className="calc-coin coin-1" transform="translate(48, 44)">
-          <circle r="4" fill="#001a1a" stroke="url(#currencyGradient)" strokeWidth="1.5" />
-          <text x="0" y="2" textAnchor="middle" fontSize="5" fill="#ffd700" fontWeight="bold">$</text>
-        </g>
-
-        <g className="calc-coin coin-2" transform="translate(56, 50)">
-          <circle r="3" fill="#001a1a" stroke="url(#currencyGradient)" strokeWidth="1" />
-          <text x="0" y="1.5" textAnchor="middle" fontSize="4" fill="#ffd700" fontWeight="bold">$</text>
-        </g>
-
-        <g className="calc-coin coin-3" transform="translate(52, 56)">
-          <circle r="2.5" fill="#001a1a" stroke="url(#currencyGradient)" strokeWidth="1" />
-          <text x="0" y="1" textAnchor="middle" fontSize="3" fill="#ffd700" fontWeight="bold">$</text>
-        </g>
-      </g>
-
-      {/* --- EQUATION ELEMENTS (Floating Math) --- */}
-      <g className="calc-equations" opacity="0.6">
-        <text className="calc-eq eq-1" x="46" y="6" fontSize="4" fill="#00f3ff">×</text>
-        <text className="calc-eq eq-2" x="54" y="10" fontSize="4" fill="#00f3ff">÷</text>
-        <text className="calc-eq eq-3" x="58" y="6" fontSize="4" fill="#00f3ff">%</text>
-        <text className="calc-eq eq-4" x="50" y="14" fontSize="3" fill="#00f3ff">π</text>
-      </g>
-
-      {/* --- SCALE INDICATOR (Bottom) --- */}
-      <g className="calc-scale" transform="translate(6, 58)">
-        {/* Scale Bar */}
-        <rect x="0" y="0" width="36" height="3" rx="1" fill="#001a1a" stroke="#00f3ff" strokeWidth="0.5" />
-
-        {/* Scale Fill (Profit Level) */}
-        <rect x="1" y="0.5" width="28" height="2" rx="0.5" fill="url(#profitGradient)" className="calc-scale-fill" />
-
-        {/* Scale Markers */}
-        <line x1="12" y1="-1" x2="12" y2="4" stroke="#00f3ff" strokeWidth="0.5" opacity="0.5" />
-        <line x1="24" y1="-1" x2="24" y2="4" stroke="#00f3ff" strokeWidth="0.5" opacity="0.5" />
-
-        {/* Labels */}
-        <text x="0" y="8" fontSize="3" fill="#00f3ff" opacity="0.7">COST</text>
-        <text x="36" y="8" textAnchor="end" fontSize="3" fill="#00ff88" opacity="0.7">PROFIT</text>
-      </g>
-
-      {/* --- DATA FLOW PARTICLES --- */}
-      <g className="calc-particles">
-        <circle className="calc-particle p-1" cx="42" cy="20" r="1" fill="#00f3ff" />
-        <circle className="calc-particle p-2" cx="44" cy="28" r="1" fill="#00ff88" />
-        <circle className="calc-particle p-3" cx="46" cy="36" r="1" fill="#ffd700" />
-      </g>
-
-      {/* --- OPTIMIZATION INDICATOR --- */}
-      <g className="calc-optimize" transform="translate(56, 28)">
-        <circle r="5" fill="#001a1a" stroke="#00ff88" strokeWidth="1" />
-        <path d="M -2 0 L 0 2 L 3 -2" stroke="#00ff88" strokeWidth="1.5" fill="none" className="calc-checkmark" />
-      </g>
-
-      {/* --- GLITCH LAYER --- */}
-      <g className="calc-glitch">
+        </rect>
+        
+        {/* Button 2 */}
         <rect
-          x="6" y="8" width="36" height="48" rx="3"
-          stroke="#fff"
-          strokeWidth="1"
-          fill="none"
-          opacity="0.4"
-        />
+          x="28"
+          y="32"
+          width="6"
+          height="4"
+          rx="1"
+          fill="rgba(255, 255, 255, 0.9)"
+          stroke="rgba(200, 200, 200, 0.8)"
+          strokeWidth="0.5"
+          className="calc-button"
+          filter="url(#shadowC)"
+        >
+          <animate
+            attributeName="opacity"
+            values="0.9;0.7;0.9"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+        </rect>
+        
+        {/* Button 3 */}
+        <rect
+          x="36"
+          y="32"
+          width="6"
+          height="4"
+          rx="1"
+          fill="rgba(255, 255, 255, 0.9)"
+          stroke="rgba(200, 200, 200, 0.8)"
+          strokeWidth="0.5"
+          className="calc-button"
+          filter="url(#shadowC)"
+        >
+          <animate
+            attributeName="opacity"
+            values="0.7;0.9;0.7"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+        </rect>
+        
+        {/* Button 4 - Function Button */}
+        <rect
+          x="44"
+          y="32"
+          width="4"
+          height="4"
+          rx="1"
+          fill="rgba(50, 205, 50, 0.8)"
+          stroke="rgba(50, 205, 50, 0.6)"
+          strokeWidth="0.5"
+          className="calc-button"
+          filter="url(#shadowC)"
+        >
+          <animate
+            attributeName="opacity"
+            values="0.8;1;0.8"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+        </rect>
       </g>
 
+      {/* Button Symbols */}
+      <text
+        x="23"
+        y="35"
+        textAnchor="middle"
+        fontSize="3"
+        fill="#333333"
+        className="calc-symbol"
+        fontWeight="600"
+      >
+        7
+      </text>
+      <text
+        x="31"
+        y="35"
+        textAnchor="middle"
+        fontSize="3"
+        fill="#333333"
+        className="calc-symbol"
+        fontWeight="600"
+      >
+        8
+      </text>
+      <text
+        x="39"
+        y="35"
+        textAnchor="middle"
+        fontSize="3"
+        fill="#333333"
+        className="calc-symbol"
+        fontWeight="600"
+      >
+        9
+      </text>
+      <text
+        x="46"
+        y="35"
+        textAnchor="middle"
+        fontSize="3"
+        fill="#32cd32"
+        className="calc-symbol"
+        fontWeight="700"
+      >
+        +
+      </text>
+
+      {/* 3D Glass Reflection */}
+      <ellipse
+        cx="20"
+        cy="20"
+        rx="12"
+        ry="4"
+        fill="rgba(255, 255, 255, 0.4)"
+        className="glass-reflection"
+      />
+
+      {/* Holographic Data Streams */}
+      <line
+        x1="16"
+        y1="28"
+        x2="48"
+        y2="28"
+        stroke="rgba(50, 205, 50, 0.4)"
+        strokeWidth="0.5"
+        className="data-stream"
+      >
+        <animate
+          attributeName="x1"
+          values="16;48;16"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="x2"
+          values="48;80;48"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </line>
+      <line
+        x1="16"
+        y1="32"
+        x2="48"
+        y2="32"
+        stroke="rgba(50, 205, 50, 0.4)"
+        strokeWidth="0.5"
+        className="data-stream"
+      >
+        <animate
+          attributeName="x1"
+          values="48;16;48"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+        <animate
+          attributeName="x2"
+          values="80;48;80"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </line>
+
+      {/* Floating Effect */}
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="0,0; 0,-2; 0,0"
+        dur="3s"
+        repeatCount="indefinite"
+      />
     </svg>
   );
 };

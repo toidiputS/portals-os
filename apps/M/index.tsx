@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const M_URL = "https://m.itsaiagent.solutions";
+const M_URL = "https://map.itsaiagent.solutions";
 
 const MEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const MEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={M_URL}
-        className="flex-1 w-full border-0"
-        title="M"
-      />
+      <iframe src={M_URL} className="flex-1 w-full border-0" title="M" />
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const C_URL = "https://c.itsai.services";
+const C_URL = "https://calculator.itsai.services";
 
 const CEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const CEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={C_URL}
-        className="flex-1 w-full border-0"
-        title="C"
-      />
+      <iframe src={C_URL} className="flex-1 w-full border-0" title="C" />
     </div>
   );
 };

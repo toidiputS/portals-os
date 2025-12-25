@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const K_URL = "https://k.itsai.chat";
+const K_URL = "https://kin.itsai.chat";
 
 const KEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const KEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={K_URL}
-        className="flex-1 w-full border-0"
-        title="K"
-      />
+      <iframe src={K_URL} className="flex-1 w-full border-0" title="K" />
     </div>
   );
 };

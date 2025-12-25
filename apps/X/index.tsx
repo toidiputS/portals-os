@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const X_URL = "https://x.itsai.wiki";
+const X_URL = "https://x-ray.itsai.vip";
 
 const XEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const XEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={X_URL}
-        className="flex-1 w-full border-0"
-        title="X"
-      />
+      <iframe src={X_URL} className="flex-1 w-full border-0" title="X" />
     </div>
   );
 };

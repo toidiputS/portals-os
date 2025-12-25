@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const W_URL = "https://w.itsai.help";
+const W_URL = "https://warp.itsai.vip";
 
 const WEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const WEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={W_URL}
-        className="flex-1 w-full border-0"
-        title="W"
-      />
+      <iframe src={W_URL} className="flex-1 w-full border-0" title="W" />
     </div>
   );
 };

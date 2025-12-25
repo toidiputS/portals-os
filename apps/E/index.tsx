@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const E_URL = "https://e.itsai.online";
+const E_URL = "https://envoy.itsai.online";
 
 const EEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const EEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={E_URL}
-        className="flex-1 w-full border-0"
-        title="E"
-      />
+      <iframe src={E_URL} className="flex-1 w-full border-0" title="E" />
     </div>
   );
 };

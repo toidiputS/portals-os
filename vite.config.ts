@@ -14,9 +14,16 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      plugins: [react()],
+      plugins: [react({
+        // Add JSX runtime to prevent polyfill mode issues
+        jsxRuntime: 'automatic',
+      })],
       define: {
         // API keys are not exposed to client-side code for security
+        // Disable console warnings in production
+        'process.env.NODE_ENV': JSON.stringify(mode),
+        // Define global constants to reduce runtime checks
+        global: 'globalThis',
       },
       resolve: {
         alias: {
@@ -25,6 +32,24 @@ export default defineConfig(({ mode }) => {
       },
       css: {
         postcss: './postcss.config.cjs',
-      }
+      },
+      // Performance optimizations
+      build: {
+        rollupOptions: {
+          output: {
+            manualChunks: {
+              vendor: ['react', 'react-dom'],
+              three: ['three', '@react-three/fiber', '@react-three/drei'],
+              ui: ['framer-motion', 'lucide-react'],
+            },
+          },
+        },
+        chunkSizeWarningLimit: 1000,
+      },
+      // Development optimizations
+      optimizeDeps: {
+        include: ['react', 'react-dom', 'framer-motion'],
+        exclude: ['@21st-extension/toolbar-react'],
+      },
     };
 });

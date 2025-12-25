@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface YIconProps {
   className?: string;
@@ -7,132 +7,254 @@ interface YIconProps {
 }
 
 export const YIcon: React.FC<YIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon yield-icon ${className}`}
+      className={`holo-y-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientY" x1="0%" y1="100%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="1" />
+        <linearGradient id="gradientY" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffeb3b" stopOpacity="1" />
+          <stop offset="100%" stopColor="#ffeb3b" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowY">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+
+        <pattern
+          id="gearPatternY"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(255, 235, 59, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(255, 235, 59, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- BACKGROUND GUIDES --- */}
-      <g opacity="0.15" stroke="#00f3ff" strokeWidth="0.5">
-        <line x1="32" y1="0" x2="32" y2="64" />
-        <line x1="10" y1="10" x2="32" y2="32" strokeDasharray="2 2" />
-        <line x1="54" y1="10" x2="32" y2="32" strokeDasharray="2 2" />
-      </g>
-
-      {/* --- THE Y STRUCTURE --- */}
-      {/* Left Arm */}
-      <path
-        id="yLeftArm"
-        className="y-arm arm-left"
-        d="M 10 10 L 32 34"
-        stroke="url(#holoGradientY)"
-        strokeWidth="3"
-        strokeLinecap="round"
-        fill="none"
-        filter="url(#glowY)"
-      />
-
-      {/* Right Arm */}
-      <path
-        id="yRightArm"
-        className="y-arm arm-right"
-        d="M 54 10 L 32 34"
-        stroke="url(#holoGradientY)"
-        strokeWidth="3"
-        strokeLinecap="round"
-        fill="none"
-        filter="url(#glowY)"
-      />
-
-      {/* Vertical Stem */}
-      <path
-        id="yStem"
-        className="y-stem"
-        d="M 32 34 V 56"
-        stroke="#00f3ff"
-        strokeWidth="4"
-        strokeLinecap="round"
-        fill="none"
-        filter="url(#glowY)"
-      />
-
-      {/* --- CENTER JUNCTION (The Splitter) --- */}
-      <circle cx="32" cy="34" r="5" fill="#001a1a" stroke="#00f3ff" strokeWidth="1.5" className="y-junction-ring" />
-      <circle cx="32" cy="34" r="2" fill="#fff" className="y-junction-core" filter="url(#glowY)" />
-
-      {/* --- DATA PACKET (Descends stem, splits at junction) --- */}
-      {/* Incoming Packet (travels up the stem to junction) */}
-      <rect x="30" y="0" width="4" height="6" rx="1" fill="#fff" filter="url(#glowY)" className="y-packet-in" />
-
-      {/* Split Packet Left (travels up left arm) */}
-      <circle r="2.5" fill="#fff" filter="url(#glowY)" className="y-packet-left">
-        <animateMotion
-          dur="3s"
-          repeatCount="indefinite"
-          path="M 32 34 L 10 10"
-          keyPoints="0;0;1;1"
-          keyTimes="0;0.5;0.85;1"
-          calcMode="linear"
-        />
-        <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.5;0.55;0.8;1" dur="3s" repeatCount="indefinite" />
-      </circle>
-
-      {/* Split Packet Right (travels up right arm) */}
-      <circle r="2.5" fill="#fff" filter="url(#glowY)" className="y-packet-right">
-        <animateMotion
-          dur="3s"
-          repeatCount="indefinite"
-          path="M 32 34 L 54 10"
-          keyPoints="0;0;1;1"
-          keyTimes="0;0.5;0.85;1"
-          calcMode="linear"
-        />
-        <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.5;0.55;0.8;1" dur="3s" repeatCount="indefinite" />
-      </circle>
-
-      {/* --- TERMINAL NODES --- */}
-      {/* Top Left */}
-      <path d="M 6 8 L 10 10 L 6 12" stroke="#00f3ff" strokeWidth="2" fill="none" />
-      <circle cx="10" cy="10" r="2" fill="#fff" className="y-node n-left" />
-
-      {/* Top Right */}
-      <path d="M 58 8 L 54 10 L 58 12" stroke="#00f3ff" strokeWidth="2" fill="none" />
-      <circle cx="54" cy="10" r="2" fill="#fff" className="y-node n-right" />
-
-      {/* Bottom */}
-      <rect x="28" y="56" width="8" height="4" fill="#00f3ff" className="y-node n-bottom" />
-
-      {/* --- GLITCH LAYER --- */}
-      <path
-        className="y-glitch"
-        d="M 10 10 L 32 34 L 54 10 M 32 34 V 56"
-        stroke="#fff"
+      <circle
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
         strokeWidth="1"
-        fill="none"
-        opacity="0.4"
+        className="glass-bg"
       />
 
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternY)" opacity="0.4" />
+
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#ffeb3b"
+        filter="url(#glowY)"
+        className="agent-letter"
+      >
+        Y
+      </text>
+
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Yonder
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.your
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
+        fill="none"
+        stroke="rgba(255, 235, 59, 0.6)"
+        strokeWidth="2"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="27s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(255, 235, 59, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="23s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="27s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="27s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="27s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="27s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="5.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="5.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="5.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#ffeb3b"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="5.6s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
+      />
     </svg>
   );
 };

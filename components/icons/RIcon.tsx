@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface RIconProps {
   className?: string;
@@ -7,124 +7,254 @@ interface RIconProps {
 }
 
 export const RIcon: React.FC<RIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon router-icon ${className}`}
+      className={`holo-r-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientR" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="1" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.4" />
+        <linearGradient id="gradientR" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#e91e63" stopOpacity="1" />
+          <stop offset="100%" stopColor="#e91e63" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowR">
-          <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+          <feGaussianBlur stdDeviation="2" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+
+        <pattern
+          id="gearPatternR"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(233, 30, 99, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(233, 30, 99, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- THE VERTICAL SPINE --- */}
-      <path
-        className="r-spine"
-        d="M 14 10 V 54"
-        stroke="url(#holoGradientR)"
-        strokeWidth="4"
-        strokeLinecap="round"
-        fill="none"
+      <circle
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
+        strokeWidth="1"
+        className="glass-bg"
+      />
+
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternR)" opacity="0.4" />
+
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#e91e63"
         filter="url(#glowR)"
-      />
+        className="agent-letter"
+      >
+        R
+      </text>
 
-      {/* --- THE LOOP (Bowl) --- */}
-      {/* Chamfered/Angular style */}
-      <path
-        id="rLoopPath"
-        className="r-loop"
-        d="M 14 10 H 36 L 48 20 V 28 L 36 38 H 14"
-        stroke="url(#holoGradientR)"
-        strokeWidth="3"
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Rise
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.robots
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
         fill="none"
-        strokeLinejoin="round"
-        filter="url(#glowR)"
-      />
-
-      {/* --- LOOP INTERIOR FILL --- */}
-      <path
-        d="M 14 10 H 36 L 48 20 V 28 L 36 38 H 14 Z"
-        fill="#00f3ff"
-        opacity="0.05"
-      />
-
-      {/* --- DATA FLOW AROUND THE LOOP --- */}
-      <circle r="2.5" fill="#fff" filter="url(#glowR)" className="r-loop-packet">
-        <animateMotion
-          dur="2.5s"
+        stroke="rgba(233, 30, 99, 0.6)"
+        strokeWidth="2"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="20s"
           repeatCount="indefinite"
-          path="M 14 10 H 36 L 48 20 V 28 L 36 38 H 14"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(233, 30, 99, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="16s"
+          repeatCount="indefinite"
         />
       </circle>
 
-      {/* --- THE KICK LEG (Output Channel) --- */}
-      <path
-        id="rLegPath"
-        className="r-leg"
-        d="M 28 38 L 50 58"
-        stroke="#00f3ff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        fill="none"
-        filter="url(#glowR)"
-      />
-
-      {/* --- ESCAPING PARTICLE (Down the leg) --- */}
-      <circle r="2" fill="#fff" filter="url(#glowR)" className="r-leg-packet">
-        <animateMotion
-          dur="2.5s"
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#e91e63"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="20s"
           repeatCount="indefinite"
-          path="M 28 38 L 50 58"
-          keyPoints="0;0;1;1"
-          keyTimes="0;0.55;0.9;1"
-          calcMode="linear"
         />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#e91e63"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="20s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#e91e63"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="20s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#e91e63"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="20s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+
+      <circle
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#e91e63"
+        opacity="0.8"
+        className="process-indicator"
+      >
         <animate
           attributeName="opacity"
-          values="0;0;1;1;0"
-          keyTimes="0;0.55;0.6;0.85;1"
-          dur="2.5s"
+          values="0.4;1;0.4"
+          dur="4.2s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#e91e63"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4.2s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#e91e63"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4.2s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#e91e63"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4.2s"
           repeatCount="indefinite"
         />
       </circle>
 
-      {/* --- JUNCTION NODE (Spine & Leg Meet) --- */}
-      <circle cx="28" cy="38" r="3" fill="#001a1a" stroke="#00f3ff" strokeWidth="1.5" />
-      <circle cx="28" cy="38" r="1.5" fill="#fff" className="r-junction-core" filter="url(#glowR)" />
-
-      {/* --- TERMINAL NODES --- */}
-      <rect x="10" y="8" width="8" height="4" fill="#00f3ff" className="r-node top" />
-      <rect x="10" y="52" width="8" height="4" fill="#00f3ff" className="r-node bot" />
-
-      {/* Leg output node */}
-      <path d="M 48 56 L 54 56 L 54 62 L 48 62 L 42 59 Z" fill="#00f3ff" className="r-node output" />
-
-      {/* --- GLITCH LAYER --- */}
-      <path
-        className="r-glitch"
-        d="M 14 10 V 54 M 14 10 H 36 L 48 20 V 28 L 36 38 H 14 M 28 38 L 50 58"
-        stroke="#fff"
-        strokeWidth="1"
-        fill="none"
-        opacity="0.4"
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
       />
-
     </svg>
   );
 };

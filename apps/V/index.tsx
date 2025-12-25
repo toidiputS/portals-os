@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const V_URL = "https://v.itsai.life";
+const V_URL = "https://velocity.itsai.life";
 
 const VEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const VEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={V_URL}
-        className="flex-1 w-full border-0"
-        title="V"
-      />
+      <iframe src={V_URL} className="flex-1 w-full border-0" title="V" />
     </div>
   );
 };

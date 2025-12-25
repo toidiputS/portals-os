@@ -1,8 +1,16 @@
-
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { nanoid } from 'nanoid';
-import { AppId, ChatMessage, ChatSession, GeminiModel, KernelState, ProjectFolder, WindowInstance, Theme } from '../types';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { nanoid } from "nanoid";
+import {
+  AppId,
+  ChatMessage,
+  ChatSession,
+  GeminiModel,
+  KernelState,
+  ProjectFolder,
+  WindowInstance,
+  Theme,
+} from "../types";
 
 const useKernelStore = create<KernelState>()(
   persist(
@@ -10,11 +18,11 @@ const useKernelStore = create<KernelState>()(
       windows: [],
       activeWindowId: null,
       nextZIndex: 100,
-      wallpaper: 'assets/images/welcome.png',
+      wallpaper: "assets/images/welcome.png",
       isStartMenuOpen: false,
 
       gemini: {
-        model: 'gemini-1.5-flash',
+        model: "gemini-1.5-flash",
         sessions: {},
         currentSessionId: null,
         isLoading: false,
@@ -27,25 +35,33 @@ const useKernelStore = create<KernelState>()(
       isSidebarOpen: false,
       isMatrixEffectActive: false,
       hasNewMessage: false,
-      theme: 'dark',
+      theme: "dark",
       initialGreetingSpoken: false,
       micPermissionGranted: false,
       projectFolders: [], // User's project folder bookmarks
-      currentPath: '/', // Current directory in virtual filesystem
+      currentPath: "/", // Current directory in virtual filesystem
 
       openWindow: (appId, size = { width: 600, height: 450 }, metadata) => {
         const newWindow: WindowInstance = {
           id: nanoid(),
           appId,
-          title: appId.charAt(0).toUpperCase() + appId.slice(1).replace(/([A-Z])/g, ' $1').trim(),
-          position: { x: Math.random() * 200 + 50, y: Math.random() * 100 + 50 },
+          title:
+            appId.charAt(0).toUpperCase() +
+            appId
+              .slice(1)
+              .replace(/([A-Z])/g, " $1")
+              .trim(),
+          position:
+            appId === "agentCards"
+              ? { x: 0, y: 50 }
+              : { x: Math.random() * 200 + 50, y: Math.random() * 100 + 50 },
           size,
           zIndex: get().nextZIndex,
           minimized: false,
-          snapState: 'none',
+          snapState: "none",
           metadata,
         };
-        set(state => ({
+        set((state) => ({
           windows: [...state.windows, newWindow],
           nextZIndex: state.nextZIndex + 1,
           activeWindowId: newWindow.id,
@@ -53,12 +69,13 @@ const useKernelStore = create<KernelState>()(
           isSidebarOpen: false,
         }));
       },
-      closeWindow: (id) => set(state => ({
-        windows: state.windows.filter(w => w.id !== id),
-      })),
+      closeWindow: (id) =>
+        set((state) => ({
+          windows: state.windows.filter((w) => w.id !== id),
+        })),
       closeWindowByAppId: (appId) => {
-        const windowToClose = get().windows
-          .filter(w => w.appId === appId)
+        const windowToClose = get()
+          .windows.filter((w) => w.appId === appId)
           .sort((a, b) => b.zIndex - a.zIndex)[0];
 
         if (windowToClose) {
@@ -66,37 +83,47 @@ const useKernelStore = create<KernelState>()(
         }
       },
       focusWindow: (id) => {
-        const window = get().windows.find(w => w.id === id);
+        const window = get().windows.find((w) => w.id === id);
         if (window && window.zIndex !== get().nextZIndex - 1) {
-          set(state => ({
-            windows: state.windows.map(w => w.id === id ? { ...w, zIndex: state.nextZIndex, minimized: false } : w),
+          set((state) => ({
+            windows: state.windows.map((w) =>
+              w.id === id
+                ? { ...w, zIndex: state.nextZIndex, minimized: false }
+                : w
+            ),
             nextZIndex: state.nextZIndex + 1,
             activeWindowId: id,
           }));
         } else if (window && window.minimized) {
-          set(state => ({
-            windows: state.windows.map(w => w.id === id ? { ...w, minimized: false } : w),
+          set((state) => ({
+            windows: state.windows.map((w) =>
+              w.id === id ? { ...w, minimized: false } : w
+            ),
             activeWindowId: id,
           }));
         }
       },
-      minimizeWindow: (id) => set(state => ({
-        windows: state.windows.map(w => w.id === id ? { ...w, minimized: !w.minimized } : w),
-        activeWindowId: id === state.activeWindowId ? null : state.activeWindowId,
-      })),
+      minimizeWindow: (id) =>
+        set((state) => ({
+          windows: state.windows.map((w) =>
+            w.id === id ? { ...w, minimized: !w.minimized } : w
+          ),
+          activeWindowId:
+            id === state.activeWindowId ? null : state.activeWindowId,
+        })),
       snapWindow: (id, snapState) => {
         const screenWidth = window.innerWidth;
         const screenHeight = window.innerHeight - 48; // Account for taskbar
 
-        set(state => {
-          const windowIndex = state.windows.findIndex(w => w.id === id);
+        set((state) => {
+          const windowIndex = state.windows.findIndex((w) => w.id === id);
           if (windowIndex === -1) return state;
 
           const windows = [...state.windows];
           const currentWindow = { ...windows[windowIndex] };
 
-          const isSnapping = snapState !== 'none';
-          const wasSnapped = currentWindow.snapState !== 'none';
+          const isSnapping = snapState !== "none";
+          const wasSnapped = currentWindow.snapState !== "none";
 
           if (isSnapping && !wasSnapped) {
             currentWindow.preSnapPosition = { ...currentWindow.position };
@@ -106,35 +133,59 @@ const useKernelStore = create<KernelState>()(
           currentWindow.snapState = snapState;
 
           switch (snapState) {
-            case 'maximized':
+            case "maximized":
               currentWindow.position = { x: 0, y: 0 };
               currentWindow.size = { width: screenWidth, height: screenHeight };
               break;
-            case 'topLeft':
+            case "topLeft":
               currentWindow.position = { x: 0, y: 0 };
-              currentWindow.size = { width: Math.ceil(screenWidth / 2), height: Math.ceil(screenHeight / 2) };
+              currentWindow.size = {
+                width: Math.ceil(screenWidth / 2),
+                height: Math.ceil(screenHeight / 2),
+              };
               break;
-            case 'topRight':
+            case "topRight":
               currentWindow.position = { x: Math.floor(screenWidth / 2), y: 0 };
-              currentWindow.size = { width: Math.floor(screenWidth / 2), height: Math.ceil(screenHeight / 2) };
+              currentWindow.size = {
+                width: Math.floor(screenWidth / 2),
+                height: Math.ceil(screenHeight / 2),
+              };
               break;
-            case 'bottomLeft':
-              currentWindow.position = { x: 0, y: Math.floor(screenHeight / 2) };
-              currentWindow.size = { width: Math.ceil(screenWidth / 2), height: Math.floor(screenHeight / 2) };
+            case "bottomLeft":
+              currentWindow.position = {
+                x: 0,
+                y: Math.floor(screenHeight / 2),
+              };
+              currentWindow.size = {
+                width: Math.ceil(screenWidth / 2),
+                height: Math.floor(screenHeight / 2),
+              };
               break;
-            case 'bottomRight':
-              currentWindow.position = { x: Math.floor(screenWidth / 2), y: Math.floor(screenHeight / 2) };
-              currentWindow.size = { width: Math.floor(screenWidth / 2), height: Math.floor(screenHeight / 2) };
+            case "bottomRight":
+              currentWindow.position = {
+                x: Math.floor(screenWidth / 2),
+                y: Math.floor(screenHeight / 2),
+              };
+              currentWindow.size = {
+                width: Math.floor(screenWidth / 2),
+                height: Math.floor(screenHeight / 2),
+              };
               break;
-            case 'left':
+            case "left":
               currentWindow.position = { x: 0, y: 0 };
-              currentWindow.size = { width: Math.ceil(screenWidth / 2), height: screenHeight };
+              currentWindow.size = {
+                width: Math.ceil(screenWidth / 2),
+                height: screenHeight,
+              };
               break;
-            case 'right':
+            case "right":
               currentWindow.position = { x: Math.floor(screenWidth / 2), y: 0 };
-              currentWindow.size = { width: Math.floor(screenWidth / 2), height: screenHeight };
+              currentWindow.size = {
+                width: Math.floor(screenWidth / 2),
+                height: screenHeight,
+              };
               break;
-            case 'none':
+            case "none":
               if (currentWindow.preSnapPosition && currentWindow.preSnapSize) {
                 currentWindow.position = { ...currentWindow.preSnapPosition };
                 currentWindow.size = { ...currentWindow.preSnapSize };
@@ -146,15 +197,23 @@ const useKernelStore = create<KernelState>()(
           return { windows };
         });
       },
-      updateWindowPosition: (id, position) => set(state => ({
-        windows: state.windows.map(w => w.id === id ? { ...w, position } : w),
-      })),
-      updateWindowSize: (id, size) => set(state => ({
-        windows: state.windows.map(w => w.id === id ? { ...w, size } : w),
-      })),
+      updateWindowPosition: (id, position) =>
+        set((state) => ({
+          windows: state.windows.map((w) =>
+            w.id === id ? { ...w, position } : w
+          ),
+        })),
+      updateWindowSize: (id, size) =>
+        set((state) => ({
+          windows: state.windows.map((w) => (w.id === id ? { ...w, size } : w)),
+        })),
 
       setWallpaper: (wallpaperUrl) => set({ wallpaper: wallpaperUrl }),
-      toggleStartMenu: () => set(state => ({ isStartMenuOpen: !state.isStartMenuOpen, isSidebarOpen: false })),
+      toggleStartMenu: () =>
+        set((state) => ({
+          isStartMenuOpen: !state.isStartMenuOpen,
+          isSidebarOpen: false,
+        })),
       closeStartMenu: () => set({ isStartMenuOpen: false }),
 
       startNewChat: () => {
@@ -165,7 +224,7 @@ const useKernelStore = create<KernelState>()(
           messages: [],
           createdAt: new Date().toISOString(),
         };
-        set(state => ({
+        set((state) => ({
           gemini: {
             ...state.gemini,
             sessions: { ...state.gemini.sessions, [newSessionId]: newSession },
@@ -176,62 +235,99 @@ const useKernelStore = create<KernelState>()(
       },
       selectChatSession: (sessionId) => {
         if (get().gemini.sessions[sessionId]) {
-          set(state => ({ gemini: { ...state.gemini, currentSessionId: sessionId } }));
+          set((state) => ({
+            gemini: { ...state.gemini, currentSessionId: sessionId },
+          }));
         }
       },
       addMessageToSession: (sessionId, message) => {
-        set(state => {
+        set((state) => {
           const session = state.gemini.sessions[sessionId];
           if (!session) return state;
-          const updatedSession = { ...session, messages: [...session.messages, message] };
+          const updatedSession = {
+            ...session,
+            messages: [...session.messages, message],
+          };
           return {
             gemini: {
               ...state.gemini,
-              sessions: { ...state.gemini.sessions, [sessionId]: updatedSession },
+              sessions: {
+                ...state.gemini.sessions,
+                [sessionId]: updatedSession,
+              },
             },
           };
         });
       },
-      setGeminiLoading: (isLoading) => set(state => ({ gemini: { ...state.gemini, isLoading } })),
-      setGeminiModel: (model: GeminiModel) => set(state => ({ gemini: { ...state.gemini, model } })),
-      toggleSmartContext: () => set(state => ({ gemini: { ...state.gemini, useSmartContext: !state.gemini.useSmartContext } })),
-      toggleGrounding: () => set(state => ({ gemini: { ...state.gemini, useGrounding: !state.gemini.useGrounding } })),
+      setGeminiLoading: (isLoading) =>
+        set((state) => ({ gemini: { ...state.gemini, isLoading } })),
+      setGeminiModel: (model: GeminiModel) =>
+        set((state) => ({ gemini: { ...state.gemini, model } })),
+      toggleSmartContext: () =>
+        set((state) => ({
+          gemini: {
+            ...state.gemini,
+            useSmartContext: !state.gemini.useSmartContext,
+          },
+        })),
+      toggleGrounding: () =>
+        set((state) => ({
+          gemini: { ...state.gemini, useGrounding: !state.gemini.useGrounding },
+        })),
       deleteChatSession: (sessionId: string) => {
-        set(state => {
+        set((state) => {
           const newSessions = { ...state.gemini.sessions };
           delete newSessions[sessionId];
           let newCurrentSessionId = state.gemini.currentSessionId;
           if (newCurrentSessionId === sessionId) {
             const remainingIds = Object.keys(newSessions);
-            newCurrentSessionId = remainingIds.length > 0 ? remainingIds[0] : null;
+            newCurrentSessionId =
+              remainingIds.length > 0 ? remainingIds[0] : null;
           }
           return {
-            gemini: { ...state.gemini, sessions: newSessions, currentSessionId: newCurrentSessionId }
+            gemini: {
+              ...state.gemini,
+              sessions: newSessions,
+              currentSessionId: newCurrentSessionId,
+            },
           };
         });
       },
       updateSessionTitle: (sessionId: string, title: string) => {
-        set(state => {
+        set((state) => {
           const session = state.gemini.sessions[sessionId];
           if (!session) return state;
           const updatedSession = { ...session, title };
           return {
             gemini: {
               ...state.gemini,
-              sessions: { ...state.gemini.sessions, [sessionId]: updatedSession },
+              sessions: {
+                ...state.gemini.sessions,
+                [sessionId]: updatedSession,
+              },
             },
           };
         });
       },
       setHasWelcomed: (status) => set({ hasWelcomed: status }),
-      setInitialGreetingSpoken: (status: boolean) => set({ initialGreetingSpoken: status }),
-      setMicPermissionGranted: (status: boolean) => set({ micPermissionGranted: status }),
-      addEmail: (email) => set(state => ({ collectedEmails: [...state.collectedEmails, email] })),
-      toggleSidebar: () => set(state => ({ isSidebarOpen: !state.isSidebarOpen, isStartMenuOpen: false })),
+      setInitialGreetingSpoken: (status: boolean) =>
+        set({ initialGreetingSpoken: status }),
+      setMicPermissionGranted: (status: boolean) =>
+        set({ micPermissionGranted: status }),
+      addEmail: (email) =>
+        set((state) => ({
+          collectedEmails: [...state.collectedEmails, email],
+        })),
+      toggleSidebar: () =>
+        set((state) => ({
+          isSidebarOpen: !state.isSidebarOpen,
+          isStartMenuOpen: false,
+        })),
       closeSidebar: () => set({ isSidebarOpen: false }),
       toggleMatrixEffect: (status) => set({ isMatrixEffectActive: status }),
       setHasNewMessage: (status) => set({ hasNewMessage: status }),
-      toggleTheme: () => set(state => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
+      toggleTheme: () =>
+        set((state) => ({ theme: state.theme === "dark" ? "light" : "dark" })),
 
       // Project folder actions
       addProjectFolder: (folder) => {
@@ -241,14 +337,20 @@ const useKernelStore = create<KernelState>()(
           id,
           createdAt: new Date().toISOString(),
         };
-        set(state => ({ projectFolders: [...state.projectFolders, newFolder] }));
+        set((state) => ({
+          projectFolders: [...state.projectFolders, newFolder],
+        }));
       },
       removeProjectFolder: (id) => {
-        set(state => ({ projectFolders: state.projectFolders.filter(f => f.id !== id) }));
+        set((state) => ({
+          projectFolders: state.projectFolders.filter((f) => f.id !== id),
+        }));
       },
       updateProjectFolder: (id, updates) => {
-        set(state => ({
-          projectFolders: state.projectFolders.map(f => f.id === id ? { ...f, ...updates } : f)
+        set((state) => ({
+          projectFolders: state.projectFolders.map((f) =>
+            f.id === id ? { ...f, ...updates } : f
+          ),
         }));
       },
 
@@ -257,11 +359,11 @@ const useKernelStore = create<KernelState>()(
         set({ currentPath: path });
       },
       openFile: (fileId) => {
-        get().openWindow('fileViewer', { width: 600, height: 450 }, { fileId });
+        get().openWindow("fileViewer", { width: 600, height: 450 }, { fileId });
       },
     }),
     {
-      name: 'win11-portfolio-storage',
+      name: "win11-portfolio-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         theme: state.theme,
@@ -272,7 +374,7 @@ const useKernelStore = create<KernelState>()(
           ...state.gemini,
           isLoading: false,
         },
-      })
+      }),
     }
   )
 );

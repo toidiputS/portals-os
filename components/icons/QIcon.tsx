@@ -1,5 +1,5 @@
-import React from 'react';
-import './holographic-icons.css';
+import React from "react";
+import "./holographic-icons.css";
 
 interface QIconProps {
   className?: string;
@@ -7,21 +7,21 @@ interface QIconProps {
 }
 
 export const QIcon: React.FC<QIconProps> = ({
-  className = '',
-  size = 64
+  className = "",
+  size = 64,
 }) => {
   return (
     <svg
-      className={`holographic-icon quantum-icon ${className}`}
+      className={`holo-q-icon ${className}`}
       width={size}
       height={size}
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="holoGradientQ" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00f3ff" stopOpacity="1" />
-          <stop offset="100%" stopColor="#00f3ff" stopOpacity="0.4" />
+        <linearGradient id="gradientQ" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4caf50" stopOpacity="1" />
+          <stop offset="100%" stopColor="#4caf50" stopOpacity="0.3" />
         </linearGradient>
 
         <filter id="glowQ">
@@ -31,90 +31,230 @@ export const QIcon: React.FC<QIconProps> = ({
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+
+        <pattern
+          id="gearPatternQ"
+          x="0"
+          y="0"
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <circle cx="4" cy="4" r="2" fill="rgba(76, 175, 80, 0.1)" />
+          <circle cx="4" cy="4" r="1" fill="rgba(76, 175, 80, 0.2)" />
+        </pattern>
       </defs>
 
-      {/* --- PROBABILITY FIELD (Background Haze) --- */}
-      <circle cx="28" cy="28" r="22" fill="#00f3ff" opacity="0.05" className="q-probability-field">
-        <animate attributeName="opacity" values="0.03;0.08;0.03" dur="4s" repeatCount="indefinite" />
-      </circle>
-
-      {/* --- MAIN "O" RING (The Core) --- */}
       <circle
-        className="q-ring"
-        cx="28" cy="28" r="18"
-        stroke="url(#holoGradientQ)"
-        strokeWidth="3"
+        cx="32"
+        cy="32"
+        r="20"
+        fill="rgba(255, 255, 255, 0.15)"
+        stroke="rgba(255, 255, 255, 0.25)"
+        strokeWidth="1"
+        className="glass-bg"
+      />
+
+      <circle cx="32" cy="32" r="18" fill="url(#gearPatternQ)" opacity="0.4" />
+
+      <text
+        x="32"
+        y="28"
+        textAnchor="middle"
+        fontSize="22"
+        fontWeight="700"
+        fill="#4caf50"
+        filter="url(#glowQ)"
+        className="agent-letter"
+      >
+        Q
+      </text>
+
+      <text
+        x="32"
+        y="36"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="600"
+        fill="#ffffff"
+        className="agent-name"
+      >
+        Quest
+      </text>
+
+      <text
+        x="32"
+        y="44"
+        textAnchor="middle"
+        fontSize="6"
+        fontWeight="500"
+        fill="rgba(255, 255, 255, 0.8)"
+        className="agent-domain"
+      >
+        .itsai.quest
+      </text>
+
+      <circle
+        cx="32"
+        cy="32"
+        r="16"
         fill="none"
-        filter="url(#glowQ)"
-      />
-
-      {/* --- THE TAIL (Diagonal Escape Vent) --- */}
-      <path
-        className="q-tail"
-        d="M 40 40 L 56 56"
-        stroke="#00f3ff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        filter="url(#glowQ)"
-      />
-
-      {/* Tail Arrow / Energy Point */}
-      <path
-        d="M 52 58 L 58 58 L 58 52"
-        stroke="#00f3ff"
+        stroke="rgba(76, 175, 80, 0.6)"
         strokeWidth="2"
-        fill="none"
-        className="q-tail-arrow"
-      />
-
-      {/* --- ESCAPING PARTICLE (Follows the tail) --- */}
-      <circle r="2.5" fill="#fff" filter="url(#glowQ)" className="q-escaping-particle">
-        <animateMotion
-          path="M 40 40 L 56 56"
-          dur="2s"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="19s"
           repeatCount="indefinite"
-          keyPoints="0;1;1"
-          keyTimes="0;0.7;1"
-          calcMode="linear"
         />
-        <animate attributeName="opacity" values="1;1;0" keyTimes="0;0.6;1" dur="2s" repeatCount="indefinite" />
+      </circle>
+      <circle
+        cx="32"
+        cy="32"
+        r="12"
+        fill="none"
+        stroke="rgba(76, 175, 80, 0.4)"
+        strokeWidth="1"
+        className="gear-ring"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="360 32 32; 0 32 32"
+          dur="15s"
+          repeatCount="indefinite"
+        />
       </circle>
 
-      {/* --- INTERNAL QUANTUM PARTICLES (Superposition) --- */}
-      {/* These phase in and out of visibility */}
-      <g className="q-superposition">
-        <circle cx="22" cy="22" r="2" fill="#fff" className="q-particle p1" />
-        <circle cx="34" cy="22" r="2" fill="#fff" className="q-particle p2" />
-        <circle cx="22" cy="34" r="2" fill="#fff" className="q-particle p3" />
-        <circle cx="34" cy="34" r="2" fill="#fff" className="q-particle p4" />
-      </g>
+      <polygon
+        points="32,14 34,18 32,16 30,18"
+        fill="#4caf50"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="19s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="32,46 34,42 32,44 30,42"
+        fill="#4caf50"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="19s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="14,32 18,34 16,32 18,30"
+        fill="#4caf50"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="19s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <polygon
+        points="46,32 42,34 44,32 42,30"
+        fill="#4caf50"
+        opacity="0.8"
+        className="gear-tooth"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 32 32; 360 32 32"
+          dur="19s"
+          repeatCount="indefinite"
+        />
+      </polygon>
 
-      {/* --- ENTANGLEMENT LINK (Connects particles) --- */}
-      <line x1="22" y1="22" x2="34" y2="34" stroke="#fff" strokeWidth="0.5" opacity="0.3" className="q-link link1" />
-      <line x1="34" y1="22" x2="22" y2="34" stroke="#fff" strokeWidth="0.5" opacity="0.3" className="q-link link2" />
-
-      {/* --- CORE NUCLEUS --- */}
-      <circle cx="28" cy="28" r="4" fill="#001a1a" stroke="#00f3ff" strokeWidth="1" />
-      <circle cx="28" cy="28" r="1.5" fill="#fff" className="q-nucleus" filter="url(#glowQ)" />
-
-      {/* --- ROTATING SCAN ARC --- */}
       <circle
-        className="q-scan-arc"
-        cx="28" cy="28" r="18"
-        stroke="#fff"
-        strokeWidth="1.5"
-        fill="none"
-        strokeDasharray="15 100"
-        strokeLinecap="round"
-        filter="url(#glowQ)"
+        cx="32"
+        cy="24"
+        r="1"
+        fill="#4caf50"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="40"
+        cy="32"
+        r="1"
+        fill="#4caf50"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="32"
+        cy="40"
+        r="1"
+        fill="#4caf50"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.4;1;0.4"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+      <circle
+        cx="24"
+        cy="32"
+        r="1"
+        fill="#4caf50"
+        opacity="0.8"
+        className="process-indicator"
+      >
+        <animate
+          attributeName="opacity"
+          values="1;0.4;1"
+          dur="4s"
+          repeatCount="indefinite"
+        />
+      </circle>
+
+      <ellipse
+        cx="26"
+        cy="26"
+        rx="6"
+        ry="3"
+        fill="rgba(255, 255, 255, 0.3)"
+        className="glass-reflection"
       />
-
-      {/* --- GLITCH LAYER --- */}
-      <g className="q-glitch">
-        <circle cx="28" cy="28" r="18" stroke="#fff" strokeWidth="1" fill="none" opacity="0.4" />
-        <path d="M 40 40 L 56 56" stroke="#fff" strokeWidth="1" opacity="0.4" />
-      </g>
-
     </svg>
   );
 };

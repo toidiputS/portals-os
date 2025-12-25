@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const B_URL = "https://b.itsai.services";
+const B_URL = "https://blueprint.itsai.services";
 
 const BEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const BEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={B_URL}
-        className="flex-1 w-full border-0"
-        title="B"
-      />
+      <iframe src={B_URL} className="flex-1 w-full border-0" title="B" />
     </div>
   );
 };

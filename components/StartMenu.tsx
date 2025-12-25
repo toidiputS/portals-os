@@ -26,13 +26,16 @@ const StartMenu: React.FC = () => {
           <GlowCard glowColor="purple" customSize={true} className="w-full h-full p-6">
             <div className="h-full overflow-y-auto">
               <div className="grid grid-cols-4 gap-4">
-                {allApps.map((app) => (
-                  <Icon
-                    key={app.id}
-                    app={app}
-                    onDoubleClick={() => openWindow(app.id)}
-                  />
-                ))}
+                {allApps.map((app) => {
+
+                  return (
+                    <Icon
+                      key={app.id}
+                      app={app}
+                      onDoubleClick={() => openWindow(app.id)}
+                    />
+                  );
+                })}
               </div>
             </div>
           </GlowCard>

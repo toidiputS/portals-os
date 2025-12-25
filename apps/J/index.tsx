@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const J_URL = "https://j.itsai.chat";
+const J_URL = "https://jam.itsai.chat";
 
 const JEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const JEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={J_URL}
-        className="flex-1 w-full border-0"
-        title="J"
-      />
+      <iframe src={J_URL} className="flex-1 w-full border-0" title="J" />
     </div>
   );
 };

@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const Z_URL = "https://z.itsai.vip";
+const Z_URL = "https://zone.itsai.vip";
 
 const ZEmbed: React.FC = () => {
   return (
@@ -29,11 +29,7 @@ const ZEmbed: React.FC = () => {
       </div>
 
       {/* Iframe */}
-      <iframe
-        src={Z_URL}
-        className="flex-1 w-full border-0"
-        title="Z"
-      />
+      <iframe src={Z_URL} className="flex-1 w-full border-0" title="Z" />
     </div>
   );
 };
