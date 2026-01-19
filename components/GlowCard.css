@@ -3,26 +3,22 @@
   --spread: 200;
   --radius: 14;
   --border: 3;
-  --backdrop: hsl(0 0% 60% / 0.12);
-  --backup-border: var(--backdrop);
-  --size: 200;
+  --backdrop: hsl(0 0% 10% / 0.8);
+  --backup-border: hsl(0 0% 30% / 0.5);
+  --size: 150; /* Reduced from 200 */
   --outer: 1;
   --border-size: calc(var(--border, 2) * 1px);
   --spotlight-size: calc(var(--size, 150) * 1px);
   --hue: calc(var(--base) + (var(--xp, 0) * var(--spread, 0)));
-  background-image: radial-gradient(
-    var(--spotlight-size) var(--spotlight-size) at
-    calc(var(--x, 0) * 1px)
-    calc(var(--y, 0) * 1px),
-    hsl(var(--hue, 210) calc(var(--saturation, 100) * 1%) calc(var(--lightness, 70) * 1%) / var(--bg-spot-opacity, 0.1)), transparent
-  );
-  background-color: var(--backdrop, transparent);
-  background-size: calc(100% + (2 * var(--border-size))) calc(100% + (2 * var(--border-size)));
-  background-position: 50% 50%;
-  background-attachment: fixed;
+  /* Proper glassmorphism background */
+  background: var(--backdrop);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: var(--border-size) solid var(--backup-border);
   position: relative;
   touch-action: none;
+  /* Added will-change for better performance */
+  will-change: transform;
 }
 
 [data-glow].glow-card::before,
@@ -106,3 +102,4 @@
   --base: 30;
   --spread: 200;
 }
+

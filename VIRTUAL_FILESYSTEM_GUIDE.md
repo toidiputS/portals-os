@@ -1,4 +1,4 @@
-# Virtual Portfolio Filesystem - Complete Reference Guide
+# Virtual Portals OS Filesystem - Complete Reference Guide
 
 ## 📚 Table of Contents
 
@@ -15,7 +15,7 @@
 
 ## Overview
 
-Your Portfolio OS now has a **virtual filesystem** - a mock file system that contains your portfolio content organized as files and folders. Visitors can navigate it using Terminal commands, making your portfolio interactive and memorable.
+Your Portals OS now has a **virtual filesystem** - a mock file system that contains your portal content organized as files and folders. Visitors can navigate it using Terminal commands, making your portal interactive and memorable.
 
 ### Key Concepts
 
@@ -34,7 +34,7 @@ Your Portfolio OS now has a **virtual filesystem** - a mock file system that con
 C:/
 ├── projects/
 │   └── web-apps/
-│       └── portfolio-os/
+│       └── oracle-os/
 │           ├── README.md (project description)
 │           ├── Live-Demo.link (live site URL)
 │           └── GitHub.link (repo URL)
@@ -87,7 +87,7 @@ C:/
 | `open <file>` | Open file/folder in GUI | `> open Live-Demo.link`<br>(Opens browser) |
 | `find <term>` | Search for files | `> find github`<br>/contact/GitHub.link |
 
-### Portfolio Shortcuts
+### Portal Shortcuts
 
 | Command | Description |
 |---------|-------------|
@@ -114,7 +114,7 @@ C:/
 
 1. **Open the filesystem file:**
    ```
-   c:\TraderDev\Portfolio-OS\portfolio-os\constants\virtualFilesystem.ts
+   c:\Oracle-OS\oracle-os\constants\virtualFilesystem.ts
    ```
 
 2. **Find the VIRTUAL_FILESYSTEM array** (around line 9)
@@ -186,7 +186,7 @@ See the live demo and GitHub repo in this folder!`
   id: 'your-project-github',
   name: 'GitHub.link',
   type: 'link',
-  path: '/projects/web-apps/portfolio-os/GitHub.link',
+  path: '/projects/web-apps/portals-os/GitHub.link',
   parentPath: '/projects/web-apps/portfolio-os',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
@@ -213,7 +213,7 @@ See the live demo and GitHub repo in this folder!`
 {
   id: 'unique-id',
   name: 'Folder-Name',
-  type: 'folder',
+  type: 'folder', 
   path: '/full/path/to/folder',
   parentPath: '/full/path/to',
   color: '#3b82f6', // Optional: folder color
@@ -229,7 +229,7 @@ See the live demo and GitHub repo in this folder!`
   id: 'unique-id',
   name: 'file.md',
   type: 'markdown',
-  path: '/full/path/to/file.md',
+  path: '/full/path/to/file.md',      
   parentPath: '/full/path/to',
   size: '2.4 KB', // Optional: display size
   createdAt: '2025-01-01T00:00:00.000Z',
@@ -242,7 +242,7 @@ See the live demo and GitHub repo in this folder!`
 
 ### Link File (.link)
 
-```typescript
+```typescript 
 {
   id: 'unique-id',
   name: 'Website.link',
@@ -251,7 +251,7 @@ See the live demo and GitHub repo in this folder!`
   parentPath: '/full/path/to',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
-  content: {
+  content: {  
     url: 'https://example.com',
   },
 }
@@ -259,7 +259,7 @@ See the live demo and GitHub repo in this folder!`
 
 ### Image File (.png, .jpg)
 
-```typescript
+```typescript   
 {
   id: 'unique-id',
   name: 'screenshot.png',
@@ -270,13 +270,13 @@ See the live demo and GitHub repo in this folder!`
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
   content: {
-    imageUrl: '/assets/portfolio/screenshot.png',
+    imageUrl: '/assets/portals-os/screenshot.png',
     alt: 'Screenshot description',
   },
-}
+} 
 ```
 
-**Note:** Put actual image files in `/public/assets/portfolio/`
+**Note:** Put actual image files in `/public/assets/portals-os/`
 
 ### PDF File (.pdf)
 
@@ -286,7 +286,7 @@ See the live demo and GitHub repo in this folder!`
   name: 'resume.pdf',
   type: 'pdf',
   path: '/full/path/to/resume.pdf',
-  parentPath: '/full/path/to',
+  parentPath: '/full/path/to',        
   size: '245 KB',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
@@ -324,7 +324,7 @@ See the live demo and GitHub repo in this folder!`
 ```typescript
 // Folder
 {
-  id: 'ecommerce-store',
+  id: 'ecommerce-store',  
   name: 'E-Commerce-Store',
   type: 'folder',
   path: '/projects/web-apps/ecommerce-store',
@@ -343,7 +343,7 @@ See the live demo and GitHub repo in this folder!`
   size: '3.1 KB',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
-  content: {
+  content: {  
     markdown: `# E-Commerce Store
 
 A full-stack online shopping platform.
@@ -381,7 +381,7 @@ A full-stack online shopping platform.
   parentPath: '/projects/web-apps/ecommerce-store',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
-  content: {
+  content: {    
     url: 'https://my-ecommerce.vercel.app',
   },
 },
@@ -397,9 +397,10 @@ A full-stack online shopping platform.
     url: 'https://github.com/username/ecommerce-store',
   },
 },
-```
+``` 
 
-**Terminal Usage:**
+**Terminal Usage:**           
+
 ```bash
 > cd /projects/web-apps/ecommerce-store
 > ls
@@ -415,9 +416,9 @@ A full-stack online shopping platform.
 Opening link: https://my-ecommerce.vercel.app
 ```
 
-### Example 2: ML/AI Project Category
+### Example 2: ML/AI Project Category 
 
-```typescript
+```typescript       
 // Create new category folder
 {
   id: 'ml-projects',
@@ -428,14 +429,14 @@ Opening link: https://my-ecommerce.vercel.app
   color: '#f59e0b',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
-},
+},  
 
 // AI Chatbot project
 {
   id: 'ai-chatbot',
   name: 'AI-Chatbot',
   type: 'folder',
-  path: '/projects/ml-projects/ai-chatbot',
+  path: '/projects/ml-projects/ai-chatbot', 
   parentPath: '/projects/ml-projects',
   createdAt: '2025-01-01T00:00:00.000Z',
   modifiedAt: '2025-01-01T00:00:00.000Z',
@@ -451,11 +452,11 @@ Opening link: https://my-ecommerce.vercel.app
   content: {
     markdown: `# AI Chatbot
 
-Intelligent chatbot using GPT-4 with custom training.
+  Intelligent chatbot using GPT-4 with custom training.
 
-## Capabilities
-- Natural conversation
-- Context awareness
+  ## Capabilities
+  - Natural conversation
+  - Context awareness
 - Multi-language support
 
 ## Tech
@@ -473,29 +474,32 @@ Intelligent chatbot using GPT-4 with custom training.
 ### Organizing Projects
 
 **By Category:**
-```
+
+``` 
 /projects/
 ├── web-apps/
-├── ml-projects/
-├── mobile-apps/
+  ├── ml-projects/
+  ├── mobile-apps/
 └── design-work/
 ```
 
 **By Year:**
+
 ```
 /projects/
 ├── 2024/
-├── 2023/
+├── 2023/ 
 └── 2022/
 ```
 
 **By Technology:**
+
 ```
 /projects/
 ├── react-projects/
 ├── python-projects/
 └── fullstack-projects/
-```
+``` 
 
 ### Writing Good READMEs
 
@@ -511,7 +515,7 @@ Include:
 
 - Use **kebab-case** for paths: `my-awesome-project`
 - Avoid spaces and special characters
-- Keep folder names descriptive but concise
+- Keep folder names descriptive but concise 
 - Match filename to what visitors expect: `README.md`, not `readme.txt`
 
 ---
@@ -521,15 +525,17 @@ Include:
 ### File Not Showing in Terminal
 
 **Check:**
+
 1. ✅ `id` is unique
 2. ✅ `parentPath` matches existing folder's `path`
 3. ✅ All required fields present
 4. ✅ Comma after previous object
 5. ✅ Saved file and refreshed browser
 
-### "No such file or directory" Error
+### "No such file or directory" Error 
 
 **Fix:**
+
 - Verify `path` exactly matches: `/projects/web-apps/my-project`
 - Check `parentPath` exists
 - Use `tree` to see actual structure
@@ -537,13 +543,15 @@ Include:
 ### Markdown Not Rendering
 
 **Fix:**
+
 - Ensure `type: 'markdown'`
 - Check `content.markdown` exists
-- Use `\n` for line breaks in markdown string
+- Use `\n` for line breaks in markdown string 
 
 ### Link Not Opening
 
 **Fix:**
+
 - Ensure `type: 'link'`
 - Check `content.url` is valid
 - Use `open` command, not `cat`
@@ -551,6 +559,7 @@ Include:
 ### TypeScript Errors
 
 **Current Known Issues:**
+
 - Some type definitions out of sync (non-blocking)
 - Code works fine at runtime
 - Will be fixed in future update
@@ -568,7 +577,7 @@ cd ..            # Go up
 cd /             # Go to root
 
 # VIEWING
-cat <file>       # Read file
+cat <file>       # Read file  
 tree             # See everything
 find <term>      # Search
 
@@ -587,13 +596,13 @@ clear            # Clear screen
 
 ## Future Enhancements
 
-### Planned Features
+### Planned Features  
 
 1. **File Manager GUI** - Visual file browser
 2. **File Viewers** - Dedicated windows for markdown, images, PDFs
 3. **Desktop Shortcuts** - Icons for projects in 3D sphere
 4. **Admin Panel** - Add projects via web interface (no code editing)
-5. **AI Assistant** - AI can navigate and present your portfolio
+5. **AI Assistant** - AI can navigate and present your portfolio  
 
 ### Want to Contribute?
 
@@ -610,13 +619,13 @@ Ideas welcome! This system is designed to grow with your portfolio.
 3. Use `tree` command to verify structure
 4. Test incrementally (add one project at a time)
 
-**Remember:** This is YOUR portfolio filesystem - customize it however you want!
+**Remember:** This is YOUR PORTALS OS filesystem - customize it however you want!
 
 ---
 
-**Last Updated:** January 2025  
+**Last Updated:** January 202 6  
 **Version:** 1.0.0  
-**Author:** Portfolio OS Team
+**Author:** Portals OS Team 🤖
 
 ---
 

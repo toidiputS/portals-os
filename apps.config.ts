@@ -1,48 +1,29 @@
 import React, { lazy } from "react";
 import { AppId, BuiltInAppId, AppDefinition, ProjectFolder } from "./types";
-import { FileText, Store, Folder, FolderOpen, Layers } from "lucide-react";
+import { FileText, Folder, FolderOpen } from "lucide-react";
 import {
   TerminalIcon,
-  SettingsIcon,
-  ProjectsIcon,
-  GeminiIcon,
   ContactIcon,
   OracleIcon,
-  A,
-  B,
-  C,
-  D,
-  E,
-  F,
-  G,
-  H,
-  I,
-  J,
-  K,
-  L,
-  M,
-  N,
-  O,
-  P,
-  Q,
-  R,
-  S,
-  T,
-  U,
-  V,
-  W,
-  X,
-  Y,
-  Z,
+  PotatoCometIcon,
 } from "./components/icons";
 
+
+// CLEAN SLATE: Only the 6 core apps you requested
 export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
-  geminiChat: {
-    id: "geminiChat",
-    name: "Gemini Chat",
-    icon: GeminiIcon,
-    component: lazy(() => import("./apps/GeminiChat")),
-    description: "Chat with Google's powerful Gemini AI models.",
+  oracle: {
+    id: "oracle",
+    name: "Oracle",
+    icon: OracleIcon,
+    component: lazy(() => import("./apps/Oracle")),
+    description: "AI-powered voice assistant for guidance and app control.",
+  },
+  notionLike: {
+    id: "notionLike",
+    name: "Not Notes",
+    icon: FileText,
+    component: lazy(() => import("./apps/Not")),
+    description: "Rich note-taking app with pages, tags, and search functionality.",
   },
   terminal: {
     id: "terminal",
@@ -51,13 +32,6 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
     component: lazy(() => import("./apps/Terminal")),
     description: "Access to command-line interface.",
   },
-  contact: {
-    id: "contact",
-    name: "Contact Me",
-    icon: ContactIcon,
-    component: lazy(() => import("./apps/Contact")),
-    description: "Send me a message.",
-  },
   markdownEditor: {
     id: "markdownEditor",
     name: "Markdown Editor",
@@ -65,19 +39,12 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
     component: lazy(() => import("./apps/MarkdownEditor")),
     description: "A simple, persistent markdown notes application.",
   },
-  settings: {
-    id: "settings",
-    name: "Settings",
-    icon: SettingsIcon,
-    component: lazy(() => import("./apps/Settings")),
-    description: "Personalize your desktop environment.",
-  },
-  appStore: {
-    id: "appStore",
-    name: "App Store",
-    icon: Store,
-    component: lazy(() => import("./apps/AppStore")),
-    description: "Discover and launch applications.",
+  contact: {
+    id: "contact",
+    name: "Contact Me",
+    icon: ContactIcon,
+    component: lazy(() => import("./apps/Contact")),
+    description: "Send me a message.",
   },
   fileManager: {
     id: "fileManager",
@@ -93,254 +60,29 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
     component: lazy(() => import("./apps/FileViewer")),
     description: "View file contents.",
   },
-  oracle: {
-    id: "oracle",
-    name: "Oracle",
-    icon: OracleIcon,
-    component: lazy(() => import("./apps/Oracle")),
-    description: "AI-powered voice assistant for guidance and app control.",
-  },
-  notionLike: {
-    id: "notionLike",
-    name: "Notion-like Notes",
-    icon: FileText,
-    component: lazy(() => import("./apps/NotionLike")),
-    description:
-      "Rich note-taking app with pages, tags, and search functionality.",
-  },
-
-  a: {
-    id: "a",
-    name: "Angle",
-    icon: A,
-    component: lazy(() => import("./apps/A")),
-    description: "Foundation - Core structural analysis and angle calculations",
-  },
-  b: {
-    id: "b",
-    name: "Blueprint",
-    icon: B,
-    component: lazy(() => import("./apps/B")),
-    description: "Strategy - Comprehensive planning and blueprint design",
-  },
-  c: {
-    id: "c",
-    name: "Calculator",
-    icon: C,
-    component: lazy(() => import("./apps/C")),
-    description: "Economics - Financial calculations and economic modeling",
-  },
-  d: {
-    id: "d",
-    name: "Draft",
-    icon: D,
-    component: lazy(() => import("./apps/D")),
-    description: "Copywriting - Professional content creation and drafting",
-  },
-  e: {
-    id: "e",
-    name: "Envoy",
-    icon: E,
-    component: lazy(() => import("./apps/E")),
-    description: "Outreach - Communication and relationship management",
-  },
-  f: {
-    id: "f",
-    name: "Flo",
-    icon: F,
-    component: lazy(() => import("./apps/F")),
-    description: "Content - Dynamic content flow and management",
-  },
-  g: {
-    id: "g",
-    name: "Grind",
-    icon: G,
-    component: lazy(() => import("./apps/G")),
-    description: "Operations - Process optimization and operational efficiency",
-  },
-  h: {
-    id: "h",
-    name: "Helper",
-    icon: H,
-    component: lazy(() => import("./apps/H")),
-    description: "Assets - Resource management and digital asset handling",
-  },
-  i: {
-    id: "i",
-    name: "Interpreter",
-    icon: I,
-    component: lazy(() => import("./apps/I")),
-    description: "Structure - Data interpretation and structural analysis",
-  },
-  j: {
-    id: "j",
-    name: "Jam",
-    icon: J,
-    component: lazy(() => import("./apps/J")),
-    description: "Conversation - Interactive dialogue and communication tools",
-  },
-  k: {
-    id: "k",
-    name: "Kin",
-    icon: K,
-    component: lazy(() => import("./apps/K")),
-    description: "In-Touch - Personal connection and relationship tools",
-  },
-  l: {
-    id: "l",
-    name: "Listen",
-    icon: L,
-    component: lazy(() => import("./apps/L")),
-    description: "Insight - Audio processing and listening intelligence",
-  },
-  m: {
-    id: "m",
-    name: "Map",
-    icon: M,
-    component: lazy(() => import("./apps/M")),
-    description: "Workflow - Process mapping and workflow optimization",
-  },
-  n: {
-    id: "n",
-    name: "Nerve",
-    icon: N,
-    component: lazy(() => import("./apps/N")),
-    description: "Nerve - Neural network analysis and system intelligence",
-  },
-  o: {
-    id: "o",
-    name: "Optimize",
-    icon: O,
-    component: lazy(() => import("./apps/O")),
-    description: "Bottleneck - Performance analysis and optimization",
-  },
-  p: {
-    id: "p",
-    name: "Polish",
-    icon: P,
-    component: lazy(() => import("./apps/P")),
-    description: "Refinement - Content polishing and quality enhancement",
-  },
-  q: {
-    id: "q",
-    name: "Quick",
-    icon: Q,
-    component: lazy(() => import("./apps/Q")),
-    description: "Momentum - Rapid task execution and productivity boost",
-  },
-  r: {
-    id: "r",
-    name: "Research",
-    icon: R,
-    component: lazy(() => import("./apps/R")),
-    description: "Market - Market research and competitive analysis",
-  },
-  s: {
-    id: "s",
-    name: "Scroll",
-    icon: S,
-    component: lazy(() => import("./apps/S")),
-    description: "Knowledge - Information scrolling and knowledge management",
-  },
-  t: {
-    id: "t",
-    name: "Timeline",
-    icon: T,
-    component: lazy(() => import("./apps/T")),
-    description: "History - Timeline management and historical analysis",
-  },
-  u: {
-    id: "u",
-    name: "Unfold",
-    icon: U,
-    component: lazy(() => import("./apps/U")),
-    description: "Tasks - Task unfolding and project management",
-  },
-  v: {
-    id: "v",
-    name: "Velocity",
-    icon: V,
-    component: lazy(() => import("./apps/V")),
-    description: "Performance - Speed optimization and performance metrics",
-  },
-  w: {
-    id: "w",
-    name: "Warp",
-    icon: W,
-    component: lazy(() => import("./apps/W")),
-    description: "Power-User - Advanced user tools and power features",
-  },
-  x: {
-    id: "x",
-    name: "X-Ray",
-    icon: X,
-    component: lazy(() => import("./apps/X")),
-    description: "Advanced - Deep system analysis and diagnostics",
-  },
-  y: {
-    id: "y",
-    name: "Yield",
-    icon: Y,
-    component: lazy(() => import("./apps/Y")),
-    description: "Profitability - Financial yield analysis and optimization",
-  },
-  z: {
-    id: "z",
-    name: "Zone",
-    icon: Z,
-    component: lazy(() => import("./apps/Z")),
-    description: "Experimental - Cutting-edge experimental features",
+  settings: {
+    id: "settings",
+    name: "Settings",
+    icon: Folder,
+    component: lazy(() => import("./apps/Settings")),
+    description: "System settings.",
   },
 };
 
 export const APPS = Object.values(APPS_CONFIG);
 
-// Agent apps (A-Z) that should only be accessible through App Store
-const AGENT_APP_IDS: BuiltInAppId[] = [
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-];
-
-// Core system apps that appear in start menu
+// Core system apps that appear in start menu and circular menu
 const CORE_APP_IDS: BuiltInAppId[] = [
-  "geminiChat",
-  "terminal",
-  "contact",
-  "markdownEditor",
-  "settings",
-  "appStore",
-  "fileManager",
-  "fileViewer",
   "oracle",
   "notionLike",
+  "terminal",
+  "markdownEditor",
+  "contact",
+  "fileManager",
 ];
 
 /**
- * Get core system apps for the start menu (excludes agent apps)
+ * Get core system apps for the start menu
  */
 export const getCoreApps = (
   projectFolders: ProjectFolder[]
@@ -360,21 +102,26 @@ export const getCoreApps = (
 };
 
 /**
- * Get all apps including agent apps (for App Store)
+ * Get all apps (same as core for now - clean slate)
  */
 export const getAllApps = (
   projectFolders: ProjectFolder[]
 ): AppDefinition[] => {
-  const builtInApps = Object.values(APPS_CONFIG);
+  return getCoreApps(projectFolders);
+};
 
-  const folderApps: AppDefinition[] = projectFolders.map((folder) => ({
-    id: folder.id as AppId,
-    name: folder.name,
-    icon: FolderOpen,
-    component: lazy(() => import("./apps/FolderView")),
-    description: `Project: ${folder.path}`,
-    isCustom: true,
-  }));
 
-  return [...builtInApps, ...folderApps];
+
+/**
+ * Get apps for the floating sphere - just the potato comet
+ */
+export const getSphereApps = (
+  _projectFolders: ProjectFolder[]
+): any[] => {
+  return [{
+    id: 'potatoComet' as AppId,
+    name: 'Potato Comet',
+    icon: PotatoCometIcon,
+    description: 'A flaming potato hauling ass through the cosmos',
+  }];
 };

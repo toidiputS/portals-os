@@ -33,6 +33,7 @@ const useKernelStore = create<KernelState>()(
       hasWelcomed: false,
       collectedEmails: [],
       isSidebarOpen: false,
+      selectedPwa: null,
       isMatrixEffectActive: false,
       hasNewMessage: false,
       theme: "dark",
@@ -42,6 +43,55 @@ const useKernelStore = create<KernelState>()(
       currentPath: "/", // Current directory in virtual filesystem
 
       openWindow: (appId, size = { width: 600, height: 450 }, metadata) => {
+        // Check if window for this app already exists - focus it instead of creating duplicate
+        const existingWindow = get().windows.find(w => w.appId === appId);
+        if (existingWindow) {
+          // Focus the existing window and restore if minimized
+          set((state) => ({
+            windows: state.windows.map(w =>
+              w.id === existingWindow.id
+                ? { ...w, minimized: false, zIndex: state.nextZIndex }
+                : w
+            ),
+            nextZIndex: state.nextZIndex + 1,
+            activeWindowId: existingWindow.id,
+            isStartMenuOpen: false,
+            isSidebarOpen: false,
+          }));
+          return;
+        }
+
+        // Calculate spawn position based on app type
+        const screenWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+        const screenHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
+
+        let position: { x: number; y: number };
+
+        // Oracle always spawns top-right corner
+        if (appId === 'oracle') {
+          position = {
+            x: screenWidth - size.width - 20, // 20px from right edge
+            y: 20 // 20px from top
+          };
+        } else {
+          // Stack windows in a VERTICAL COLUMN - each window below previous
+          const existingLeftWindows = get().windows.filter(w =>
+            w.appId !== 'oracle'
+          );
+
+          const windowCount = existingLeftWindows.length;
+
+          // Use fixed vertical offset so windows show title bars like a card deck
+          const VERTICAL_OFFSET = 40; // Just enough to see the title bar
+
+          position = {
+            x: 20, // All windows at left edge
+            y: 20 + (windowCount * VERTICAL_OFFSET) // Stack in column
+          };
+
+          console.log(`[WINDOW STACK] Opening ${appId} - existing windows: ${windowCount}, Y position: ${position.y}`);
+        }
+
         const newWindow: WindowInstance = {
           id: nanoid(),
           appId,
@@ -51,10 +101,7 @@ const useKernelStore = create<KernelState>()(
               .slice(1)
               .replace(/([A-Z])/g, " $1")
               .trim(),
-          position:
-            appId === "agentCards"
-              ? { x: 0, y: 50 }
-              : { x: Math.random() * 200 + 50, y: Math.random() * 100 + 50 },
+          position,
           size,
           zIndex: get().nextZIndex,
           minimized: false,
@@ -323,7 +370,13 @@ const useKernelStore = create<KernelState>()(
           isSidebarOpen: !state.isSidebarOpen,
           isStartMenuOpen: false,
         })),
-      closeSidebar: () => set({ isSidebarOpen: false }),
+      closeSidebar: () => set({ isSidebarOpen: false, selectedPwa: null }),
+      openPwaSidebar: (pwa) =>
+        set({
+          isSidebarOpen: true,
+          selectedPwa: pwa,
+          isStartMenuOpen: false,
+        }),
       toggleMatrixEffect: (status) => set({ isMatrixEffectActive: status }),
       setHasNewMessage: (status) => set({ hasNewMessage: status }),
       toggleTheme: () =>

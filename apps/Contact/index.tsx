@@ -37,13 +37,13 @@ const Contact: React.FC = () => {
     };
 
     return (
-        <div className="p-8 h-full flex items-center justify-center bg-transparent">
+        <div className="p-8 h-full overflow-y-auto">
             {!isSent ? (
                 <motion.form
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     onSubmit={handleSubmit}
-                    className="w-full max-w-lg space-y-4"
+                    className="w-full max-w-lg mx-auto space-y-4"
                 >
                     <div>
                         <h1 className="text-3xl font-bold">Contact Me</h1>

@@ -109,6 +109,8 @@ const FileManager: React.FC = () => {
                 <div className="relative">
                     <Search size={16} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground-hsl))]" />
                     <input
+                        id="searchInput"
+                        name="search"
                         type="text"
                         placeholder="Search..."
                         value={searchQuery}

@@ -1,23 +1,23 @@
-import React, { lazy, Suspense, useEffect, useRef } from "react";
+import React, { lazy, Suspense, useEffect, useRef, useCallback, useState } from "react";
 import "./index.css";
 import { useKernel } from "./store/kernel";
 import Desktop from "./components/Desktop";
-import Taskbar from "./components/Taskbar";
 import Window from "./components/Window";
 import WelcomeScreen from "./components/WelcomeScreen";
 import Sidebar from "./components/Sidebar";
 import VoiceAssistant from "./components/VoiceAssistant";
 import VoiceAssistantOverlay from "./components/VoiceAssistantOverlay";
-import OracleChatWidget from "./components/OracleChatWidget";
+
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getAllApps } from "./apps.config";
-import { usePerformanceMonitor, performanceMonitor } from "./lib/performanceUtils";
+import {
+  usePerformanceMonitor,
+  performanceMonitor,
+  PerformanceMetrics,
+} from "./lib/performanceUtils";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
-// Conditionally import 21st extension only if VSCode integration is needed
-// import { TwentyFirstToolbar } from "@21st-extension/toolbar-react";
-// import { ReactPlugin } from "@21st-extension/react";
 
 const App: React.FC = () => {
   const windows = useKernel((state) => state.windows);
@@ -26,16 +26,26 @@ const App: React.FC = () => {
   const projectFolders = useKernel((state) => state.projectFolders);
 
   const theme = useKernel((state) => state.theme);
+  const lastPerformanceLogTime = useRef(0);
 
-  // Performance monitoring
-  usePerformanceMonitor((metrics) => {
-    if (metrics.fps < 30) {
-      console.warn(`Performance warning: ${metrics.fps}fps`);
+  // Performance monitoring callback - memoized to prevent multiple subscriptions
+  const performanceCallback = useCallback((metrics: PerformanceMetrics) => {
+    // Throttle logging to reduce console spam
+    const now = performance.now();
+    if (now - lastPerformanceLogTime.current > 5000) {
+      if (metrics.fps < 30) {
+        console.warn(`Performance warning: ${metrics.fps}fps`);
+      }
+      if (metrics.memoryUsage && metrics.memoryUsage > 150) {
+        console.warn(`Memory usage high: ${metrics.memoryUsage}MB`);
+      }
+      lastPerformanceLogTime.current = now;
     }
-    if (metrics.memoryUsage && metrics.memoryUsage > 150) {
-      console.warn(`Memory usage high: ${metrics.memoryUsage}MB`);
-    }
-  });
+  }, []);
+
+  usePerformanceMonitor(performanceCallback);
+
+
 
   useEffect(() => {
     // Start performance monitoring
@@ -64,32 +74,40 @@ const App: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 3 }}
-          className="h-screen w-screen overflow-hidden bg-black font-sans"
+          className="fixed inset-0 overflow-hidden bg-black font-sans"
         >
           <Desktop>
             {windows.map((win) => {
               const allApps = getAllApps(projectFolders);
-              const appDef = allApps.find(app => app.id === win.appId);
+              const appDef = allApps.find((app) => app.id === win.appId);
               const App = appDef?.component;
               if (!App) return null;
               return (
-                <Window key={win.id} {...win}>
-                  <Suspense
-                    fallback={<div className="p-4">Loading App...</div>}
-                  >
-                    <App metadata={win.metadata} />
-                  </Suspense>
+                <Window key={win.id || `window-${win.appId}-${Math.random()}`} {...win}>
+                  <ErrorBoundary>
+                    <Suspense
+                      fallback={
+                        <div className="h-full flex items-center justify-center bg-[hsl(var(--window-bg-hsl))] text-[hsl(var(--foreground-hsl))]">
+                          <div className="text-center">
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mb-4"></div>
+                            <p>Loading App...</p>
+                          </div>
+                        </div>
+                      }
+                    >
+                      <App metadata={win.metadata} />
+                    </Suspense>
+                  </ErrorBoundary>
                 </Window>
               );
             })}
           </Desktop>
 
           <Sidebar />
-          <Taskbar />
           <VoiceAssistant />
           <VoiceAssistantOverlay />
-          {/* TwentyFirstToolbar disabled to prevent WebSocket reconnection lag */}
-          {/* <TwentyFirstToolbar config={{ plugins: [ReactPlugin] }} /> */}
+
+
         </motion.div>
       )}
       <Analytics />

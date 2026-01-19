@@ -49,29 +49,14 @@
 /* Letters */
 .ui-anim-letter {
   color: #ffffff88;
-  animation: ui-letter-anim 2s ease-in-out infinite;
-  transition: color var(--transition), text-shadow var(--transition),
-    opacity var(--transition);
+  /* Removed infinite animation to reduce performance impact */
+  transition: color 0.3s ease, text-shadow 0.3s ease, opacity 0.3s ease;
 }
 
-@keyframes ui-letter-anim {
-  50% {
-    text-shadow: 0 0 3px #fff8;
-    color: #fff;
-  }
-}
-
-/* SVG flicker */
+/* SVG flicker - removed infinite animation for performance */
 .ui-anim-btn-svg {
   filter: drop-shadow(0 0 2px #fff9);
-  animation: ui-flicker 2s linear infinite;
-  animation-delay: 0.5s;
-}
-
-@keyframes ui-flicker {
-  50% {
-    opacity: 0.3;
-  }
+  /* Removed animation to reduce performance impact */
 }
 
 /* Text layers */
@@ -238,3 +223,4 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+

@@ -1,5 +1,5 @@
-import React, { useMemo, useRef, useEffect } from "react";
-import { motion, PanInfo, useMotionValue, useSpring } from "framer-motion";
+import React, { useMemo, useRef, useEffect, useState } from "react";
+import { motion, PanInfo } from "framer-motion";
 import { X, Square, Minus, Copy } from "lucide-react";
 import { useKernel } from "../store/kernel";
 import { WindowInstance } from "../types";
@@ -7,8 +7,8 @@ import { APPS } from "../apps.config";
 import { GlowCard } from "./GlowCard";
 
 const windowVariants = {
-  hidden: { opacity: 0, scale: 0.9, y: 20 },
-  visible: { opacity: 1, scale: 1, y: 0 },
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1 },
   minimized: { opacity: 0, scale: 0.8, y: 300, transition: { duration: 0.2 } },
 };
 
@@ -34,22 +34,19 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
 
   const app = useMemo(() => APPS.find((a) => a.id === appId), [appId]);
 
-  // Motion values for direct manipulation without re-renders
-  const x = useMotionValue(position.x);
-  const y = useMotionValue(position.y);
-  const width = useMotionValue(size.width);
-  const height = useMotionValue(size.height);
+  // Local state for position and size during drag/resize
+  const [localPos, setLocalPos] = useState({ x: position.x, y: position.y });
+  const [localSize, setLocalSize] = useState({ width: size.width, height: size.height });
 
-  // Sync motion values when props change (e.g. from store updates or snapping)
+  // Sync local state when props change (e.g. from store updates or snapping)
   useEffect(() => {
-    x.set(position.x);
-    y.set(position.y);
-  }, [position.x, position.y, x, y]);
+    console.log(`[WINDOW] Position update for ${title}: x=${position.x}, y=${position.y}`);
+    setLocalPos({ x: position.x, y: position.y });
+  }, [position.x, position.y, title]);
 
   useEffect(() => {
-    width.set(size.width);
-    height.set(size.height);
-  }, [size.width, size.height, width, height]);
+    setLocalSize({ width: size.width, height: size.height });
+  }, [size.width, size.height]);
 
   // Keyboard shortcut to restore maximized window
   useEffect(() => {
@@ -70,18 +67,15 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
       const pointerX = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
 
       // Restore size immediately for visual feedback
-      width.set(preSnapSize.width);
-      height.set(preSnapSize.height);
+      setLocalSize(preSnapSize);
 
       // Calculate new X to keep mouse relative position proportional
-      const currentWidth = size.width; // Snapped width (e.g. screen width)
-      const relativeX = pointerX - position.x;
+      const currentWidth = size.width;
+      const relativeX = pointerX - localPos.x;
       const ratio = relativeX / currentWidth;
       const newX = pointerX - (ratio * preSnapSize.width);
 
-      x.set(newX);
-      // Keep Y as is (usually 0 if maximized), or maybe adjust to keep titlebar under mouse?
-      // For now, keeping Y as is (0) is fine, the drag will add delta to it.
+      setLocalPos({ x: newX, y: localPos.y });
     }
   };
 
@@ -89,30 +83,16 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
     e: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
-    if (isSnapped) {
-      // If dragging while snapped, unsnap but keep relative position
-      // This is complex to do perfectly without a store update, 
-      // so we might just let the user drag and it will feel "stuck" until they move enough?
-      // Or better: calculate where it WOULD be.
-      // For now, let's just allow dragging to update the visual position
-      // and unsnap on end if moved significantly.
-      // Actually, standard OS behavior: dragging a maximized window unsnaps it immediately.
-      // But we can't easily update store mid-drag without freezing.
-      // So we'll just update local x/y.
-    }
-
-    const currentX = x.get();
-    const currentY = y.get();
-    x.set(currentX + info.delta.x);
-    y.set(currentY + info.delta.y);
+    setLocalPos(prev => ({
+      x: prev.x + info.delta.x,
+      y: prev.y + info.delta.y
+    }));
   };
 
   const handleDragEnd = (
     e: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
-    const currentX = x.get();
-    const currentY = y.get();
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
@@ -130,7 +110,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
     // Corner snap
     const cornerSnapZone = 20;
     const isTopCorner = pointerY < cornerSnapZone;
-    const isBottomCorner = pointerY > screenHeight - 48 - cornerSnapZone; // 48 is taskbar height
+    const isBottomCorner = pointerY > screenHeight - 48 - cornerSnapZone;
 
     if (pointerX < cornerSnapZone && isTopCorner) return snapWindow(id, "topLeft");
     if (pointerX > screenWidth - cornerSnapZone && isTopCorner) return snapWindow(id, "topRight");
@@ -139,12 +119,11 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
 
     // If we get here, we are NOT snapping to a zone.
     if (isSnapped) {
-      // We moved but didn't snap to a new zone -> Unsnap
       snapWindow(id, "none");
     }
 
-    // Always update position (if not snapped to a zone)
-    updateWindowPosition(id, { x: currentX, y: currentY });
+    // Always update position in store
+    updateWindowPosition(id, localPos);
   };
 
   const handleMaximizeToggle = () => {
@@ -152,70 +131,62 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
   };
 
   const handleResize = (info: PanInfo, direction: string) => {
-    const currentWidth = width.get();
-    const currentHeight = height.get();
-    const currentX = x.get();
-    const currentY = y.get();
-
-    let newWidth = currentWidth;
-    let newHeight = currentHeight;
-    let newX = currentX;
-    let newY = currentY;
+    let newWidth = localSize.width;
+    let newHeight = localSize.height;
+    let newX = localPos.x;
+    let newY = localPos.y;
 
     const minWidth = 300;
     const minHeight = 200;
 
     if (direction.includes("right")) {
-      newWidth = Math.max(minWidth, currentWidth + info.delta.x);
+      newWidth = Math.max(minWidth, localSize.width + info.delta.x);
     }
     if (direction.includes("bottom")) {
-      newHeight = Math.max(minHeight, currentHeight + info.delta.y);
+      newHeight = Math.max(minHeight, localSize.height + info.delta.y);
     }
     if (direction.includes("left")) {
-      const updatedWidth = currentWidth - info.delta.x;
+      const updatedWidth = localSize.width - info.delta.x;
       if (updatedWidth >= minWidth) {
         newWidth = updatedWidth;
-        newX = currentX + info.delta.x;
+        newX = localPos.x + info.delta.x;
       }
     }
     if (direction.includes("top")) {
-      const updatedHeight = currentHeight - info.delta.y;
+      const updatedHeight = localSize.height - info.delta.y;
       if (updatedHeight >= minHeight) {
         newHeight = updatedHeight;
-        newY = currentY + info.delta.y;
+        newY = localPos.y + info.delta.y;
       }
     }
 
-    width.set(newWidth);
-    height.set(newHeight);
-    x.set(newX);
-    y.set(newY);
+    setLocalSize({ width: newWidth, height: newHeight });
+    setLocalPos({ x: newX, y: newY });
   };
 
   const handleResizeEnd = () => {
-    updateWindowSize(id, { width: width.get(), height: height.get() });
-    updateWindowPosition(id, { x: x.get(), y: y.get() });
+    updateWindowSize(id, localSize);
+    updateWindowPosition(id, localPos);
   };
 
   const Icon = app?.icon;
 
   return (
     <motion.div
-      layout={false} // Disable layout animation to prevent conflicts with manual sizing
+      layout={false}
       variants={windowVariants}
       initial="hidden"
       animate={minimized ? "minimized" : "visible"}
       exit="hidden"
       transition={{ type: "spring", stiffness: 700, damping: 40 }}
-      className="absolute flex flex-col" // Removed visual styles, kept layout
+      className="absolute flex flex-col"
       style={{
         zIndex,
         filter: isMatrixEffectActive ? "blur(8px)" : "none",
-        width,
-        height,
-        x, // Use motion value for x
-        y, // Use motion value for y
-        // Remove top/left from style as we use x/y transform
+        width: localSize.width,
+        height: localSize.height,
+        left: localPos.x,
+        top: localPos.y,
       }}
       onMouseDownCapture={() => focusWindow(id)}
     >
@@ -229,14 +200,18 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
           onPan={handleDrag}
           onPanEnd={handleDragEnd}
           onDoubleClick={handleMaximizeToggle}
-          className={`h-8 flex items-center justify-between pl-2 select-none shrink-0 ${
-            snapState === "maximized"
-              ? "bg-black/80 border-b border-white/20"
-              : "bg-black/20"
-          }`}
-          style={{ cursor: "grab", touchAction: "none" }}
+          className={`h-8 flex items-center justify-between pl-2 select-none shrink-0 border-b ${snapState === "maximized"
+            ? "border-white/20"
+            : "border-white/10"
+            }`}
+          style={{
+            cursor: "grab",
+            touchAction: "none",
+            backgroundColor: "hsl(var(--window-header-hsl))",
+            color: "hsl(var(--window-header-foreground-hsl))"
+          }}
         >
-          <div className="flex items-center gap-2 pointer-events-none text-[hsl(var(--foreground-hsl))]">
+          <div className="flex items-center gap-2 pointer-events-none text-[hsl(var(--window-header-foreground-hsl))]">
             {Icon && <Icon className="w-4 h-4" />}
             <span className="text-sm font-medium">{title}</span>
           </div>
@@ -284,42 +259,58 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
           <motion.div
             onPan={(e, info) => handleResize(info, "left")}
             onPanEnd={handleResizeEnd}
-            className="absolute -left-1 top-0 bottom-0 w-3 cursor-ew-resize z-20"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -left-1 top-0 bottom-0 w-3 cursor-ew-resize z-20 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "right")}
             onPanEnd={handleResizeEnd}
-            className="absolute -right-1 top-0 bottom-0 w-3 cursor-ew-resize z-20"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -right-1 top-0 bottom-0 w-3 cursor-ew-resize z-20 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "top")}
             onPanEnd={handleResizeEnd}
-            className="absolute -top-1 left-0 right-0 h-3 cursor-ns-resize z-20"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -top-1 left-0 right-0 h-3 cursor-ns-resize z-20 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "bottom")}
             onPanEnd={handleResizeEnd}
-            className="absolute -bottom-1 left-0 right-0 h-3 cursor-ns-resize z-20"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -bottom-1 left-0 right-0 h-3 cursor-ns-resize z-20 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "topLeft")}
             onPanEnd={handleResizeEnd}
-            className="absolute -top-1 -left-1 w-4 h-4 cursor-nwse-resize z-30"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -top-1 -left-1 w-4 h-4 cursor-nwse-resize z-30 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "topRight")}
             onPanEnd={handleResizeEnd}
-            className="absolute -top-1 -right-1 w-4 h-4 cursor-nesw-resize z-30"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -top-1 -right-1 w-4 h-4 cursor-nesw-resize z-30 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "bottomLeft")}
             onPanEnd={handleResizeEnd}
-            className="absolute -bottom-1 -left-1 w-4 h-4 cursor-nesw-resize z-30"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -bottom-1 -left-1 w-4 h-4 cursor-nesw-resize z-30 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
           <motion.div
             onPan={(e, info) => handleResize(info, "bottomRight")}
             onPanEnd={handleResizeEnd}
-            className="absolute -bottom-1 -right-1 w-4 h-4 cursor-nwse-resize z-30"
+            onPointerDown={(e) => e.preventDefault()}
+            className="absolute -bottom-1 -right-1 w-4 h-4 cursor-nwse-resize z-30 select-none"
+            style={{ userSelect: 'none', WebkitUserSelect: 'none' }}
           />
         </>
       )}

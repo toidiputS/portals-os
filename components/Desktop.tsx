@@ -1,42 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Desktop.css";
 import { useKernel } from "../store/kernel";
-import SphereImageGrid from "./SphereImageGrid"; // Import SphereImageGrid
 import ContextMenu from "./ContextMenu";
 import MatrixRain from "./MatrixRain";
-
 import Taskbar from "./Taskbar";
-import StartMenu from "./StartMenu";
-import { getAllApps } from "../apps.config";
+import SphereImageGrid from "./SphereImageGrid";
+
+import { PortalLayout } from "./PortalLayout";
+import SpeedBumpTaskbar from "./SpeedBumpTaskbar";
+import { CircleMenu } from "./CircleMenu";
+import StartMenuCircle from "./StartMenuCircle";
+import SystemTray from "./SystemTray";
 import { PORTAL_BACKGROUNDS } from "../constants";
-import {
-  A,
-  B,
-  C,
-  D,
-  E,
-  F,
-  G,
-  H,
-  I,
-  J,
-  K,
-  L,
-  M,
-  N,
-  O,
-  P,
-  Q,
-  R,
-  S,
-  T,
-  U,
-  V,
-  W,
-  X,
-  Y,
-  Z,
-} from "./icons";
+import { getSphereApps } from "../apps.config";
 
 interface ContextMenuState {
   visible: boolean;
@@ -55,13 +31,25 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const closeSidebar = useKernel((state) => state.closeSidebar);
   const theme = useKernel((state) => state.theme);
   const projectFolders = useKernel((state) => state.projectFolders);
+  const openPwaSidebar = useKernel((state) => state.openPwaSidebar);
+
+  // Ref for the sphere container (for CometPotato)
+  const sphereContainerRef = useRef<HTMLDivElement>(null);
 
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
     visible: false,
     x: 0,
     y: 0,
   });
-  const [sphereKey, setSphereKey] = useState(0); // Force re-render on resize
+
+  // CircleMenu state for external control
+  const [isCircleMenuOpen, setIsCircleMenuOpen] = useState(false);
+
+  // App Menu state (circular app spawner from Taskbar)
+  const [isAppMenuOpen, setIsAppMenuOpen] = useState(false);
+
+  // Oracle Chat state
+  const [isOracleChatOpen, setIsOracleChatOpen] = useState(false);
 
   // Initialize bgIndex based on current wallpaper in store, or default to 0
   const [bgIndex, setBgIndex] = useState(() => {
@@ -76,6 +64,7 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       setBgIndex(index);
     }
   }, [wallpaper]);
+
   const wallpaperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -106,21 +95,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setBgIndex((prev) => (prev + 1) % PORTAL_BACKGROUNDS.length);
   };
 
-  // Disabled parallax effect to keep sphere in fixed position
-  // useEffect(() => {
-  //   const handleMouseMove = (e: MouseEvent) => {
-  //     if (!wallpaperRef.current || isMatrixEffectActive) return;
-  //     const { clientX, clientY } = e;
-  //     const { innerWidth, innerHeight } = window;
-  //     const moveX = (clientX / innerWidth - 0.5) * 30;
-  //     const moveY = (clientY / innerHeight - 0.5) * 30;
-  //     wallpaperRef.current.style.transform = `translate(${-moveX}px, ${-moveY}px) scale(1.05)`;
-  //   };
-
-  //   window.addEventListener("mousemove", handleMouseMove);
-  //   return () => window.removeEventListener("mousemove", handleMouseMove);
-  // }, [isMatrixEffectActive]);
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isMatrixEffectActive) {
@@ -130,15 +104,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isMatrixEffectActive, toggleMatrixEffect]);
-
-  // Handle window resize (including zoom) to keep sphere centered
-  useEffect(() => {
-    const handleResize = () => {
-      setSphereKey((prev) => prev + 1);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -154,223 +119,113 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <main
-      className={`absolute inset-0 h-full w-full ${theme}`}
-      onContextMenu={handleContextMenu}
-      onClick={handleClick}
+    <PortalLayout
+      backgroundImage={wallpaper}
+      portalImage="/assets/images/you.png"
+      showPortal={true}
     >
-      {isMatrixEffectActive && <MatrixRain />}
-      <div
-        ref={wallpaperRef}
-        className={`wallpaper absolute inset-5 bg-cover bg-center transition-transform duration-300 ease-out ${
-          isMatrixEffectActive ? "matrix-effect" : ""
-        }`}
-      />
+      <main
+        className={`absolute inset-0 h-full w-full ${theme}`}
+        onContextMenu={handleContextMenu}
+        onClick={handleClick}
+      >
+        {isMatrixEffectActive && <MatrixRain />}
 
-      <SphereImageGrid
-        key={sphereKey}
-        apps={(() => {
-          const allApps = getAllApps(projectFolders);
-          // Filter out all alphabet apps (a-z) except "c" (calculator) - they will be replaced with agent icons
-          const coreApps = allApps.filter((app) => !["a", "b", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"].includes(app.id));
+        <div
+          ref={sphereContainerRef}
+          className="absolute inset-0 flex items-center justify-center"
+          style={{ transform: 'translateY(20vh) translateX(-5vw)' }}
+        >
+          <SphereImageGrid
+            apps={getSphereApps(projectFolders)}
+            onAppClick={(appId) => openWindow(appId)}
+            containerSize={800}
+            sphereRadius={420}
+          />
 
-          // Add all agent apps with glassmorphic icons (keeping Calculator C as original)
-          const agentApps = [
-            {
-              id: "a" as const,
-              name: "Angle",
-              icon: A,
-              description: "Audience Analysis Agent",
-            },
-            {
-              id: "b" as const,
-              name: "Blueprint",
-              icon: B,
-              description: "Blueprint Design Agent",
-            },
-            {
-              id: "d" as const,
-              name: "Draft",
-              icon: D,
-              description: "Content Drafting Agent",
-            },
-            {
-              id: "e" as const,
-              name: "Envoy",
-              icon: E,
-              description: "Outreach Communication Agent",
-            },
-            {
-              id: "f" as const,
-              name: "Flo",
-              icon: F,
-              description: "Content Flow Agent",
-            },
-            {
-              id: "g" as const,
-              name: "Grind",
-              icon: G,
-              description: "Operations Grind Agent",
-            },
-            {
-              id: "h" as const,
-              name: "Halo",
-              icon: H,
-              description: "Digital Halo Agent",
-            },
-            {
-              id: "i" as const,
-              name: "Insight",
-              icon: I,
-              description: "Analytics Insight Agent",
-            },
-            {
-              id: "j" as const,
-              name: "Judge",
-              icon: J,
-              description: "Legal Judge Agent",
-            },
-            {
-              id: "k" as const,
-              name: "Kite",
-              icon: K,
-              description: "Cloud Kite Agent",
-            },
-            {
-              id: "l" as const,
-              name: "Lumen",
-              icon: L,
-              description: "Life Lumen Agent",
-            },
-            {
-              id: "m" as const,
-              name: "Matrix",
-              icon: M,
-              description: "Markets Matrix Agent",
-            },
-            {
-              id: "n" as const,
-              name: "Nexus",
-              icon: N,
-              description: "Networks Nexus Agent",
-            },
-            {
-              id: "o" as const,
-              name: "Oracle",
-              icon: O,
-              description: "Oracle Agent",
-            },
-            {
-              id: "p" as const,
-              name: "Pixel",
-              icon: P,
-              description: "Photo Pixel Agent",
-            },
-            {
-              id: "q" as const,
-              name: "Quest",
-              icon: Q,
-              description: "Quest Agent",
-            },
-            {
-              id: "r" as const,
-              name: "Rise",
-              icon: R,
-              description: "Robots Rise Agent",
-            },
-            {
-              id: "s" as const,
-              name: "Spark",
-              icon: S,
-              description: "Systems Spark Agent",
-            },
-            {
-              id: "t" as const,
-              name: "Thread",
-              icon: T,
-              description: "Threads Agent",
-            },
-            {
-              id: "u" as const,
-              name: "Unity",
-              icon: U,
-              description: "Unified Unity Agent",
-            },
-            {
-              id: "v" as const,
-              name: "Vector",
-              icon: V,
-              description: "Video Vector Agent",
-            },
-            {
-              id: "w" as const,
-              name: "Wave",
-              icon: W,
-              description: "Worlds Wave Agent",
-            },
-            {
-              id: "x" as const,
-              name: "Xenon",
-              icon: X,
-              description: "Experiments Xenon Agent",
-            },
-            {
-              id: "y" as const,
-              name: "Yonder",
-              icon: Y,
-              description: "Your Yonder Agent",
-            },
-            {
-              id: "z" as const,
-              name: "Zenith",
-              icon: Z,
-              description: "Zone Zenith Agent",
-            },
-          ];
+        </div>
 
-          // Combine core apps with agent apps
-          const combinedApps = [...coreApps, ...agentApps];
+        {children}
 
-          // Put Oracle first for center positioning
-          const oracleIndex = combinedApps.findIndex(
-            (app) => app.id === "oracle"
-          );
-          if (oracleIndex > 0) {
-            const oracle = combinedApps.splice(oracleIndex, 1)[0];
-            combinedApps.unshift(oracle);
-          }
+        {contextMenu.visible && (
+          <ContextMenu
+            x={contextMenu.x}
+            y={contextMenu.y}
+            onClose={() => setContextMenu({ ...contextMenu, visible: false })}
+            onNextWallpaper={nextWallpaper}
+          />
+        )}
 
-          return combinedApps;
-        })()}
-        onAppClick={openWindow}
-        containerSize={Math.min(window.innerWidth, window.innerHeight) * 0.8}
-        sphereRadius={Math.min(window.innerWidth, window.innerHeight) * 0.25}
-        autoRotate={true}
-      />
-
-      {children}
-
-      {contextMenu.visible && (
-        <ContextMenu
-          x={contextMenu.x}
-          y={contextMenu.y}
-          onClose={() => setContextMenu({ ...contextMenu, visible: false })}
-          onNextWallpaper={nextWallpaper}
-        />
-      )}
-
-      {/* AI Presence Indicator */}
-      <div
-        className={`ai-indicator fixed top-4 right-4 h-6 w-6 rounded-full bg-[hsl(var(--accent-hsl))] transition-all duration-500 ease-in-out z-30 ${
-          gemini.isLoading
+        {/* AI Presence Indicator */}
+        <div
+          className={`ai-indicator fixed top-4 right-4 h-6 w-6 rounded-full bg-[hsl(var(--accent-hsl))] transition-all duration-500 ease-in-out z-30 ${gemini.isLoading
             ? "opacity-100 scale-100 loading"
             : "opacity-0 scale-0"
-        }`}
-      />
+            }`}
+        />
 
-      <StartMenu />
-      <Taskbar />
-    </main>
+        <Taskbar />
+
+        {/* System Tray - bottom-right */}
+        <SystemTray />
+
+        {/* Start Menu Circle - pops from left speed bump */}
+        <StartMenuCircle
+          isOpen={isAppMenuOpen}
+          onClose={() => setIsAppMenuOpen(false)}
+          onAppClick={(appId) => openWindow(appId)}
+        />
+
+        {/* Speed Bump Taskbar - half-exposed buttons at the feet */}
+        <SpeedBumpTaskbar
+          onCircleMenuClick={() => setIsCircleMenuOpen(!isCircleMenuOpen)}
+          isCircleMenuOpen={isCircleMenuOpen}
+          onStartMenuClick={() => setIsAppMenuOpen(!isAppMenuOpen)}
+          isStartMenuOpen={isAppMenuOpen}
+        />
+
+        {/* CircleMenu - spirals up into the portal when activated */}
+
+        {/* CircleMenu - spirals up into the portal when activated */}
+        {(() => {
+          const grandchildren = [
+            { label: 'Sub 1', icon: <span className="text-[10px]">1</span>, href: '#' },
+            { label: 'Sub 2', icon: <span className="text-[10px]">2</span>, href: '#' },
+            { label: 'Sub 3', icon: <span className="text-[10px]">3</span>, href: '#' },
+            { label: 'Sub 4', icon: <span className="text-[10px]">4</span>, href: '#' },
+            { label: 'Sub 5', icon: <span className="text-[10px]">5</span>, href: '#' }
+          ];
+          const vipChildren = [
+            ...grandchildren,
+            { label: 'BOO (Wiki)', icon: <span className="text-[10px]">W</span>, href: '#' }
+          ];
+          return (
+            <CircleMenu
+              items={[
+                { label: 'VIP-AIFred', icon: <span className="text-sm font-bold">VIP</span>, href: '#', children: vipChildren },
+                { label: 'Alpha', icon: <span className="text-sm font-bold">A</span>, href: '#', children: grandchildren },
+                { label: 'Beta', icon: <span className="text-sm font-bold">B</span>, href: '#', children: grandchildren },
+                { label: 'Delta', icon: <span className="text-sm font-bold">D</span>, href: '#', children: grandchildren },
+                { label: 'Epsilon', icon: <span className="text-sm font-bold">E</span>, href: '#', children: grandchildren },
+                { label: 'Gamma', icon: <span className="text-sm font-bold">G</span>, href: '#', children: grandchildren },
+                { label: 'Kappa', icon: <span className="text-sm font-bold">Κ</span>, href: '#', children: grandchildren },
+                { label: 'Oracle', icon: <span className="text-sm font-bold">ORC</span>, href: '#' },
+                { label: 'Lambda', icon: <span className="text-sm font-bold">L</span>, href: '#', children: grandchildren },
+                { label: 'Omni', icon: <span className="text-sm font-bold">O</span>, href: '#', children: grandchildren },
+                { label: 'Pi', icon: <span className="text-sm font-bold">P</span>, href: '#', children: grandchildren },
+                { label: 'Rho', icon: <span className="text-sm font-bold">R</span>, href: '#', children: grandchildren },
+                { label: 'Sigma', icon: <span className="text-sm font-bold">S</span>, href: '#', children: grandchildren },
+                { label: 'Tau', icon: <span className="text-sm font-bold">Τ</span>, href: '#', children: grandchildren }
+              ]}
+              isOpen={isCircleMenuOpen}
+              setIsOpen={setIsCircleMenuOpen}
+              showTrigger={false}
+              onGrandchildClick={(pwa) => openPwaSidebar(pwa)}
+            />
+          );
+        })()}
+      </main>
+    </PortalLayout>
   );
 };
 

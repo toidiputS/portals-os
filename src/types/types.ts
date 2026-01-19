@@ -1,42 +1,13 @@
-// Built-in app IDs
+// Built-in app IDs - CLEAN SLATE: Only the 6 core apps
 export type BuiltInAppId =
-  | "geminiChat"
+  | "oracle"
+  | "notionLike"
   | "terminal"
-  | "contact"
   | "markdownEditor"
-  | "settings"
-  | "appStore"
+  | "contact"
   | "fileManager"
   | "fileViewer"
-  | "oracle"
-  | "agentCards"
-  | "notionLike"
-  | "a"
-  | "b"
-  | "c"
-  | "d"
-  | "e"
-  | "f"
-  | "g"
-  | "h"
-  | "i"
-  | "j"
-  | "k"
-  | "l"
-  | "m"
-  | "n"
-  | "o"
-  | "p"
-  | "q"
-  | "r"
-  | "s"
-  | "t"
-  | "u"
-  | "v"
-  | "w"
-  | "x"
-  | "y"
-  | "z";
+  | "settings";
 
 // Allow dynamic folder IDs like "folder:my-project"
 export type AppId = BuiltInAppId | `folder:${string}`;
@@ -100,14 +71,14 @@ export interface WindowInstance {
   zIndex: number;
   minimized: boolean;
   snapState:
-    | "none"
-    | "maximized"
-    | "topLeft"
-    | "topRight"
-    | "bottomLeft"
-    | "bottomRight"
-    | "left"
-    | "right";
+  | "none"
+  | "maximized"
+  | "topLeft"
+  | "topRight"
+  | "bottomLeft"
+  | "bottomRight"
+  | "left"
+  | "right";
   preSnapPosition?: { x: number; y: number };
   preSnapSize?: { width: number; height: number };
   metadata?: any; // Optional data passed to app (e.g., file path)

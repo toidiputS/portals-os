@@ -1,0 +1,19 @@
+/* Ripple animation styles for WelcomeScreen.tsx */
+@keyframes ripple-animation {
+  0% { transform: scale(0); opacity: 0.3; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.animate-ripple-effect { 
+  animation: ripple-animation 600ms ease-out forwards; 
+}
+
+.ripple-dark {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ripple-light {
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}

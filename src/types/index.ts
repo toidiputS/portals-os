@@ -1,2 +1,2 @@
-export * from './types.ts';
-export * from './kernel.ts';
+export * from './types';
+export * from './kernel';

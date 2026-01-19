@@ -47,6 +47,7 @@ export interface KernelState {
   hasWelcomed: boolean;
   collectedEmails: string[];
   isSidebarOpen: boolean;
+  selectedPwa: { id: string; label: string; parentLabel: string } | null;
   isMatrixEffectActive: boolean;
   hasNewMessage: boolean;
   theme: Theme;
@@ -100,6 +101,7 @@ export interface KernelState {
   addEmail: (email: string) => void;
   toggleSidebar: () => void;
   closeSidebar: () => void;
+  openPwaSidebar: (pwa: { id: string; label: string; parentLabel: string }) => void;
   toggleMatrixEffect: (status: boolean) => void;
   setHasNewMessage: (status: boolean) => void;
   toggleTheme: () => void;

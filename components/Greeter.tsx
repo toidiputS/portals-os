@@ -10,11 +10,17 @@ const Greeter: React.FC<GreeterProps> = ({ onEmailSubmit }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateEmail(email)) {
-      playAudio(welcomeAudio, 44100);
-      onEmailSubmit(email);
+      try {
+        await playAudio(welcomeAudio, 44100);
+        onEmailSubmit(email);
+      } catch (error) {
+        console.warn('Failed to play welcome audio:', error);
+        // Continue with email submission even if audio fails
+        onEmailSubmit(email);
+      }
     } else {
       setError('Please enter a valid email address.');
     }
@@ -31,6 +37,8 @@ const Greeter: React.FC<GreeterProps> = ({ onEmailSubmit }) => {
       <p>Please enter your email to continue</p>
       <form onSubmit={handleSubmit}>
         <input
+          id="emailInput"
+          name="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

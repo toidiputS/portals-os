@@ -26,7 +26,7 @@ export const LaunchIconWrapper: React.FC<LaunchIconWrapperProps> = ({
   children,
   onLaunchComplete,
   triggerPortalFlare,
-  animationDurationMs = 300,
+  animationDurationMs = 2500,
   style,
   className,
   onMouseEnter,
@@ -51,7 +51,7 @@ export const LaunchIconWrapper: React.FC<LaunchIconWrapperProps> = ({
   useEffect(() => {
     if (!launching) return;
 
-    const totalDuration = animationDurationMs + 80;
+    const totalDuration = animationDurationMs;
 
     const timeout = setTimeout(() => {
       onLaunchCompleteRef.current();
@@ -82,16 +82,7 @@ export const LaunchIconWrapper: React.FC<LaunchIconWrapperProps> = ({
     }
   }, [warp]);
 
-  //
-  // 🔥 Apply external inline positioning (size/XY) from SphereImageGrid
-  //
-  useEffect(() => {
-    if (wrapperRef.current && style) {
-      for (const [key, val] of Object.entries(style)) {
-        wrapperRef.current.style.setProperty(key, val as string);
-      }
-    }
-  }, [style]);
+
 
   //
   // 🔥 Icon click → warp to portal center
@@ -107,25 +98,25 @@ export const LaunchIconWrapper: React.FC<LaunchIconWrapperProps> = ({
       const startX = rect.left + rect.width / 2;
       const startY = rect.top + rect.height / 2;
 
-      // Use real portal center if provided
-      const endX = warpTarget?.x ?? window.innerWidth / 2;
-      const endY = warpTarget?.y ?? window.innerHeight / 2;
+      // Always use screen center for portal destination
+      const endX = window.innerWidth / 2;
+      const endY = window.innerHeight / 2;
 
       // start particle at the icon
       setWarp({
         x: startX,
         y: startY,
-        scale: 0.8,
+        scale: 1,
         opacity: 1,
       });
 
-      // next frame → animate to portal center
+      // next frame → animate to portal center (stays there for 1 second)
       requestAnimationFrame(() => {
         setWarp({
           x: endX,
           y: endY,
-          scale: 0.3,
-          opacity: 0,
+          scale: 0.1,
+          opacity: 1,
         });
       });
     }
@@ -149,6 +140,7 @@ export const LaunchIconWrapper: React.FC<LaunchIconWrapperProps> = ({
           (launching ? " launch-icon-wrapper--launching" : "") +
           (className ? ` ${className}` : "")
         }
+        style={style}
         onClick={handleClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

@@ -125,15 +125,15 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   apps = [],
   onAppClick,
   containerSize = 500,
-  sphereRadius = 500,
+  sphereRadius = 800,
   dragSensitivity = 0.5,
-  momentumDecay = 0.95,
-  maxRotationSpeed = 5,
+  momentumDecay = 0.985, // Slippery - natural roll to a crawl (was 0.95)
+  maxRotationSpeed = 3,
   baseImageScale = 0.1,
   hoverScale = 2,
-  perspective = 300,
+  perspective = 50,
   autoRotate = true,
-  autoRotateSpeed = 0.05,
+  autoRotateSpeed = 0.4,
   className = "",
 }) => {
   // ==========================================
@@ -175,7 +175,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   // COMPUTED VALUES
   // ==========================================
 
-  const actualSphereRadius = sphereRadius || containerSize * 0.5;
+  const actualSphereRadius = sphereRadius || containerSize * 0.3;
   const baseImageSize = containerSize * baseImageScale;
 
   // ==========================================
@@ -185,7 +185,13 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   const generateSpherePositions = useCallback((): SphericalPosition[] => {
     const positions: SphericalPosition[] = [];
 
-    if (apps.length === 1) return positions;
+    if (apps.length === 1) {
+      return [{
+        theta: 0,
+        phi: 90,
+        radius: actualSphereRadius
+      }];
+    }
 
     // Sort apps alphabetically by ID (A-Z)
     const sortedApps = [...apps].sort((a, b) => {
@@ -252,8 +258,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       const worldPos: Position3D = { x, y, z };
 
-      const fadeZoneStart = -10;
-      const fadeZoneEnd = -30;
+      const fadeZoneStart = -150;
+      const fadeZoneEnd = -200;
       const isVisible = worldPos.z > fadeZoneEnd;
 
       let fadeOpacity = 1;
@@ -308,7 +314,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         const dy = pos.y - other.y;
         const distanceSquared = dx * dx + dy * dy;
         const maxCheckDistance = (imageSize + baseImageSize * other.scale) / 2 + 50;
-        
+
         if (distanceSquared > maxCheckDistance * maxCheckDistance) continue;
 
         const otherSize = baseImageSize * other.scale;
@@ -595,7 +601,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       return (
         <LaunchIconWrapper
-          key={app.id}
+          key={`${app.id}-${index}`}
           onLaunchComplete={() => onAppClick?.(app.id as AppId)}
           warpTarget={portalCenter}
           style={{
@@ -604,14 +610,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
             height: `${imageSize}px`,
             left: `${containerSize / 2}px`,
             top: `${containerSize / 2}px`,
-            opacity: position.fadeOpacity,
-            transform: `translate3d(${position.x}px, ${position.y}px, ${position.z}px) translate(-50%, -50%) scale(${finalScale})`,
-            zIndex: position.zIndex,
+            opacity: position.fadeOpacity ?? 1,
+            transform: `translate3d(${position.x ?? 0}px, ${position.y ?? 0}px, ${position.z ?? 0}px) translate(-50%, -50%) scale(${finalScale})`,
+            zIndex: position.zIndex ?? 0,
             cursor: "pointer",
           }}
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}
-          title={app.name && app.description ? `${app.name}: ${app.description}` : undefined}
+          title={app.name}
         >
           {app.icon && <app.icon className="w-full h-full" />}
         </LaunchIconWrapper>

@@ -15,13 +15,17 @@ class PerformanceMonitor {
   private callbacks: ((metrics: PerformanceMetrics) => void)[] = [];
   private isActive = false;
   private animationId?: number;
+  private intervalId?: NodeJS.Timeout;
+  private lastLogTime = 0;
 
   start() {
     if (this.isActive) return;
     this.isActive = true;
     this.lastTime = performance.now();
     this.frameCount = 0;
+    this.lastLogTime = 0;
     this.measure();
+    this.intervalId = setInterval(() => this.calculateFPS(), 1000);
   }
 
   stop() {
@@ -29,36 +33,39 @@ class PerformanceMonitor {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   private measure() {
     if (!this.isActive) return;
+    this.frameCount++;
+    this.animationId = requestAnimationFrame(() => this.measure());
+  }
+
+  private calculateFPS() {
+    if (!this.isActive) return;
 
     const currentTime = performance.now();
-    this.frameCount++;
+    this.fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
+    this.frameCount = 0;
+    this.lastTime = currentTime;
 
-    // Calculate FPS every second
-    if (currentTime >= this.lastTime + 1000) {
-      this.fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
-      this.frameCount = 0;
-      this.lastTime = currentTime;
+    const metrics: PerformanceMetrics = {
+      fps: this.fps,
+      memoryUsage: this.getMemoryUsage(),
+      renderTime: currentTime,
+      timestamp: Date.now(),
+    };
 
-      const metrics: PerformanceMetrics = {
-        fps: this.fps,
-        memoryUsage: this.getMemoryUsage(),
-        renderTime: currentTime,
-        timestamp: Date.now(),
-      };
+    this.notifyCallbacks(metrics);
 
-      this.notifyCallbacks(metrics);
-
-      // Log warnings for poor performance
-      if (this.fps < 30) {
-        console.warn(`Low FPS detected: ${this.fps}fps`);
-      }
+    // Throttle logging to once every 5 seconds to prevent spam
+    if (this.fps < 30 && currentTime - this.lastLogTime > 5000) {
+      console.warn(`Low FPS detected: ${this.fps}fps`);
+      this.lastLogTime = currentTime;
     }
-
-    this.animationId = requestAnimationFrame(() => this.measure());
   }
 
   private getMemoryUsage(): number | undefined {

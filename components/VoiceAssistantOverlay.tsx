@@ -209,33 +209,7 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
                 </AnimatePresence>
             </div>
 
-            {/* Chat Input */}
-            <motion.div
-                className="pointer-events-auto w-[300px]"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-            >
-                <GlowCard glowColor="blue" customSize={true} className="w-full p-1">
-                    <div className="flex items-center gap-2 bg-[hsl(var(--background-hsl))] rounded-md p-1">
-                        <input
-                            type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                            placeholder="Consult the Oracle..."
-                            className="flex-1 bg-transparent border-none focus:outline-none text-sm px-2 py-1 text-[hsl(var(--foreground-hsl))]"
-                        />
-                        <button
-                            type="button"
-                            onClick={handleSend}
-                            aria-label="Send"
-                            className="p-1.5 rounded-md bg-[hsl(var(--primary-hsl))] text-[hsl(var(--primary-foreground-hsl))] hover:brightness-110 transition-all"
-                        >
-                            <Send size={16} />
-                        </button>
-                    </div>
-                </GlowCard>
-            </motion.div>
+
         </div>
     );
 };

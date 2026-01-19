@@ -1,3 +1,15 @@
 .welcome-screen-background {
-  background-image: url('../assets/images/welcome.jpg');
+  background-image: url('/assets/images/you.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Ripple effect styles */
+.ripple-dark {
+  background-color: rgba(147, 51, 234, 0.2);
+}
+
+.ripple-light {
+  background-color: rgba(147, 51, 234, 0.15);
 }

@@ -52,13 +52,6 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onClose, onNextWallpape
           <Image size={16} />
           <span>Next Desktop Background</span>
         </button>
-        <button
-          onClick={handleToggleTheme}
-          className="w-full flex items-center gap-2 px-2 py-1.5 text-sm text-[hsl(var(--popover-foreground-hsl))] rounded hover:bg-[hsl(var(--accent-strong-hsl))] hover:text-[hsl(var(--accent-foreground-hsl))]"
-        >
-          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-          <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-        </button>
         <div className="h-px bg-[hsl(var(--border-hsl))] my-1" />
         <button
           onClick={openSettings}

@@ -297,6 +297,8 @@ const Terminal: React.FC = () => {
             <form onSubmit={handleSubmit} className="flex">
                 <span className="text-green-400">{'>'}</span>
                 <input
+                    id="terminalInput"
+                    name="terminalInput"
                     ref={inputRef}
                     type="text"
                     value={input}

@@ -1,34 +1,35 @@
-<div align="center">
-<img width="1200" height="475" alt="Oracle OS Banner" src="https://github.com/toidiputS/portfolio-os/blob/main/assets/brand/oracle-os-banner.png" />
-</div>
 
 # Oracle OS 🧠💻
 
-**A guided journey through a massive library of Progressive Web Apps**
+## A guided journey through a massive library of Progressive Web Apps
 
 Oracle OS is an AI-powered operating system interface that serves as your personal guide through a comprehensive ecosystem of web applications. Featuring an intelligent Oracle AI assistant, holographic animations, and a desktop-like experience for discovering and interacting with PWAs.
 
 ## ✨ Features
 
 ### 🤖 **Oracle AI Assistant**
+
 - Intelligent chat interface powered by Gemini AI
 - Contextual guidance and recommendations
 - Voice interaction capabilities
 - Learning from user interactions
 
 ### 🎨 **Holographic Interface**
+
 - Futuristic desktop operating system design
 - Animated holographic icons and effects
 - Responsive window management
 - Immersive 3D visualizations
 
 ### 📱 **PWA Ecosystem**
+
 - Massive library of progressive web apps
 - App Store for discovering new experiences
 - File management and organization
 - Terminal interface for advanced users
 
 ### 🎯 **Guided Experience**
+
 - Oracle-led journey through applications
 - Personalized recommendations
 - Interactive tutorials and onboarding
@@ -37,37 +38,46 @@ Oracle OS is an AI-powered operating system interface that serves as your person
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js (v18 or higher)
 - npm or yarn
 
 ### Installation
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/toidiputS/portfolio-os.git
    cd portfolio-os
    ```
 
 2. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 3. **Set up environment variables:**
+
    ```bash
    cp .env.example .env.local
+
    ```
+
    Add your Gemini API key to `.env.local`:
-   ```
+
+   ```bash
    GEMINI_API_KEY=your_api_key_here
    ```
 
 4. **Start the development server:**
+
    ```bash
    npm run dev
    ```
 
 5. **Start the backend server (in a new terminal):**
+
    ```bash
    npm run server
    ```
@@ -77,6 +87,7 @@ The application will be available at `http://localhost:5173`
 ## 🏗️ Architecture
 
 ### Core Components
+
 - **Oracle AI**: Central intelligence system
 - **App Ecosystem**: Collection of integrated PWAs
 - **Holographic UI**: Animated interface system
@@ -84,6 +95,7 @@ The application will be available at `http://localhost:5173`
 - **File System**: Virtual filesystem management
 
 ### Tech Stack
+
 - **Frontend**: React 19, TypeScript, Tailwind CSS
 - **3D Graphics**: Three.js, React Three Fiber
 - **AI Integration**: Google Gemini AI
@@ -93,7 +105,7 @@ The application will be available at `http://localhost:5173`
 
 ## 📂 Project Structure
 
-```
+```bash
 oracle-os/
 ├── apps/                 # PWA Applications
 ├── components/           # React Components

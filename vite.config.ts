@@ -7,6 +7,7 @@ export default defineConfig(({ mode }) => {
     return {
       server: {
         host: '0.0.0.0',
+        port: 5174,
         proxy: {
           '/api': {
             target: 'http://localhost:3002',
@@ -31,7 +32,7 @@ export default defineConfig(({ mode }) => {
         }
       },
       css: {
-        postcss: './postcss.config.cjs',
+        postcss: './postcss.config.js',
       },
       // Performance optimizations
       build: {
@@ -49,7 +50,6 @@ export default defineConfig(({ mode }) => {
       // Development optimizations
       optimizeDeps: {
         include: ['react', 'react-dom', 'framer-motion'],
-        exclude: ['@21st-extension/toolbar-react'],
       },
     };
 });
