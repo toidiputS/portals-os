@@ -10,4 +10,5 @@ export const PORTAL_BACKGROUNDS = [
 
 // Set to `true` to route Oracle generation requests to the local LM Studio proxy
 // (requires `LM_STUDIO_URL` environment variable configured for the dev server).
-export const USE_LM_STUDIO = false;
+export const USE_LM_STUDIO = false;  // Switched to Gemini - local 3B models can't handle Oracle complexity
+export const LM_STUDIO_MODEL_ID = "Llama-3.2-3B-Instruct-uncensored-GGUF";

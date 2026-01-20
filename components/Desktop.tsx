@@ -5,6 +5,7 @@ import ContextMenu from "./ContextMenu";
 import MatrixRain from "./MatrixRain";
 import Taskbar from "./Taskbar";
 import SphereImageGrid from "./SphereImageGrid";
+import { FlowingLight } from "./FlowingLight";
 
 import { PortalLayout } from "./PortalLayout";
 import SpeedBumpTaskbar from "./SpeedBumpTaskbar";
@@ -130,6 +131,8 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         onClick={handleClick}
       >
         {isMatrixEffectActive && <MatrixRain />}
+
+        <FlowingLight className="absolute inset-0 z-10 pointer-events-none bg-transparent" />
 
         <div
           ref={sphereContainerRef}

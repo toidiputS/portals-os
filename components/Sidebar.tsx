@@ -37,10 +37,10 @@ const Sidebar: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-purple-600/30 to-blue-600/30 rounded-xl p-4 border border-white/10"
+                className="bg-linear-to-br from-purple-600/30 to-blue-600/30 rounded-xl p-4 border border-white/10"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg bg-linear-to-br from-purple-500 to-blue-500 flex items-center justify-center">
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -54,7 +54,7 @@ const Sidebar: React.FC = () => {
                 </p>
 
                 <button
-                  className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-lg font-medium transition-all"
+                  className="w-full py-2 px-4 bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-lg font-medium transition-all"
                   onClick={() => {
                     // Future: Open actual PWA window
                     console.log('Launch PWA:', selectedPwa);

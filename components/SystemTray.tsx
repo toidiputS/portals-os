@@ -210,7 +210,7 @@ const SystemTray: React.FC = () => {
     const selectedDateObj = selectedDate ? new Date(selectedDate + 'T00:00:00') : null;
 
     return (
-        <div className="fixed bottom-0 right-4 z-50 flex items-center gap-1">
+        <div className="fixed top-2 right-4 z-50 flex items-center gap-1">
             {/* Volume */}
             <div className="relative" ref={volumeRef}>
                 <button
@@ -285,7 +285,7 @@ const SystemTray: React.FC = () => {
                             style={{ zIndex: 9999 }}
                         >
                             {/* Header */}
-                            <div className="p-4 border-b border-white/10 bg-gradient-to-r from-purple-900/30 to-blue-900/30">
+                            <div className="p-4 border-b border-white/10 bg-linear-to-r from-purple-900/30 to-blue-900/30">
                                 <div className="flex items-center justify-between mb-1">
                                     <div className="flex items-center gap-2">
                                         <Clock size={18} className="text-purple-400" />

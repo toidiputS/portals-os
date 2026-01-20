@@ -18,8 +18,11 @@ app.use(express.static(path.join(__dirname, "dist")));
 const apiKey = process.env.GEMINI_API_KEY;
 const anthropicKey = process.env.ANTHROPIC_API_KEY;
 const localAssistantUrl =
-  process.env.LOCAL_ASSISTANT_URL || "http://localhost:8000/generate";
+  process.env.LOCAL_ASSISTANT_URL || "http://127.0.0.1:8000/generate";
+const lmStudioUrl = process.env.LM_STUDIO_URL || "http://172.20.20.20:1234/v1/chat/completions";
+
 console.log("=== Server Startup ===");
+console.log("LM Studio URL:", lmStudioUrl);
 console.log("API Key present:", !!apiKey);
 console.log(
   "API Key starts with:",
@@ -28,6 +31,144 @@ console.log(
 console.log("Anthropic Key present:", !!anthropicKey);
 
 const genAI = new GoogleGenerativeAI(apiKey);
+
+// LM Studio Proxy
+app.post("/api/lmstudio:generate", async (req, res) => {
+  try {
+    const { model, contents, systemInstruction, tools } = req.body;
+    console.log("=== LM Studio API Request ===");
+    console.log("Model:", model);
+
+    // Convert Google Gemini format to OpenAI/LM Studio format
+    const messages = [];
+
+    // Add system instruction if present
+    if (systemInstruction && systemInstruction.parts) {
+      messages.push({
+        role: "system",
+        content: systemInstruction.parts.map(p => p.text).join("\n")
+      });
+    }
+
+    // Convert contents
+    if (contents) {
+      contents.forEach(item => {
+        const role = item.role === "model" ? "assistant" : item.role;
+        const text = item.parts.map(p => p.text).join("\n");
+        messages.push({ role, content: text });
+      });
+    }
+
+    // Helper to fix Gemini Schema types (UPPERCASE) to OpenAI Schema types (lowercase)
+    const fixSchema = (schema) => {
+      if (!schema) return schema;
+      const newSchema = { ...schema };
+      if (newSchema.type && typeof newSchema.type === 'string') {
+        newSchema.type = newSchema.type.toLowerCase();
+      }
+      if (newSchema.properties) {
+        newSchema.properties = { ...newSchema.properties };
+        for (const key in newSchema.properties) {
+          newSchema.properties[key] = fixSchema(newSchema.properties[key]);
+        }
+      }
+      if (newSchema.items) {
+        newSchema.items = fixSchema(newSchema.items);
+      }
+      return newSchema;
+    };
+
+    // Convert Tools (Gemini -> OpenAI)
+    let openAiTools = undefined;
+    if (tools && tools.length > 0) {
+      openAiTools = [];
+      tools.forEach(toolGroup => {
+        if (toolGroup.functionDeclarations) {
+          toolGroup.functionDeclarations.forEach(decl => {
+            openAiTools.push({
+              type: "function",
+              function: {
+                name: decl.name,
+                description: decl.description,
+                parameters: fixSchema(decl.parameters)
+              }
+            });
+          });
+        }
+      });
+      console.log(`Included ${openAiTools.length} tools in request`);
+    }
+
+    const lmRequest = {
+      model: model,
+      messages: messages,
+      temperature: 0.7,
+      max_tokens: -1,
+      stream: false,
+      tools: openAiTools
+    };
+
+    console.log("Sending to LM Studio:", JSON.stringify({ ...lmRequest, messages: "[...]" }, null, 2));
+
+    const lmRes = await fetch(lmStudioUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lmRequest)
+    });
+
+    if (!lmRes.ok) {
+      const errorText = await lmRes.text();
+      console.error("LM Studio Error Body:", errorText);
+      throw new Error(`LM Studio responded with ${lmRes.status}: ${lmRes.statusText} - ${errorText}`);
+    }
+
+    const lmData = await lmRes.json();
+    console.log("LM Studio response received");
+
+    // Convert back to Gemini format
+    const candidates = lmData.choices.map(choice => {
+      const parts = [];
+
+      // Handle text content
+      if (choice.message.content) {
+        parts.push({ text: choice.message.content });
+      }
+
+      // Handle tool calls
+      if (choice.message.tool_calls) {
+        choice.message.tool_calls.forEach(tc => {
+          let args = {};
+          try {
+            args = JSON.parse(tc.function.arguments);
+          } catch (e) {
+            console.error("Failed to parse tool arguments:", tc.function.arguments);
+          }
+          parts.push({
+            functionCall: {
+              name: tc.function.name,
+              args: args
+            }
+          });
+        });
+      }
+
+      return {
+        content: {
+          parts: parts,
+          role: "model"
+        },
+        finishReason: choice.finish_reason === "stop" ? "STOP" : "OTHER"
+      };
+    });
+
+    res.json({ candidates });
+
+  } catch (error) {
+    console.error("=== LM Studio Proxy Error ===");
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.post("/api/gemini:generate", async (req, res) => {
   try {
@@ -117,8 +258,8 @@ app.post("/api/gemini:generate", async (req, res) => {
                 c.role === "user"
                   ? "Human"
                   : c.role === "model"
-                  ? "Assistant"
-                  : c.role || "System";
+                    ? "Assistant"
+                    : c.role || "System";
               const partText = (c.parts || [])
                 .map((p) => p.text || "")
                 .join("\n");
@@ -222,6 +363,9 @@ app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
-app.listen(3002, () => {
+const server = app.listen(3002, () => {
   console.log("Server running on http://localhost:3002");
 });
+
+// Set timeout to 10 minutes to allow for slow local LLM responses
+server.setTimeout(600000);
