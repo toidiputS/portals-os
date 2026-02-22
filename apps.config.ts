@@ -1,6 +1,6 @@
 import React, { lazy } from "react";
 import { AppId, BuiltInAppId, AppDefinition, ProjectFolder } from "./types";
-import { FileText, Folder, FolderOpen } from "lucide-react";
+import { FileText, Folder, FolderOpen, Sparkles } from "lucide-react";
 import {
   TerminalIcon,
   ContactIcon,
@@ -17,6 +17,13 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
     icon: OracleIcon,
     component: lazy(() => import("./apps/Oracle")),
     description: "AI-powered voice assistant for guidance and app control.",
+  },
+  subscription: {
+    id: "subscription" as BuiltInAppId,
+    name: "Upgrades",
+    icon: Sparkles,
+    component: lazy(() => import("./apps/SubscriptionApp")),
+    description: "Unlock Architect tier for Memory & Books OS.",
   },
   notionLike: {
     id: "notionLike",
@@ -74,11 +81,13 @@ export const APPS = Object.values(APPS_CONFIG);
 // Core system apps that appear in start menu and circular menu
 const CORE_APP_IDS: BuiltInAppId[] = [
   "oracle",
+  "subscription",
   "notionLike",
   "terminal",
   "markdownEditor",
   "contact",
   "fileManager",
+  "settings",
 ];
 
 /**

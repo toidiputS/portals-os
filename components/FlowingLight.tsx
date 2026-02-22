@@ -52,6 +52,86 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
     const lastChatTimeRef = useRef(0);
     const currentElementRef = useRef<HTMLElement | null>(null);
 
+    // Global Hover Context Logic for ONE
+    const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const lastHoveredElementRef = useRef<HTMLElement | null>(null);
+    const explainedContextsRef = useRef<Set<string>>(new Set());
+    const isProcessingRef = useRef(false);
+
+    useEffect(() => {
+        const handleMouseOver = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+
+            // Skip if hovering over the canvas or chat messages (ONE's container)
+            if (target.closest('canvas') || target.closest('.bg-primary')) return;
+
+            // Try to find a meaningful description for the element
+            let context = '';
+
+            let el: HTMLElement | null = target;
+            for (let i = 0; i < 3 && el; i++) {
+                if (el.title) { context = el.title; break; }
+                if (el.getAttribute('aria-label')) { context = el.getAttribute('aria-label')!; break; }
+                if (el.tagName === 'BUTTON' || el.tagName === 'A') {
+                    const text = el.innerText?.trim();
+                    if (text && text.length < 50) { context = text; break; }
+                }
+                el = el.parentElement;
+            }
+
+            if (!context) {
+                if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+                lastHoveredElementRef.current = null;
+                return;
+            }
+
+            if (lastHoveredElementRef.current === target) return;
+            if (explainedContextsRef.current.has(context)) return;
+
+            if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+            lastHoveredElementRef.current = target;
+
+            // 2-Second Delay
+            hoverTimerRef.current = setTimeout(async () => {
+                if (!isProcessingRef.current && lastHoveredElementRef.current === target) {
+                    isProcessingRef.current = true;
+                    explainedContextsRef.current.add(context);
+
+                    try {
+                        const { generateOneContextDescription } = await import('../services/oneService');
+                        const description = await generateOneContextDescription(context);
+                        if (description) {
+                            // Emit the bubble directly to ONE's listener
+                            import('./speechBubbleUtils').then(m => m.showSpeechBubble(description));
+                        }
+                    } catch (error) {
+                        console.error("Hover generation failed", error);
+                    } finally {
+                        isProcessingRef.current = false;
+                        lastHoveredElementRef.current = null;
+                    }
+                }
+            }, 2000);
+        };
+
+        const handleMouseOut = () => {
+            if (hoverTimerRef.current) {
+                clearTimeout(hoverTimerRef.current);
+                hoverTimerRef.current = null;
+                lastHoveredElementRef.current = null;
+            }
+        };
+
+        window.addEventListener('mouseover', handleMouseOver);
+        window.addEventListener('mouseout', handleMouseOut);
+
+        return () => {
+            window.removeEventListener('mouseover', handleMouseOver);
+            window.removeEventListener('mouseout', handleMouseOut);
+            if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+        };
+    }, []);
+
     // Activate BRE Diagnostic Layer
     useDiagnosticObserver();
     const alignment = useBREStore((state) => state.alignment);

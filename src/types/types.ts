@@ -1,6 +1,7 @@
 // Built-in app IDs - CLEAN SLATE: Only the 6 core apps
 export type BuiltInAppId =
   | "oracle"
+  | "subscription"
   | "notionLike"
   | "terminal"
   | "markdownEditor"

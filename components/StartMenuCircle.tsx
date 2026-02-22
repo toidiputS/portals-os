@@ -25,13 +25,13 @@ const StartMenuCircle: React.FC<StartMenuCircleProps> = ({
 }) => {
     const projectFolders = useKernel((state) => state.projectFolders);
     // Get core apps but exclude oracle (handled separately)
-    const apps = getCoreApps(projectFolders).filter(app => app.id !== 'oracle').slice(0, 6);
+    const apps = getCoreApps(projectFolders).filter(app => app.id !== 'oracle').slice(0, 7);
 
-    // Calculate position for each icon in a semicircle
+    // Calculate position for each icon in a semicircle quadrant
     const getIconPosition = (index: number, total: number) => {
-        // Arc from 10° to 80°
-        const startAngle = 10;
-        const endAngle = 80;
+        // Arc from 15° to 75° for a nice fan out
+        const startAngle = 15;
+        const endAngle = 75;
         const angleRange = endAngle - startAngle;
         const angle = startAngle + (angleRange / (total - 1)) * index;
         const radians = (angle * Math.PI) / 180;
@@ -41,6 +41,10 @@ const StartMenuCircle: React.FC<StartMenuCircleProps> = ({
             y: -Math.sin(radians) * CIRCLE_RADIUS, // Negative because Y grows downward
         };
     };
+
+    // The start menu speed bump is at the bottom-left corner. Let's start the animation from there.
+    // Center of the tucked button is at x: 8, y: 8 from bottom-left corner.
+    const originPoint = { x: 8, y: -8 };
 
     return (
         <AnimatePresence>
@@ -71,8 +75,8 @@ const StartMenuCircle: React.FC<StartMenuCircleProps> = ({
                                 <motion.button
                                     key={app.id}
                                     initial={{
-                                        x: 0,
-                                        y: 0,
+                                        x: originPoint.x,
+                                        y: originPoint.y,
                                         opacity: 0,
                                         scale: 0
                                     }}
@@ -83,8 +87,8 @@ const StartMenuCircle: React.FC<StartMenuCircleProps> = ({
                                         scale: 1
                                     }}
                                     exit={{
-                                        x: 0,
-                                        y: 0,
+                                        x: originPoint.x,
+                                        y: originPoint.y,
                                         opacity: 0,
                                         scale: 0
                                     }}

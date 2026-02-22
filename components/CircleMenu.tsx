@@ -10,8 +10,8 @@ const CONSTANTS = {
     containerSize: 400,
     openStagger: 0.02,
     closeStagger: 0.07,
-    innerRadius: 75, // Radius for grandchildren
-    outerRadius: 170 // Radius for children
+    innerRadius: 65, // Radius for grandchildren
+    outerRadius: 120 // Radius for children
 };
 
 const STYLES: Record<string, Record<string, string>> = {
@@ -180,9 +180,10 @@ interface MenuItemProps {
     onChildClick: () => void;
     parentLetter?: string;
     onGrandchildClick?: (pwa: { id: string; label: string; parentLabel: string }) => void;
+    colorHex?: string;
 }
 
-const MenuItem = ({ icon, label, href, index, totalItems, isOpen, parentPosition, children, zIndex, onChildClick, parentLetter, onGrandchildClick }: MenuItemProps) => {
+const MenuItem = ({ icon, label, href, index, totalItems, isOpen, parentPosition, children, zIndex, onChildClick, parentLetter, onGrandchildClick, colorHex }: MenuItemProps) => {
     const { x: finalX, y: finalY } = pointOnCircle(index, totalItems, CONSTANTS.outerRadius);
     const [hovering, setHovering] = useState(false);
     const [childrenOpen, setChildrenOpen] = useState(false);
@@ -288,7 +289,13 @@ const MenuItem = ({ icon, label, href, index, totalItems, isOpen, parentPosition
                     width: CONSTANTS.itemSize - 2,
                     zIndex: zIndex,
                     scale: childrenOpen ? 0.7 : 1,
-                    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)'
+                    background: colorHex
+                        ? `linear-gradient(135deg, ${colorHex}40 0%, ${colorHex}20 50%, #0f0f23 100%)`
+                        : 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)',
+                    ...(colorHex && {
+                        borderColor: hovering || childrenOpen ? colorHex : `${colorHex}60`,
+                        boxShadow: hovering || childrenOpen ? `0 0 15px ${colorHex}80` : `0 0 10px ${colorHex}40`
+                    })
                 }}
                 className={STYLES.item.container}
                 onMouseEnter={() => {
@@ -493,6 +500,7 @@ export const CircleMenu = ({
         icon: React.ReactNode;
         href: string;
         children?: Array<{ label: string; icon: React.ReactNode; href: string }>;
+        colorHex?: string;
     }>;
     isOpen?: boolean;
     setIsOpen?: (isOpen: boolean) => void;
@@ -563,6 +571,7 @@ export const CircleMenu = ({
                                 onChildClick={() => setLastClickedIndex(index)}
                                 parentLetter={parentLetter}
                                 onGrandchildClick={onGrandchildClick}
+                                colorHex={item.colorHex}
                             />
                         );
                     })}

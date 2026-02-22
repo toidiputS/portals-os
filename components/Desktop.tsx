@@ -13,6 +13,7 @@ import { CircleMenu } from "./CircleMenu";
 import StartMenuCircle from "./StartMenuCircle";
 import SystemTray from "./SystemTray";
 import { PORTAL_BACKGROUNDS } from "../constants";
+import { PLATOON_SQUADS } from "../constants/platoon";
 import { getSphereApps } from "../apps.config";
 
 interface ContextMenuState {
@@ -43,7 +44,9 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     y: 0,
   });
 
-  // CircleMenu state for external control
+  // Active Squad ID for the bottom taskbar
+  const [activeSquadId, setActiveSquadId] = useState<string | null>(null);
+  const [displayedSquad, setDisplayedSquad] = useState<any>(null);
   const [isCircleMenuOpen, setIsCircleMenuOpen] = useState(false);
 
   // App Menu state (circular app spawner from Taskbar)
@@ -65,6 +68,25 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       setBgIndex(index);
     }
   }, [wallpaper]);
+
+  useEffect(() => {
+    if (activeSquadId) {
+      if (isCircleMenuOpen && displayedSquad?.id !== activeSquadId) {
+        // Close current menu first
+        setIsCircleMenuOpen(false);
+        // Wait for close animation to finish before swapping items
+        setTimeout(() => {
+          setDisplayedSquad(PLATOON_SQUADS.find(s => s.id === activeSquadId) || null);
+          setIsCircleMenuOpen(true);
+        }, 800); // delay allows spiral animation to complete
+      } else {
+        setDisplayedSquad(PLATOON_SQUADS.find(s => s.id === activeSquadId) || null);
+        setIsCircleMenuOpen(true);
+      }
+    } else {
+      setIsCircleMenuOpen(false);
+    }
+  }, [activeSquadId]);
 
   const wallpaperRef = useRef<HTMLDivElement>(null);
 
@@ -117,6 +139,10 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setContextMenu({ visible: false, x: 0, y: 0 });
     closeStartMenu();
     closeSidebar();
+
+    // Close menus if clicking desktop background
+    setIsAppMenuOpen(false);
+    setActiveSquadId(null);
   };
 
   return (
@@ -179,49 +205,36 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           onAppClick={(appId) => openWindow(appId)}
         />
 
-        {/* Speed Bump Taskbar - half-exposed buttons at the feet */}
+        {/* Speed Bump Taskbar - 10 Squads at the feet */}
         <SpeedBumpTaskbar
-          onCircleMenuClick={() => setIsCircleMenuOpen(!isCircleMenuOpen)}
-          isCircleMenuOpen={isCircleMenuOpen}
-          onStartMenuClick={() => setIsAppMenuOpen(!isAppMenuOpen)}
+          onStartMenuClick={() => {
+            setIsAppMenuOpen(!isAppMenuOpen);
+            setActiveSquadId(null); // Ensure mutually exclusive
+          }}
           isStartMenuOpen={isAppMenuOpen}
+          activeSquadId={activeSquadId}
+          onSquadClick={(squadId) => {
+            setActiveSquadId(activeSquadId === squadId ? null : squadId);
+            setIsAppMenuOpen(false); // Ensure mutually exclusive
+          }}
         />
 
-        {/* CircleMenu - spirals up into the portal when activated */}
-
-        {/* CircleMenu - spirals up into the portal when activated */}
+        {/* CircleMenu - spirals up into the portal when a Squad is activated */}
         {(() => {
-          const grandchildren = [
-            { label: 'Sub 1', icon: <span className="text-[10px]">1</span>, href: '#' },
-            { label: 'Sub 2', icon: <span className="text-[10px]">2</span>, href: '#' },
-            { label: 'Sub 3', icon: <span className="text-[10px]">3</span>, href: '#' },
-            { label: 'Sub 4', icon: <span className="text-[10px]">4</span>, href: '#' },
-            { label: 'Sub 5', icon: <span className="text-[10px]">5</span>, href: '#' }
-          ];
-          const vipChildren = [
-            ...grandchildren,
-            { label: 'BOO (Wiki)', icon: <span className="text-[10px]">W</span>, href: '#' }
-          ];
+          if (!displayedSquad) return null;
+
+          const menuItems = displayedSquad.nodes.map((node: any) => ({
+            label: node.name,
+            icon: <span className="text-sm font-bold truncate px-1">{node.id}</span>,
+            href: '#', // In the future, this could link to the specific node's view
+            colorHex: displayedSquad.colorHex,
+          }));
+
           return (
             <CircleMenu
-              items={[
-                { label: 'VIP-AIFred', icon: <span className="text-sm font-bold">VIP</span>, href: '#', children: vipChildren },
-                { label: 'Alpha', icon: <span className="text-sm font-bold">A</span>, href: '#', children: grandchildren },
-                { label: 'Beta', icon: <span className="text-sm font-bold">B</span>, href: '#', children: grandchildren },
-                { label: 'Delta', icon: <span className="text-sm font-bold">D</span>, href: '#', children: grandchildren },
-                { label: 'Epsilon', icon: <span className="text-sm font-bold">E</span>, href: '#', children: grandchildren },
-                { label: 'Gamma', icon: <span className="text-sm font-bold">G</span>, href: '#', children: grandchildren },
-                { label: 'Kappa', icon: <span className="text-sm font-bold">Κ</span>, href: '#', children: grandchildren },
-                { label: 'Oracle', icon: <span className="text-sm font-bold">ORC</span>, href: '#' },
-                { label: 'Lambda', icon: <span className="text-sm font-bold">L</span>, href: '#', children: grandchildren },
-                { label: 'Omni', icon: <span className="text-sm font-bold">O</span>, href: '#', children: grandchildren },
-                { label: 'Pi', icon: <span className="text-sm font-bold">P</span>, href: '#', children: grandchildren },
-                { label: 'Rho', icon: <span className="text-sm font-bold">R</span>, href: '#', children: grandchildren },
-                { label: 'Sigma', icon: <span className="text-sm font-bold">S</span>, href: '#', children: grandchildren },
-                { label: 'Tau', icon: <span className="text-sm font-bold">Τ</span>, href: '#', children: grandchildren }
-              ]}
+              items={menuItems}
               isOpen={isCircleMenuOpen}
-              setIsOpen={setIsCircleMenuOpen}
+              setIsOpen={(open) => !open && setActiveSquadId(null)}
               showTrigger={false}
               onGrandchildClick={(pwa) => openPwaSidebar(pwa)}
             />

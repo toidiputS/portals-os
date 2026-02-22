@@ -161,6 +161,27 @@ const WelcomeScreen: React.FC = () => {
               <MinimalistTextEffect text={placeholder} duration={0.3} />
             </div>
 
+            {/* ============ AT SYMBOL CUE ============ */}
+            {/* Pulsing @ symbol that disappears once the user starts typing */}
+            <motion.div
+              className="absolute left-1/2 transform -translate-x-1/2 pointer-events-none text-white font-mono"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{
+                opacity: value.length > 0 ? 0 : 0.6,
+                scale: value.length > 0 ? 0.8 : 1,
+                y: value.length > 0 ? 10 : 0
+              }}
+              transition={{
+                duration: value.length > 0 ? 0.3 : 1.5,
+                repeat: value.length > 0 ? 0 : Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }}
+              style={{ bottom: "16px", textShadow: "0 0 15px rgba(255,255,255,0.8)", fontSize: "1.5rem" }}
+            >
+              @
+            </motion.div>
+
             {/* ============ ACTUAL INPUT FIELD ============ */}
             {/* Appears when user clicks - transparent with blinking cursor */}
             <motion.input
@@ -171,13 +192,13 @@ const WelcomeScreen: React.FC = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               disabled={disabled}
-              className="w-full h-12 px-4 bg-transparent border-none text-white text-center placeholder:text-gray-500 focus:outline-none transition-all font-mono tracking-wider"
+              className="w-full h-12 px-4 bg-transparent border-none text-white text-center placeholder:text-gray-500 focus:outline-none transition-all font-mono tracking-wider relative z-10"
               style={{
                 caretColor: 'white',
               }}
               placeholder=""
               animate={{
-                opacity: isFocused ? 1 : 0,
+                opacity: isFocused || value.length > 0 ? 1 : 0,
               }}
               transition={{ duration: 0.5 }}
             />

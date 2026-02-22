@@ -48,7 +48,8 @@ const Taskbar: React.FC = () => {
         return (
           <motion.button
             key={win.id}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               // Toggle: if active/visible, minimize; if minimized, restore
               if (win.id === activeWindowId && !win.minimized) {
                 minimizeWindow(win.id);
