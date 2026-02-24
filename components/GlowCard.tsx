@@ -4,7 +4,7 @@ import "./GlowCard.css";
 interface GlowCardProps {
   children: ReactNode;
   className?: string;
-  glowColor?: "blue" | "purple" | "green" | "red" | "orange";
+  glowColor?: "blue" | "purple" | "green" | "red" | "orange" | "yellow";
   size?: "sm" | "md" | "lg";
   width?: string | number;
   height?: string | number;
@@ -18,6 +18,7 @@ const glowColorMap = {
   green: { base: 120, spread: 200 },
   red: { base: 0, spread: 200 },
   orange: { base: 30, spread: 200 },
+  yellow: { base: 60, spread: 200 },
 };
 
 const sizeMap = {
@@ -72,14 +73,12 @@ const GlowCard = forwardRef<HTMLDivElement, GlowCardProps>(({
     if (customSize) {
       let sizeClasses = "";
       if (width !== undefined) {
-        sizeClasses += ` w-[${
-          typeof width === "number" ? `${width}px` : width
-        }]`;
+        sizeClasses += ` w-[${typeof width === "number" ? `${width}px` : width
+          }]`;
       }
       if (height !== undefined) {
-        sizeClasses += ` h-[${
-          typeof height === "number" ? `${height}px` : height
-        }]`;
+        sizeClasses += ` h-[${typeof height === "number" ? `${height}px` : height
+          }]`;
       }
       return sizeClasses;
     }

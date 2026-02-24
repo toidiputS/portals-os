@@ -112,3 +112,13 @@
     transform: translate(calc(var(--x) + 5px), calc(var(--y) + 5px));
   }
 }
+
+/* Globally Hide Scrollbars but keep functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}

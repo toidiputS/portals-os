@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { HolographicStartIcon } from './icons';
-import { PLATOON_SQUADS } from '../constants/platoon';
+import { PLATOON_DOMAINS } from '../constants/platoon';
 
 /**
  * SpeedBumpTaskbar - A minimal bottom taskbar with half-exposed circular buttons
@@ -20,15 +20,15 @@ const SQUAD_BUTTON_SIZE = 60; // Slightly smaller for the 10 squads
 interface SpeedBumpTaskbarProps {
     onStartMenuClick: () => void;
     isStartMenuOpen: boolean;
-    activeSquadId: string | null;
-    onSquadClick: (squadId: string) => void;
+    activeDomainIds?: string[];
+    onDomainClick?: (domainId: string) => void;
 }
 
-const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
+export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
     onStartMenuClick,
     isStartMenuOpen,
-    activeSquadId,
-    onSquadClick
+    activeDomainIds = [],
+    onDomainClick
 }) => {
     return (
         <>
@@ -75,17 +75,17 @@ const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                 )}
             </motion.button>
 
-            {/* ============ SQUAD MENUS - CENTER SPAN AT PERSON'S FEET ============ */}
+            {/* ============ DOMAIN MENUS - CENTER SPAN AT PERSON'S FEET ============ */}
             <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex items-end justify-center gap-4 z-50 pointer-events-none w-full max-w-5xl px-8" style={{ paddingBottom: -30 }}>
-                {PLATOON_SQUADS.map((squad) => {
-                    const isActive = activeSquadId === squad.id;
+                {PLATOON_DOMAINS.map((domain) => {
+                    const isActive = activeDomainIds.includes(domain.id);
 
                     return (
                         <motion.button
-                            key={squad.id}
+                            key={domain.id}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onSquadClick(squad.id);
+                                onDomainClick?.(domain.id);
                             }}
                             className="relative flex flex-col items-center justify-center cursor-pointer outline-none pointer-events-auto group"
                             style={{
@@ -95,15 +95,15 @@ const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                             }}
                             whileHover={{ y: -8, transition: { duration: 0.2 } }}
                             whileTap={{ scale: 0.95 }}
-                            title={squad.name}
+                            title={domain.name}
                         >
                             {/* Background circle - dynamically colored base on active state */}
                             <div
                                 className="absolute inset-0 rounded-full border-2 shadow-lg transition-colors"
                                 style={{
-                                    borderColor: isActive ? squad.colorHex : `${squad.colorHex}60`,
-                                    background: `linear-gradient(135deg, ${squad.colorHex}40 0%, ${squad.colorHex}20 50%, #0f0f23 100%)`,
-                                    boxShadow: isActive ? `0 0 15px ${squad.colorHex}80` : `0 0 10px ${squad.colorHex}40`
+                                    borderColor: isActive ? domain.colorHex : `${domain.colorHex}60`,
+                                    background: `linear-gradient(135deg, ${domain.colorHex}40 0%, ${domain.colorHex}20 50%, #0f0f23 100%)`,
+                                    boxShadow: isActive ? `0 0 15px ${domain.colorHex}80` : `0 0 10px ${domain.colorHex}40`
                                 }}
                             />
 
@@ -116,6 +116,7 @@ const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                                         animate={{ opacity: 1, rotate: 0 }}
                                         exit={{ opacity: 0, rotate: 90 }}
                                         transition={{ duration: 0.2 }}
+                                        className="absolute inset-0 flex items-start pt-[10px] justify-center pointer-events-none"
                                     >
                                         <X size={20} className="relative z-10 text-white" />
                                     </motion.span>
@@ -126,28 +127,36 @@ const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                                         animate={{ opacity: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.2 }}
-                                        className="relative z-10 text-white font-mono text-sm font-bold opacity-70"
+                                        className="absolute inset-0 flex items-start pt-[12px] justify-center z-10 text-white font-mono text-sm font-bold opacity-70 pointer-events-none"
                                     >
-                                        {/* Show squad number for small speedbumps */}
-                                        {squad.id.split('-')[1]}
+                                        <span className="text-[10px] leading-tight text-center px-1">
+                                            {domain.name.split(' ').map((word, i) => (
+                                                <React.Fragment key={i}>
+                                                    {word}
+                                                    {i < domain.name.split(' ').length - 1 && <br />}
+                                                </React.Fragment>
+                                            ))}
+                                        </span>
                                     </motion.span>
                                 )}
                             </AnimatePresence>
 
                             {/* Active indicator glow */}
-                            {isActive && (
-                                <motion.div
-                                    className="absolute inset-0 rounded-full border-2"
-                                    style={{ borderColor: squad.colorHex }}
-                                    initial={{ scale: 0.8, opacity: 0 }}
-                                    animate={{ scale: 1.3, opacity: 0 }}
-                                    transition={{ duration: 1, repeat: Infinity }}
-                                />
-                            )}
+                            {
+                                isActive && (
+                                    <motion.div
+                                        className="absolute inset-0 rounded-full border-2"
+                                        style={{ borderColor: domain.colorHex }}
+                                        initial={{ scale: 0.8, opacity: 0 }}
+                                        animate={{ scale: 1.3, opacity: 0 }}
+                                        transition={{ duration: 1, repeat: Infinity }}
+                                    />
+                                )
+                            }
                         </motion.button>
                     );
                 })}
-            </div>
+            </div >
         </>
     );
 };

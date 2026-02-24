@@ -47,7 +47,39 @@ export interface KernelState {
   hasWelcomed: boolean;
   collectedEmails: string[];
   isSidebarOpen: boolean;
-  selectedPwa: { id: string; label: string; parentLabel: string } | null;
+  selectedDomainId: string | null;
+
+  // New Access Control State
+  unlockedNodes: string[];
+  unlockedSquads: string[]; // Keep squad package ownership since users buy these
+  subscriptionTier: 'free' | 'squad+' | 'platoon';
+  freeNodesUsed: string[];
+  favoriteNodes: string[];
+
+  // New Access Control Methods
+  unlockNode: (nodeId: string) => void;
+  unlockSquad: (squadId: string) => void;
+  setSubscriptionTier: (tier: 'free' | 'squad+' | 'platoon') => void;
+  consumeFreeNodeSlot: (nodeId: string) => boolean;
+  toggleFavoriteNode: (nodeId: string) => void;
+
+  selectedPwa: {
+    id: string;
+    label: string;
+    parentLabel: string;
+    parentSquadId?: string;
+    role?: string;
+    pain?: string;
+    artifact?: string;
+    purpose?: string;
+    mission?: string;
+    preFlight?: { deployWhen: string; abstainWhen: string; };
+    inputs?: string;
+    deliverables?: string[];
+    oracleInsight?: string;
+    prevNode?: string;
+    nextNode?: string;
+  } | null;
   isMatrixEffectActive: boolean;
   hasNewMessage: boolean;
   theme: Theme;
@@ -101,7 +133,24 @@ export interface KernelState {
   addEmail: (email: string) => void;
   toggleSidebar: () => void;
   closeSidebar: () => void;
-  openPwaSidebar: (pwa: { id: string; label: string; parentLabel: string }) => void;
+  openSquadSidebar: (squadId: string) => void;
+  openPwaSidebar: (pwa: {
+    id: string;
+    label: string;
+    parentLabel: string;
+    parentSquadId?: string;
+    role?: string;
+    pain?: string;
+    artifact?: string;
+    purpose?: string;
+    mission?: string;
+    preFlight?: { deployWhen: string; abstainWhen: string; };
+    inputs?: string;
+    deliverables?: string[];
+    oracleInsight?: string;
+    prevNode?: string;
+    nextNode?: string;
+  }) => void;
   toggleMatrixEffect: (status: boolean) => void;
   setHasNewMessage: (status: boolean) => void;
   toggleTheme: () => void;

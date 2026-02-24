@@ -85,6 +85,7 @@ export const MinimalistTextEffect = ({
                         id="monoGradient"
                         gradientUnits="userSpaceOnUse"
                         r="35%"
+                        initial={{ cx: "50%", cy: "50%" }}
                         animate={ripplePosition}
                         transition={{ duration: duration ?? 0.3, ease: "circOut" }}
                     >
@@ -96,6 +97,7 @@ export const MinimalistTextEffect = ({
                         id="inverseMask"
                         gradientUnits="userSpaceOnUse"
                         r="30%"
+                        initial={{ cx: "50%", cy: "50%" }}
                         animate={ripplePosition}
                         transition={{
                             duration: duration ?? 0.4,
@@ -131,6 +133,7 @@ export const MinimalistTextEffect = ({
                     mask="url(#revealMask)"
                     className="font-mono font-light tracking-wider"
                     style={{ fontSize: 16 }}
+                    initial={{ opacity: 0 }}
                     animate={{
                         opacity: isHovered ? 1 : 0,
                     }}

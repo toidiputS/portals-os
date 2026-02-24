@@ -7,6 +7,7 @@ import WelcomeScreen from "./components/WelcomeScreen";
 import Sidebar from "./components/Sidebar";
 import VoiceAssistant from "./components/VoiceAssistant";
 import VoiceAssistantOverlay from "./components/VoiceAssistantOverlay";
+import { CheckoutHandler } from "./components/CheckoutHandler";
 
 import ErrorBoundary from "./components/ErrorBoundary";
 import { getAllApps } from "./apps.config";
@@ -106,7 +107,7 @@ const App: React.FC = () => {
           <Sidebar />
           <VoiceAssistant />
           <VoiceAssistantOverlay />
-
+          <CheckoutHandler />
 
         </motion.div>
       )}

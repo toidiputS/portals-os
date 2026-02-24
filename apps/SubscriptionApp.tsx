@@ -1,96 +1,201 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Sparkles, Zap, Lock } from 'lucide-react';
-import { GlowCard } from '../components/GlowCard';
+import { Check, X } from 'lucide-react';
 
 const PaidTierApp: React.FC = () => {
     return (
-        <div className="flex-1 w-full h-full p-2 bg-black text-white overflow-hidden scrollbar-hide flex flex-col">
-            {/* Header */}
-            <motion.div
-                className="w-full relative z-10 flex flex-col items-center justify-center p-8 bg-black border-b border-purple-500/20"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-            >
-                <div className="absolute inset-0 bg-linear-to-b from-purple-900/20 to-black pointer-events-none" />
-                <Sparkles className="w-12 h-12 text-purple-400 mb-4" />
-                <h1 className="text-3xl font-light mb-2 tracking-wider">The Inner Circle</h1>
-                <p className="text-gray-400 text-center max-w-xl text-sm leading-relaxed">
-                    Unlock your complete digital memory, project history, and full command over the 26-agent Oracle nexus.
-                </p>
-            </motion.div>
-
+        <div className="flex-1 w-full h-full bg-[#020617] text-white flex flex-col font-sans">
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-8">
-                <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex-1 p-4 md:p-8 flex items-center justify-center">
+                <div className="w-full mx-auto grid grid-cols-5 gap-4 lg:gap-6">
 
-                    {/* Free Tier */}
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 }}>
-                        <GlowCard glowColor="blue" className="h-full bg-gray-900/40 border-gray-500/20 rounded-2xl flex flex-col p-8">
-                            <div className="flex items-center gap-3 mb-4">
-                                <Shield className="w-6 h-6 text-gray-400" />
-                                <h2 className="text-xl font-medium text-gray-300">Base Access</h2>
-                            </div>
-                            <div className="text-3xl font-light text-white mb-6">Free</div>
-                            <ul className="space-y-4 flex-1 mb-8 overflow-y-auto pr-2">
-                                <li className="flex items-start gap-2 text-sm text-gray-400">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    Basic ONE companion features (Hover context)
+                    {/* FREE */}
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="h-full">
+                        <div className="h-full bg-[#0B0F19] border border-white/5 rounded-2xl p-6 flex flex-col">
+                            <h2 className="text-xl font-bold text-gray-400 uppercase tracking-widest mb-1">FREE</h2>
+                            <div className="text-4xl font-bold text-white mb-2">$0</div>
+                            <p className="text-sm text-gray-500 mb-8 font-medium">Try any single node</p>
+
+                            <ul className="space-y-4 flex-1 mb-8">
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Any single node</span>
                                 </li>
-                                <li className="flex items-start gap-2 text-sm text-gray-400 opacity-60">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    Access to public system terminals
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Get your artifact</span>
                                 </li>
-                                <li className="flex items-start gap-2 text-sm text-gray-400 opacity-60">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    Ephemeral session memory (Erased on exit)
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Walk away</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>Memory</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>NotNotes</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>Oracle</span>
                                 </li>
                             </ul>
-                            <button disabled className="w-full py-3 rounded-lg bg-gray-800 text-gray-400 font-medium cursor-not-allowed">
-                                Current Tier
+
+                            <button className="w-full py-3 rounded-lg border border-white/10 hover:bg-white/5 text-gray-300 font-bold tracking-widest text-xs uppercase transition-colors shrink-0">
+                                START FREE
                             </button>
-                        </GlowCard>
+                        </div>
                     </motion.div>
 
-                    {/* Paid Tier */}
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
-                        <GlowCard glowColor="purple" className="h-full bg-purple-900/10 border-purple-500/30 rounded-2xl flex flex-col p-8 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 bg-purple-500/20 text-purple-300 text-xs px-3 py-1 rounded-bl-lg border-b border-l border-purple-500/20 font-mono">
-                                RECOMMENDED
+                    {/* NODE */}
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="h-full">
+                        <div className="h-full bg-[#0B0F19] border border-white/5 rounded-2xl p-6 flex flex-col">
+                            <h2 className="text-xl font-bold text-gray-300 uppercase tracking-widest mb-1">NODE</h2>
+                            <div className="text-4xl font-bold text-white mb-1">
+                                $19<span className="text-lg text-gray-500 font-normal">/mo</span>
                             </div>
+                            <p className="text-xs text-gray-500 mb-2 font-medium">or $47 lifetime</p>
+                            <p className="text-sm text-gray-400 mb-8 font-medium">1 node, supercharged</p>
 
-                            <div className="flex items-center gap-3 mb-4">
-                                <Zap className="w-6 h-6 text-purple-400" />
-                                <h2 className="text-xl font-medium text-white">Architect</h2>
-                            </div>
-                            <div className="text-3xl font-light text-white mb-2">
-                                $49<span className="text-lg text-gray-400">/mo</span>
-                            </div>
-                            <p className="text-xs text-purple-400/60 mb-6 font-mono">Billed annually at $490</p>
-
-                            <ul className="space-y-4 flex-1 mb-8 overflow-y-auto pr-2">
-                                <li className="flex items-start gap-2 text-sm text-gray-200">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    <b>Books OS Setup:</b> Persistent memory and artifact storage.
+                            <ul className="space-y-4 flex-1 mb-8">
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>1 node of your choice</span>
                                 </li>
-                                <li className="flex items-start gap-2 text-sm text-gray-200">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    <b>Full Oracle Capability:</b> Unlocked diagnosis tracking across sessions.
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Memory (saves context)</span>
                                 </li>
-                                <li className="flex items-start gap-2 text-sm text-gray-200">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    <b>Squad Node Deep Dives:</b> Unlimited access to all 26 specialized agents.
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>NotNotes integration</span>
                                 </li>
-                                <li className="flex items-start gap-2 text-sm text-gray-200">
-                                    <span className="text-purple-400 mt-0.5">•</span>
-                                    Zero artificial throttle delays on ONE hovering.
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>Oracle</span>
                                 </li>
                             </ul>
 
-                            <button className="w-full py-3 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600 text-white font-medium hover:from-purple-500 hover:to-indigo-500 transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2">
-                                <Lock size={16} /> Upgrade to Architect
+                            <button className="w-full py-3 rounded-lg border border-white/10 hover:bg-white/5 text-gray-300 font-bold tracking-widest text-xs uppercase transition-colors shrink-0">
+                                GET NODE
                             </button>
-                        </GlowCard>
+                        </div>
+                    </motion.div>
+
+                    {/* SQUAD - MOST POPULAR */}
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="h-full relative z-10">
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-black text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-sm z-20">
+                            MOST POPULAR
+                        </div>
+                        <div className="h-full bg-[#0F131D] border border-yellow-400/50 rounded-2xl p-6 flex flex-col relative shadow-[0_0_30px_rgba(250,204,21,0.15)]">
+                            <h2 className="text-xl font-bold text-yellow-400 uppercase tracking-widest mb-1">SQUAD</h2>
+                            <div className="text-4xl font-bold text-white mb-1">
+                                $97<span className="text-lg text-gray-400 font-normal"> flat</span>
+                            </div>
+                            <p className="text-sm text-gray-300 mb-8 font-medium">The full squad, unlocked</p>
+
+                            <ul className="space-y-4 flex-1 mb-8">
+                                <li className="flex items-start gap-3 text-sm text-gray-200">
+                                    <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                                    <span>Every node in the squad</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-200">
+                                    <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                                    <span>All finished artifacts</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-200">
+                                    <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+                                    <span>Complete idea-to-cash system</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>Memory</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>NotNotes</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>Oracle</span>
+                                </li>
+                            </ul>
+
+                            <button className="w-full py-3 rounded-lg bg-yellow-400 hover:bg-yellow-300 text-black font-black tracking-widest text-xs uppercase transition-colors shrink-0 shadow-[0_0_15px_rgba(250,204,21,0.4)]">
+                                GET THE SQUAD — SOON
+                            </button>
+                        </div>
+                    </motion.div>
+
+                    {/* SQUAD+ */}
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="h-full">
+                        <div className="h-full bg-[#0B0F19] border border-white/5 rounded-2xl p-6 flex flex-col">
+                            <h2 className="text-xl font-bold text-gray-300 uppercase tracking-widest mb-1">SQUAD+</h2>
+                            <div className="text-4xl font-bold text-white mb-1">
+                                $127<span className="text-lg text-gray-500 font-normal">/mo</span>
+                            </div>
+                            <p className="text-sm text-gray-400 mb-8 font-medium">Squad with full power</p>
+
+                            <ul className="space-y-4 flex-1 mb-8">
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Every node in the squad</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Memory (persistent context)</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>NotNotes integration</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-500">
+                                    <X className="w-4 h-4 text-gray-600 mt-0.5 shrink-0" />
+                                    <span>Oracle</span>
+                                </li>
+                            </ul>
+
+                            <button className="w-full py-3 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 font-bold tracking-widest text-[10px] uppercase transition-colors shrink-0">
+                                UPGRADE TO SQUAD+ — SOON
+                            </button>
+                        </div>
+                    </motion.div>
+
+                    {/* PLATOON */}
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="h-full">
+                        <div className="h-full bg-[#0B0F19] border border-white/5 rounded-2xl p-6 flex flex-col">
+                            <h2 className="text-xl font-bold text-gray-300 uppercase tracking-widest mb-1">PLATOON</h2>
+                            <div className="text-4xl font-bold text-white mb-1">
+                                $297<span className="text-lg text-gray-500 font-normal">/mo</span>
+                            </div>
+                            <p className="text-xs text-gray-500 mb-2 font-medium">or $1,997/yr</p>
+                            <p className="text-sm text-gray-400 mb-8 font-medium">All 67 nodes. Everything.</p>
+
+                            <ul className="space-y-4 flex-1 mb-8">
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>All 67 nodes</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>BooksOS memory</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>NotNotes</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-sm text-gray-300">
+                                    <Check className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                                    <span>Oracle AI assistant</span>
+                                </li>
+                            </ul>
+
+                            <button className="w-full py-3 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 font-bold tracking-widest text-[10px] uppercase transition-colors shrink-0">
+                                GO PLATOON — SOON
+                            </button>
+                        </div>
                     </motion.div>
 
                 </div>

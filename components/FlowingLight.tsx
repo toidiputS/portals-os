@@ -23,6 +23,7 @@ interface FlowingLightProps {
     lightIntensity?: number;
     fogDensity?: number;
     particleCount?: number;
+    lockTarget?: { x: number; y: number };
 }
 
 interface ChatMessage {
@@ -38,7 +39,8 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
     className = "",
     lightIntensity = 1,
     fogDensity = 0.8,
-    particleCount = 150
+    particleCount = 150,
+    lockTarget
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -98,12 +100,14 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
                     explainedContextsRef.current.add(context);
 
                     try {
-                        const { generateOneContextDescription } = await import('../services/oneService');
-                        const description = await generateOneContextDescription(context);
-                        if (description) {
-                            // Emit the bubble directly to ONE's listener
-                            import('./speechBubbleUtils').then(m => m.showSpeechBubble(description));
-                        }
+                        // User requested to turn off ONE's interactions to save API space
+                        // const { generateOneContextDescription } = await import('../services/oneService');
+                        // const description = await generateOneContextDescription(context);
+                        // if (description) {
+                        //     // Emit the bubble directly to ONE's listener
+                        //     import('./speechBubbleUtils').then(m => m.showSpeechBubble(description));
+                        // }
+                        console.log(`[ONE Observer Disabled] Would have generated context for: ${context}`);
                     } catch (error) {
                         console.error("Hover generation failed", error);
                     } finally {
@@ -337,24 +341,13 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
 
         let targetX, targetY;
 
-        if (isIdle) {
-            // Continuous Wandering using Sine Waves (Lissajous-like path)
-            const time = Date.now() * 0.0005; // Time factor for speed
-            const width = canvas.width;
-            const height = canvas.height;
-
-            // Base circular motion + secondary variation for organic feel
-            // centered on screen
-            const cx = width / 2;
-            const cy = height / 2;
-
-            // Major movement range (approx 40% of screen)
-            const rx = width * 0.4;
-            const ry = height * 0.4;
-
-            targetX = cx + Math.cos(time) * rx + Math.sin(time * 2.3) * (rx * 0.3);
-            targetY = cy + Math.sin(time * 0.7) * ry + Math.cos(time * 1.7) * (ry * 0.3);
-
+        if (lockTarget) {
+            targetX = lockTarget.x;
+            targetY = lockTarget.y;
+        } else if (isIdle) {
+            // Settle perfectly in the center of the portal
+            targetX = canvas.width / 2;
+            targetY = canvas.height / 2;
         } else {
             // Follow mouse
             const rect = canvas.getBoundingClientRect();
@@ -411,7 +404,7 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
 
         lightRef.current.x += (destX - lightRef.current.x) * lerpFactor;
         lightRef.current.y += (destY - lightRef.current.y) * lerpFactor;
-    }, [getDistanceToElementEdge, getClosestPointOnElementEdge, generateChat, isIdle]);
+    }, [getDistanceToElementEdge, getClosestPointOnElementEdge, generateChat, isIdle, lockTarget]);
 
     const updateParticles = useCallback(() => {
         particlesRef.current.forEach((particle) => {
@@ -567,23 +560,25 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
         });
 
         // Draw main light core (will invert based on background)
-        const coreGradient = ctx.createRadialGradient(
-            lightRef.current.x, lightRef.current.y, 0,
-            lightRef.current.x, lightRef.current.y, 15
-        );
-        coreGradient.addColorStop(0, `rgba(255, 255, 255, ${1 * lightIntensity})`);
-        coreGradient.addColorStop(0.5, `rgba(255, 255, 255, ${0.8 * lightIntensity})`);
-        coreGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        if (!lockTarget) {
+            const coreGradient = ctx.createRadialGradient(
+                lightRef.current.x, lightRef.current.y, 0,
+                lightRef.current.x, lightRef.current.y, 15
+            );
+            coreGradient.addColorStop(0, `rgba(255, 255, 255, ${1 * lightIntensity})`);
+            coreGradient.addColorStop(0.5, `rgba(255, 255, 255, ${0.8 * lightIntensity})`);
+            coreGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-        ctx.save();
-        ctx.fillStyle = coreGradient;
-        ctx.shadowBlur = 25;
-        ctx.shadowColor = 'white';
-        ctx.beginPath();
-        ctx.arc(lightRef.current.x, lightRef.current.y, 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-    }, [lightIntensity, fogDensity]);
+            ctx.save();
+            ctx.fillStyle = coreGradient;
+            ctx.shadowBlur = 25;
+            ctx.shadowColor = 'white';
+            ctx.beginPath();
+            ctx.arc(lightRef.current.x, lightRef.current.y, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }, [lightIntensity, fogDensity, lockTarget]);
 
     const animate = useCallback(() => {
         updateLight();

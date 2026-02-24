@@ -33,6 +33,7 @@ const useKernelStore = create<KernelState>()(
       hasWelcomed: false,
       collectedEmails: [],
       isSidebarOpen: false,
+      selectedDomainId: null,
       selectedPwa: null,
       isMatrixEffectActive: false,
       hasNewMessage: false,
@@ -41,6 +42,13 @@ const useKernelStore = create<KernelState>()(
       micPermissionGranted: false,
       projectFolders: [], // User's project folder bookmarks
       currentPath: "/", // Current directory in virtual filesystem
+
+      // Access Control
+      unlockedNodes: [],
+      unlockedSquads: [],
+      subscriptionTier: 'free',
+      freeNodesUsed: [],
+      favoriteNodes: [],
 
       openWindow: (appId, size = { width: 600, height: 450 }, metadata) => {
         // Check if window for this app already exists - focus it instead of creating duplicate
@@ -67,8 +75,20 @@ const useKernelStore = create<KernelState>()(
 
         let position: { x: number; y: number };
 
-        // Oracle always spawns top-right corner
-        if (appId === 'oracle') {
+        // Handle specific app sizes and positions
+        if (appId === 'subscription' && size.width === 600 && size.height === 450) {
+          size = {
+            width: Math.min(1300, screenWidth - 100),
+            height: Math.min(800, screenHeight - 100)
+          };
+        }
+
+        if (appId === 'subscription') {
+          position = {
+            x: Math.max(0, (screenWidth - size.width) / 2),
+            y: Math.max(0, (screenHeight - size.height) / 2)
+          };
+        } else if (appId === 'oracle') {
           position = {
             x: screenWidth - size.width - 20, // 20px from right edge
             y: 20 // 20px from top
@@ -370,11 +390,46 @@ const useKernelStore = create<KernelState>()(
           isSidebarOpen: !state.isSidebarOpen,
           isStartMenuOpen: false,
         })),
-      closeSidebar: () => set({ isSidebarOpen: false, selectedPwa: null }),
+      closeSidebar: () => set({ isSidebarOpen: false, selectedPwa: null, selectedDomainId: null }),
+      consumeFreeNodeSlot: (nodeId: string) => {
+        let isAllowed = false;
+        set((state) => {
+          const updatedFreeNodes = [...state.freeNodesUsed];
+
+          if (updatedFreeNodes.includes(nodeId)) {
+            isAllowed = true; // Already used this node, so it's allowed
+            return state;
+          }
+
+          if (updatedFreeNodes.length < 4) {
+            updatedFreeNodes.push(nodeId);
+            isAllowed = true;
+            return { freeNodesUsed: updatedFreeNodes };
+          }
+
+          isAllowed = false; // Over the limit
+          return state;
+        });
+        return isAllowed;
+      },
+      toggleFavoriteNode: (nodeId) =>
+        set((state) => ({
+          favoriteNodes: state.favoriteNodes.includes(nodeId)
+            ? state.favoriteNodes.filter((id) => id !== nodeId)
+            : [...state.favoriteNodes, nodeId],
+        })),
+      openSquadSidebar: (domainId) =>
+        set({
+          isSidebarOpen: true,
+          selectedDomainId: domainId,
+          selectedPwa: null,
+          isStartMenuOpen: false,
+        }),
       openPwaSidebar: (pwa) =>
         set({
           isSidebarOpen: true,
           selectedPwa: pwa,
+          selectedDomainId: null,
           isStartMenuOpen: false,
         }),
       toggleMatrixEffect: (status) => set({ isMatrixEffectActive: status }),
@@ -414,6 +469,21 @@ const useKernelStore = create<KernelState>()(
       openFile: (fileId) => {
         get().openWindow("fileViewer", { width: 600, height: 450 }, { fileId });
       },
+
+      // Access Control Implementations
+      unlockNode: (nodeId) =>
+        set((state) => ({
+          unlockedNodes: state.unlockedNodes.includes(nodeId)
+            ? state.unlockedNodes
+            : [...state.unlockedNodes, nodeId]
+        })),
+      unlockSquad: (squadId) =>
+        set((state) => ({
+          unlockedSquads: state.unlockedSquads.includes(squadId)
+            ? state.unlockedSquads
+            : [...state.unlockedSquads, squadId]
+        })),
+      setSubscriptionTier: (tier) => set({ subscriptionTier: tier }),
     }),
     {
       name: "win11-portfolio-storage",
@@ -423,6 +493,11 @@ const useKernelStore = create<KernelState>()(
         wallpaper: state.wallpaper,
         collectedEmails: state.collectedEmails,
         projectFolders: state.projectFolders, // Persist project folders
+        unlockedNodes: state.unlockedNodes,
+        unlockedSquads: state.unlockedSquads,
+        subscriptionTier: state.subscriptionTier,
+        freeNodesUsed: state.freeNodesUsed,
+        favoriteNodes: state.favoriteNodes,
         gemini: {
           ...state.gemini,
           isLoading: false,

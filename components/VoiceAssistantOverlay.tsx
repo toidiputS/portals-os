@@ -143,10 +143,10 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
     }
 
     return (
-        <div className="oracle-nexus-container z-[10000]">
+        <div className="oracle-nexus-container z-10000">
             {/* Input - Floating Pill */}
             <div className={`fixed bottom-24 right-6 transition-all duration-300 ${isChatOpen ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-95 origin-bottom-right'}`}>
-                <div className="w-[300px] bg-black/90 backdrop-blur-xl rounded-full shadow-2xl p-1 flex items-center gap-2 border border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                <div className="w-[300px] bg-black/90 backdrop-blur-xl rounded-full p-1 flex items-center gap-2 border border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
                     <input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
@@ -177,7 +177,7 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
                     ${isChatOpen ? 'bg-purple-900/80 shadow-[0_0_60px_rgba(168,85,247,0.8)] scale-105' : ''}
                 `}
             >
-                <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-purple-500/30 group-hover:bg-purple-400/50 blur-[8px] animate-pulse" />
+                <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-purple-500/30 group-hover:bg-purple-400/50 blur-sm animate-pulse" />
                 <div className="relative -top-2 -left-2 w-4 h-4 bg-purple-400 rounded-full shadow-[0_0_15px_rgba(168,85,247,1)]" />
             </button>
         </div>

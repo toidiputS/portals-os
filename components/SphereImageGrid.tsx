@@ -1,5 +1,5 @@
 // src/components/SphereImageGrid.tsx
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { LaunchIconWrapper } from "./LaunchIconWrapper";
 import "./SphereImageGrid.css";
 import { AppId } from "../types";
@@ -148,7 +148,6 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   });
   const [velocity, setVelocity] = useState<VelocityState>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [imagePositions, setImagePositions] = useState<SphericalPosition[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -231,6 +230,8 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
     return positions;
   }, [apps, actualSphereRadius]);
+
+  const imagePositions = useMemo(() => generateSpherePositions(), [generateSpherePositions]);
 
   const calculateWorldPositions = useCallback((): WorldPosition[] => {
     // Early return if no positions
@@ -507,10 +508,6 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
-  useEffect(() => {
-    setImagePositions(generateSpherePositions());
-  }, [generateSpherePositions]);
 
   useEffect(() => {
     let lastTime = 0;
