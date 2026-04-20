@@ -9,11 +9,12 @@ import { FlowingLight } from "./FlowingLight";
 
 import { PortalLayout } from "./PortalLayout";
 import SpeedBumpTaskbar from "./SpeedBumpTaskbar";
-import { CircleMenu } from "./CircleMenu";
+import { SquadSphere } from "./SquadSphere";
+import { AllAgentsPanel } from "./AllAgentsPanel";
 import StartMenuCircle from "./StartMenuCircle";
 import SystemTray from "./SystemTray";
 import { PORTAL_BACKGROUNDS } from "../constants";
-import { ORACLE_NODE, PLATOON_DOMAINS } from "../constants/platoon";
+import { ORACLE_NODE, NEXUS_SQUADS, NEXUS_AGENTS, getSquadById, NexusAgent, CATEGORY_COLORS } from "../constants/platoon";
 import { getSphereApps } from "../apps.config";
 
 interface ContextMenuState {
@@ -34,10 +35,9 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const theme = useKernel((state) => state.theme);
   const projectFolders = useKernel((state) => state.projectFolders);
   const openPwaSidebar = useKernel((state) => state.openPwaSidebar);
-  const openSquadSidebar = useKernel((state) => state.openSquadSidebar);
   const favoriteNodes = useKernel((state) => state.favoriteNodes);
 
-  // Ref for the sphere container (for CometPotato)
+  // Ref for the sphere container
   const sphereContainerRef = useRef<HTMLDivElement>(null);
 
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({
@@ -46,10 +46,9 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     y: 0,
   });
 
-  // Active Squad ID for the bottom taskbar
+  // Active Squad ID for the SquadSphere
   const [activeSquadId, setActiveSquadId] = useState<string | null>(null);
-  const [displayedSquad, setDisplayedSquad] = useState<any>(null);
-  const [isCircleMenuOpen, setIsCircleMenuOpen] = useState(false);
+  const [squadOrigin, setSquadOrigin] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // App Menu state (circular app spawner from Taskbar)
   const [isAppMenuOpen, setIsAppMenuOpen] = useState(false);
@@ -57,64 +56,68 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Oracle Chat state
   const [isOracleChatOpen, setIsOracleChatOpen] = useState(false);
 
+  // All Agents Directory
+  const [isAllAgentsOpen, setIsAllAgentsOpen] = useState(false);
+
   // Initialize bgIndex based on current wallpaper in store, or default to 0
   const [bgIndex, setBgIndex] = useState(() => {
     const index = PORTAL_BACKGROUNDS.indexOf(wallpaper);
     return index >= 0 ? index : 0;
   });
 
-  const [activeDomainId, setActiveDomainId] = useState<string | null>(null);
-
-  // Derived array of active menu items for the main portal ring
-  const menuItems = React.useMemo(() => {
-    if (!activeDomainId) return [];
-
-    const domain = PLATOON_DOMAINS.find(d => d.id === activeDomainId);
-    if (!domain) return [];
-
-    return domain.nodes
-      .filter((node: any) => !favoriteNodes.includes(node.id))
-      .map((node: any) => ({
-        label: node.name,
-        icon: <span className="text-sm font-bold truncate px-1">{node.id}</span>,
-        href: '#',
-        colorHex: domain.colorHex,
-        domainId: domain.id,
-        nodeData: node, // Pass full node data
-      }))
-      .sort((a: any, b: any) => a.nodeData.id.localeCompare(b.nodeData.id));
-  }, [activeDomainId, favoriteNodes]);
-
-  const toggleOrbitDomain = useCallback((id: string) => {
-    setActiveDomainId(prev => {
-      if (prev === id) {
-        // Turning OFF
-        setIsCircleMenuOpen(false);
-        // Wait for exit animation before truly emptying to preserve DOM nodes
-        setTimeout(() => {
-          setActiveDomainId(null);
-        }, 1400);
-        return prev;
-      } else {
-        // Turning ON
-        setIsCircleMenuOpen(true);
-        return id;
-      }
-    });
-  }, []);
-
-  // Find all favorite nodes across all domains to render as stars
+  // Find all favorite nodes across all agents to render as stars
   const favoriteNodeData = React.useMemo(() => {
     return favoriteNodes.map(nodeId => {
-      for (const domain of PLATOON_DOMAINS) {
-        const found = domain.nodes.find((n: any) => n.id === nodeId);
-        if (found) {
-          return { ...found, domainColor: domain.colorHex, domainName: domain.name };
-        }
-      }
-      return null;
+      const agent = NEXUS_AGENTS.find(a => a.id === nodeId);
+      if (!agent) return null;
+      const squad = NEXUS_SQUADS.find(s => s.agentIds.includes(nodeId));
+      return { ...agent, domainColor: squad?.colorHex || CATEGORY_COLORS[agent.category] || '#fff', squadName: squad?.name || agent.category };
     }).filter(Boolean);
   }, [favoriteNodes]);
+
+  // Active squad data for SquadSphere
+  const activeSquad = activeSquadId ? getSquadById(activeSquadId) : null;
+
+  // Handle squad click from speed bumps
+  const handleSquadClick = useCallback((squadId: string, buttonRect?: DOMRect) => {
+    if (activeSquadId === squadId) {
+      setActiveSquadId(null);
+    } else {
+      if (buttonRect) {
+        setSquadOrigin({
+          x: buttonRect.left + buttonRect.width / 2,
+          y: buttonRect.top + buttonRect.height / 2,
+        });
+      }
+      setActiveSquadId(squadId);
+      setIsAppMenuOpen(false);
+      closeSidebar();
+    }
+  }, [activeSquadId, closeSidebar]);
+
+  // Handle agent click from SquadSphere → open sidebar
+  const handleAgentClick = useCallback((agent: NexusAgent) => {
+    const squad = NEXUS_SQUADS.find(s => s.agentIds.includes(agent.id));
+    openPwaSidebar({
+      id: agent.id,
+      label: agent.name,
+      parentLabel: squad?.name || agent.category,
+      role: agent.role,
+      pain: agent.toolCard?.useThisWhen?.join('; ') || '',
+      artifact: agent.toolCard?.outputDelivered?.join(', ') || '',
+      purpose: agent.toolCard?.purpose || agent.description,
+      mission: agent.description,
+      preFlight: {
+        deployWhen: agent.toolCard?.useThisWhen?.join(', ') || '',
+        abstainWhen: agent.toolCard?.doNotUseWhen?.join(', ') || '',
+      },
+      inputs: agent.toolCard?.inputNeeded || '',
+      deliverables: agent.toolCard?.outputDelivered || [],
+      oracleInsight: agent.oracleInsight,
+      prevNode: agent.suggestedPreviousNode || '',
+      nextNode: agent.suggestedNextNode || '',
+    });
+  }, [openPwaSidebar]);
 
   // Update bgIndex when wallpaper changes externally (e.g., from settings)
   useEffect(() => {
@@ -123,8 +126,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       setBgIndex(index);
     }
   }, [wallpaper]);
-
-  // Sync CircleMenu with Domain selection (Removed auto-effect to allow toggleOrbitDomain timeout control)
 
   const wallpaperRef = useRef<HTMLDivElement>(null);
 
@@ -161,10 +162,13 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       if (e.key === "Escape" && isMatrixEffectActive) {
         toggleMatrixEffect(false);
       }
+      if (e.key === "Escape" && activeSquadId) {
+        setActiveSquadId(null);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isMatrixEffectActive, toggleMatrixEffect]);
+  }, [isMatrixEffectActive, toggleMatrixEffect, activeSquadId]);
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -180,7 +184,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
     // Close menus if clicking desktop background
     setIsAppMenuOpen(false);
-    setActiveSquadId(null);
   };
 
   return (
@@ -245,21 +248,22 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           onAppClick={(appId) => openWindow(appId)}
         />
 
-        {/* Speed Bump Taskbar - 10 Domains at the feet */}
+        {/* Speed Bump Taskbar - 10 Squads at the feet */}
         <SpeedBumpTaskbar
           onStartMenuClick={() => {
             setIsAppMenuOpen(!isAppMenuOpen);
           }}
           isStartMenuOpen={isAppMenuOpen}
-          activeDomainIds={activeDomainId ? [activeDomainId] : []}
-          onDomainClick={(domainId) => {
-            // Speedbumps now ONLY open the Sidebar Lobby. They do NOT instantly spawn nodes.
-            openSquadSidebar(domainId);
-            setIsAppMenuOpen(false); // Ensure mutually exclusive
+          activeSquadId={activeSquadId}
+          onSquadClick={handleSquadClick}
+          onAllAgentsClick={() => {
+            setIsAllAgentsOpen(true);
+            setActiveSquadId(null);
+            setIsAppMenuOpen(false);
           }}
         />
 
-        {/* Render Favorite Stars */}
+        {/* Render Favorite Stars (Linked to the Central Portal) */}
         {favoriteNodeData.map((node: any) => {
           if (!node) return null;
           // Deterministic random position based on ID string characters
@@ -268,104 +272,84 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           // Distribute stars seamlessly using golden angle approximation
           const angle = (seed * 137.5) * (Math.PI / 180);
 
-          // Radius between 60px and min(windowHeight * 0.3) so they stay inside the inner void
-          // Fallback to 200px max if window is undefined initially
-          const maxR = typeof window !== 'undefined' ? Math.min(window.innerHeight * 0.3, 300) : 200;
-          const r = 40 + ((seed * 43) % maxR);
+          // Radius between 60px and 250px to keep them clustered inside the portal ring
+          const maxR = typeof window !== 'undefined' ? Math.min(window.innerHeight * 0.25, 250) : 200;
+          const r = 60 + ((seed * 43) % maxR);
 
           const dx = Math.cos(angle) * r;
           const dy = Math.sin(angle) * r;
 
           return (
-            <div
+            <motion.div
               key={`star-${node.id}`}
-              className="absolute top-1/2 left-1/2 z-45 rounded-full cursor-pointer hover:scale-[1.8] transition-all duration-300 group"
-              style={{
-                transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px - 32px))`, // -32px is rough vertical center offset from Desktop logic
-                width: '12px',
-                height: '12px',
-                background: node.domainColor ? `radial-gradient(circle at center, #fff 0%, ${node.domainColor} 60%, transparent 100%)` : '#fff',
-                boxShadow: `0 0 15px ${node.domainColor || '#fff'}, 0 0 30px ${node.domainColor || '#fff'}`,
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ 
+                scale: [1, 1.1, 1],
+                opacity: 1
               }}
-              title={node.name}
-              onClick={() => {
-                openPwaSidebar({
-                  id: node.id,
-                  label: node.name,
-                  parentLabel: node.domainName,
-                  role: node.role,
-                  pain: node.pain,
-                  artifact: node.artifact,
-                  purpose: node.purpose,
-                  mission: node.mission,
-                  preFlight: node.preFlight,
-                  inputs: node.inputs,
-                  deliverables: node.deliverables,
-                  oracleInsight: node.oracleInsight,
-                  prevNode: node.prevNode,
-                  nextNode: node.nextNode,
-                });
+              transition={{ 
+                scale: { 
+                  duration: 2 + (seed % 3), 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                },
+                opacity: { duration: 0.5 }
+              }}
+              className="absolute top-1/2 left-1/2 z-50 cursor-pointer group"
+              style={{
+                transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px - 32px))`,
+                width: '14px',
+                height: '14px',
+              }}
+              // Larger invisible hover area for ONE orb interaction
+              data-one={`${node.name} — ${node.role}. ${node.description}. Click to open forensic dossier.`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAgentClick(node as NexusAgent);
               }}
             >
-              <span className="text-[10px] text-white absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 px-2 py-0.5 rounded-md pointer-events-none">
-                {node.id}
+              <div 
+                className="w-full h-full rounded-full transition-all duration-300 group-hover:scale-150"
+                style={{
+                  background: node.domainColor ? `radial-gradient(circle at center, #fff 0%, ${node.domainColor} 60%, transparent 100%)` : '#fff',
+                  boxShadow: `0 0 15px ${node.domainColor || '#fff'}, 0 0 30px ${node.domainColor || '#fff'}`,
+                }}
+              />
+              
+              {/* Pulsing outer ring */}
+              <div 
+                className="absolute inset-0 rounded-full animate-ping opacity-20"
+                style={{ backgroundColor: node.domainColor || '#fff' }}
+              />
+
+              <span className="text-[10px] text-white absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 backdrop-blur-md px-2 py-1 rounded border border-white/10 pointer-events-none z-50">
+                {node.name}
               </span>
-            </div>
+            </motion.div>
           );
         })}
 
-        {/* CircleMenu - spirals up into the portal when a Domain is activated */}
-        {(() => {
-          // Keep render alive until both the array is empty AND the exit animation finishes
-          const shouldRender = menuItems.length > 0 || isCircleMenuOpen;
+        {/* SquadSphere — opens when a squad speed bump is clicked */}
+        {activeSquad && (
+          <SquadSphere
+            squad={activeSquad}
+            isOpen={!!activeSquadId}
+            onClose={() => setActiveSquadId(null)}
+            onAgentClick={handleAgentClick}
+            originX={squadOrigin.x}
+            originY={squadOrigin.y}
+          />
+        )}
 
-          if (!shouldRender) return null;
-
-          return (
-            <CircleMenu
-              items={menuItems}
-              isOpen={isCircleMenuOpen}
-              setIsOpen={(open) => {
-                if (!open) {
-                  // Delay clearing active domains and closing sidebar to allow exit animation to complete
-                  const closeTime = 1400; // Match CircleMenu's exit animation duration
-                  setTimeout(() => {
-                    setActiveDomainId(null);
-                    closeSidebar();
-                  }, closeTime);
-                }
-              }}
-              showTrigger={false}
-              onGrandchildClick={(item: any) => {
-                if (item.nodeData) {
-                  const itemData = item.nodeData;
-                  if (!itemData) return;
-                  if (itemData.id === 'O') {
-                    // Oracle opens directly to its PWA
-                    window.open('https://oracle.itsyouonline.com', '_blank');
-                  } else {
-                    openPwaSidebar({
-                      id: itemData.id,
-                      label: itemData.name,
-                      parentLabel: itemData.domainName || PLATOON_DOMAINS.find(d => d.id === activeDomainId)?.name,
-                      role: itemData.role,
-                      pain: itemData.pain,
-                      artifact: itemData.artifact,
-                      purpose: itemData.purpose,
-                      mission: itemData.mission,
-                      preFlight: itemData.preFlight,
-                      inputs: itemData.inputs,
-                      deliverables: itemData.deliverables,
-                      oracleInsight: itemData.oracleInsight,
-                      prevNode: itemData.prevNode,
-                      nextNode: itemData.nextNode,
-                    });
-                  }
-                }
-              }}
-            />
-          );
-        })()}
+        {/* All Agents Directory */}
+        <AllAgentsPanel
+          isOpen={isAllAgentsOpen}
+          onClose={() => setIsAllAgentsOpen(false)}
+          onAgentClick={(agent) => {
+            setIsAllAgentsOpen(false);
+            handleAgentClick(agent);
+          }}
+        />
       </main>
     </PortalLayout>
   );

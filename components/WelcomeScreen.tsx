@@ -184,6 +184,7 @@ const WelcomeScreen: React.FC = () => {
 
             {/* ============ ACTUAL INPUT FIELD ============ */}
             {/* Appears when user clicks - transparent with blinking cursor */}
+            {/* Using !bg-transparent and inline styles to override any browser/UA defaults */}
             <motion.input
               ref={inputRef}
               type="text"
@@ -192,9 +193,16 @@ const WelcomeScreen: React.FC = () => {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               disabled={disabled}
-              className="w-full h-12 px-4 bg-transparent border-none text-white text-center placeholder:text-gray-500 focus:outline-none transition-all font-mono tracking-wider relative z-10"
+              autoComplete="off"
+              spellCheck={false}
+              className="w-full h-12 px-4 !bg-transparent border-none text-white text-center placeholder:text-gray-500 focus:outline-none transition-all font-mono tracking-wider relative z-10"
               style={{
                 caretColor: 'white',
+                background: 'none',
+                backgroundColor: 'transparent',
+                boxShadow: 'none',
+                outline: 'none',
+                WebkitAppearance: 'none',
               }}
               placeholder=""
               animate={{

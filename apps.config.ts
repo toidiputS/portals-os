@@ -7,6 +7,7 @@ import {
   OracleIcon,
   PotatoCometIcon,
 } from "./components/icons";
+import { NEXUS_AGENTS } from "./constants/platoon";
 
 
 // CLEAN SLATE: Only the 6 core apps you requested
@@ -29,8 +30,8 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
     id: "notionLike",
     name: "Not Notes",
     icon: FileText,
-    component: lazy(() => import("./apps/Not")),
-    description: "Rich note-taking app with pages, tags, and search functionality.",
+    component: lazy(() => import("./apps/NotNotesPWA")),
+    description: "Rich note-taking PWA (external).",
   },
   terminal: {
     id: "terminal",
@@ -111,12 +112,24 @@ export const getCoreApps = (
 };
 
 /**
- * Get all apps (same as core for now - clean slate)
+ * Get all apps — includes core apps, folder apps, AND dynamically resolved Nexus agents
  */
 export const getAllApps = (
   projectFolders: ProjectFolder[]
 ): AppDefinition[] => {
-  return getCoreApps(projectFolders);
+  const coreAndFolders = getCoreApps(projectFolders);
+
+  // Dynamically include any Nexus agent that has an open window
+  // This is called per-render in App.tsx so we generate AppDefinitions on the fly
+  const agentApps: AppDefinition[] = NEXUS_AGENTS.map((agent: any) => ({
+    id: agent.id as AppId,
+    name: agent.name,
+    icon: FileText, // placeholder icon — window title bar uses the name
+    component: lazy(() => import("./apps/AgentPWA")),
+    description: agent.description,
+  }));
+
+  return [...coreAndFolders, ...agentApps];
 };
 
 

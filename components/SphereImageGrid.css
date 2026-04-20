@@ -76,11 +76,16 @@
   height: var(--sig-container-size);
   perspective: var(--sig-perspective);
   perspective-origin: center center;
+  position: relative;
+  pointer-events: auto;
+}
+
+/* When used as the main desktop sphere, pin it to center */
+.sig-root-container:not(.squad-sphere-instance) {
   position: fixed;
   top: 50vh;
   left: 50vw;
   transform: translate(-50%, -50%);
-  pointer-events: auto;
 }
 
 /* Inner wrapper (replaces inline z-index) */

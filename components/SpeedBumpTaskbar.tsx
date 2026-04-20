@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { HolographicStartIcon } from './icons';
-import { PLATOON_DOMAINS } from '../constants/platoon';
+import { NEXUS_SQUADS } from '../constants/platoon';
 
 /**
  * SpeedBumpTaskbar - A minimal bottom taskbar with half-exposed circular buttons
@@ -11,7 +11,8 @@ import { PLATOON_DOMAINS } from '../constants/platoon';
  * [Start Menu] ---- [Squad 1] [Squad 2] ... [Squad 10]
  *     LEFT                     CENTER ARRAY
  * 
- * All buttons are "speed bumps" - only the top half is visible on screen
+ * All buttons are "speed bumps" - only the top half is visible on screen.
+ * Clicking a squad opens the SquadSphere with that squad's agents.
  */
 
 const BUTTON_SIZE = 96; // 96px = w-24 h-24
@@ -20,15 +21,17 @@ const SQUAD_BUTTON_SIZE = 60; // Slightly smaller for the 10 squads
 interface SpeedBumpTaskbarProps {
     onStartMenuClick: () => void;
     isStartMenuOpen: boolean;
-    activeDomainIds?: string[];
-    onDomainClick?: (domainId: string) => void;
+    activeSquadId?: string | null;
+    onSquadClick?: (squadId: string, buttonRef?: DOMRect) => void;
+    onAllAgentsClick?: () => void;
 }
 
 export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
     onStartMenuClick,
     isStartMenuOpen,
-    activeDomainIds = [],
-    onDomainClick
+    activeSquadId = null,
+    onSquadClick,
+    onAllAgentsClick
 }) => {
     return (
         <>
@@ -75,17 +78,18 @@ export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                 )}
             </motion.button>
 
-            {/* ============ DOMAIN MENUS - CENTER SPAN AT PERSON'S FEET ============ */}
+            {/* ============ SQUAD SPEED BUMPS + ALL AGENTS - CENTER SPAN ============ */}
             <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex items-end justify-center gap-4 z-50 pointer-events-none w-full max-w-5xl px-8" style={{ paddingBottom: -30 }}>
-                {PLATOON_DOMAINS.map((domain) => {
-                    const isActive = activeDomainIds.includes(domain.id);
+                {NEXUS_SQUADS.map((squad) => {
+                    const isActive = activeSquadId === squad.id;
 
                     return (
                         <motion.button
-                            key={domain.id}
+                            key={squad.id}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onDomainClick?.(domain.id);
+                                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                onSquadClick?.(squad.id, rect);
                             }}
                             className="relative flex flex-col items-center justify-center cursor-pointer outline-none pointer-events-auto group"
                             style={{
@@ -95,15 +99,15 @@ export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                             }}
                             whileHover={{ y: -8, transition: { duration: 0.2 } }}
                             whileTap={{ scale: 0.95 }}
-                            title={domain.name}
+                            data-one={`${squad.name}. ${squad.agentIds.length} agents. ${squad.description || 'Click to view squad.'}`}
                         >
-                            {/* Background circle - dynamically colored base on active state */}
+                            {/* Background circle - dynamically colored based on active state */}
                             <div
                                 className="absolute inset-0 rounded-full border-2 shadow-lg transition-colors"
                                 style={{
-                                    borderColor: isActive ? domain.colorHex : `${domain.colorHex}60`,
-                                    background: `linear-gradient(135deg, ${domain.colorHex}40 0%, ${domain.colorHex}20 50%, #0f0f23 100%)`,
-                                    boxShadow: isActive ? `0 0 15px ${domain.colorHex}80` : `0 0 10px ${domain.colorHex}40`
+                                    borderColor: isActive ? squad.colorHex : `${squad.colorHex}60`,
+                                    background: `linear-gradient(135deg, ${squad.colorHex}40 0%, ${squad.colorHex}20 50%, #0f0f23 100%)`,
+                                    boxShadow: isActive ? `0 0 15px ${squad.colorHex}80` : `0 0 10px ${squad.colorHex}40`
                                 }}
                             />
 
@@ -130,10 +134,11 @@ export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                                         className="absolute inset-0 flex items-start pt-[12px] justify-center z-10 text-white font-mono text-sm font-bold opacity-70 pointer-events-none"
                                     >
                                         <span className="text-[10px] leading-tight text-center px-1">
-                                            {domain.name.split(' ').map((word, i) => (
+                                            {/* Show short squad label — first word of name */}
+                                            {squad.name.split(':')[0].trim().split(' ').slice(0, 2).map((word, i) => (
                                                 <React.Fragment key={i}>
                                                     {word}
-                                                    {i < domain.name.split(' ').length - 1 && <br />}
+                                                    {i < 1 && <br />}
                                                 </React.Fragment>
                                             ))}
                                         </span>
@@ -146,7 +151,7 @@ export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                                 isActive && (
                                     <motion.div
                                         className="absolute inset-0 rounded-full border-2"
-                                        style={{ borderColor: domain.colorHex }}
+                                        style={{ borderColor: squad.colorHex }}
                                         initial={{ scale: 0.8, opacity: 0 }}
                                         animate={{ scale: 1.3, opacity: 0 }}
                                         transition={{ duration: 1, repeat: Infinity }}
@@ -156,6 +161,35 @@ export const SpeedBumpTaskbar: React.FC<SpeedBumpTaskbarProps> = ({
                         </motion.button>
                     );
                 })}
+
+                {/* ALL AGENTS directory button */}
+                <motion.button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onAllAgentsClick?.();
+                    }}
+                    className="relative flex flex-col items-center justify-center cursor-pointer outline-none pointer-events-auto group"
+                    style={{
+                        width: SQUAD_BUTTON_SIZE,
+                        height: SQUAD_BUTTON_SIZE,
+                        marginBottom: -30,
+                    }}
+                    whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                    whileTap={{ scale: 0.95 }}
+                    title="All Agents Directory"
+                >
+                    <div
+                        className="absolute inset-0 rounded-full border-2 shadow-lg"
+                        style={{
+                            borderColor: '#ffffff40',
+                            background: 'linear-gradient(135deg, #ffffff20 0%, #ffffff10 50%, #0f0f23 100%)',
+                            boxShadow: '0 0 10px #ffffff20'
+                        }}
+                    />
+                    <span className="absolute inset-0 flex items-start pt-[14px] justify-center z-10 text-white font-mono text-[10px] font-bold opacity-70 pointer-events-none tracking-widest">
+                        ALL
+                    </span>
+                </motion.button>
             </div >
         </>
     );

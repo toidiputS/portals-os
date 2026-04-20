@@ -10,8 +10,8 @@ export type BuiltInAppId =
   | "fileViewer"
   | "settings";
 
-// Allow dynamic folder IDs like "folder:my-project"
-export type AppId = BuiltInAppId | `folder:${string}`;
+// Allow dynamic folder IDs like "folder:my-project" AND agent IDs like "AC", "TOSO"
+export type AppId = BuiltInAppId | `folder:${string}` | (string & {});
 
 // Project folder bookmark
 export interface ProjectFolder {

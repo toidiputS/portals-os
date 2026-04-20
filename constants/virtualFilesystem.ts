@@ -107,8 +107,8 @@ Portfolio OS reimagines the traditional portfolio website as an interactive oper
 
 ## 🔗 Links
 
-- [Live Demo](https://portfolio-os.vercel.app)
-- [GitHub Repository](https://github.com/username/portfolio-os)
+- [Live Demo](https://Itsyouonline.com)
+- [GitHub Repository](https://github.com/toidiputs/portfolio-os)
 
 ---
 
@@ -138,7 +138,7 @@ Portfolio OS reimagines the traditional portfolio website as an interactive oper
         createdAt: '2025-01-01T00:00:00.000Z',
         modifiedAt: '2025-01-01T00:00:00.000Z',
         content: {
-            url: 'https://github.com/username/portfolio-os',
+            url: 'https://github.com/toidiputs/portfolio-os',
         },
     },
 
@@ -295,7 +295,7 @@ Check out the /contact folder for all my links!
         createdAt: '2025-01-01T00:00:00.000Z',
         modifiedAt: '2025-01-01T00:00:00.000Z',
         content: {
-            url: 'mailto:your.email@example.com',
+            url: 'mailto:Itsllc.sean@gmail.com',
         },
     },
     {
@@ -319,7 +319,7 @@ Check out the /contact folder for all my links!
         createdAt: '2025-01-01T00:00:00.000Z',
         modifiedAt: '2025-01-01T00:00:00.000Z',
         content: {
-            url: 'https://github.com/yourusername',
+            url: 'https://github.com/toidiputs',
         },
     },
     {

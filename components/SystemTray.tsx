@@ -223,10 +223,10 @@ const SystemTray: React.FC = () => {
                 <AnimatePresence>
                     {isVolumeOpen && (
                         <motion.div
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            className="absolute bottom-full right-0 mb-2 p-3 bg-black/90 backdrop-blur-xl border border-white/20 rounded-lg shadow-xl"
+                            exit={{ opacity: 0, y: -10 }}
+                            className="absolute top-full right-0 mt-2 p-3 bg-black/90 backdrop-blur-xl border border-white/20 rounded-lg shadow-xl"
                         >
                             <div className="flex items-center gap-2">
                                 <Volume2 size={14} className="text-white/60" />
@@ -248,12 +248,15 @@ const SystemTray: React.FC = () => {
 
             {/* Notifications */}
             <button
-                onClick={() => setHasNewMessage(false)}
+                onClick={() => {
+                    setHasNewMessage(false);
+                    setIsCalendarOpen(true);
+                }}
                 className="p-2 hover:bg-white/10 rounded transition-colors relative"
-                title="Notifications"
+                title="Notifications & Calendar"
             >
                 <Bell size={16} className="text-white/70" />
-                {hasNewMessage && (
+                {(hasNewMessage || events.some(e => e.date === new Date().toISOString().split('T')[0])) && (
                     <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
                 )}
             </button>

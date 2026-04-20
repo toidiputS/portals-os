@@ -71,7 +71,8 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
             let context = '';
 
             let el: HTMLElement | null = target;
-            for (let i = 0; i < 3 && el; i++) {
+            for (let i = 0; i < 5 && el; i++) {
+                if (el.dataset.one) { context = el.dataset.one; break; }
                 if (el.title) { context = el.title; break; }
                 if (el.getAttribute('aria-label')) { context = el.getAttribute('aria-label')!; break; }
                 if (el.tagName === 'BUTTON' || el.tagName === 'A') {
@@ -88,26 +89,21 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
             }
 
             if (lastHoveredElementRef.current === target) return;
-            if (explainedContextsRef.current.has(context)) return;
 
             if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
             lastHoveredElementRef.current = target;
 
-            // 2-Second Delay
+            // 0.8-Second Delay — quick enough ONE feels responsive
             hoverTimerRef.current = setTimeout(async () => {
                 if (!isProcessingRef.current && lastHoveredElementRef.current === target) {
                     isProcessingRef.current = true;
-                    explainedContextsRef.current.add(context);
 
                     try {
-                        // User requested to turn off ONE's interactions to save API space
-                        // const { generateOneContextDescription } = await import('../services/oneService');
-                        // const description = await generateOneContextDescription(context);
-                        // if (description) {
-                        //     // Emit the bubble directly to ONE's listener
-                        //     import('./speechBubbleUtils').then(m => m.showSpeechBubble(description));
-                        // }
-                        console.log(`[ONE Observer Disabled] Would have generated context for: ${context}`);
+                        // Truncate long texts to keep bubbles clean
+                        const truncated = context.length > 150 ? context.slice(0, 150) + '…' : context;
+                        // ONE speaks the hover context directly as a chat bubble
+                        const { showSpeechBubble } = await import('./speechBubbleUtils');
+                        showSpeechBubble(truncated);
                     } catch (error) {
                         console.error("Hover generation failed", error);
                     } finally {
@@ -115,7 +111,7 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
                         lastHoveredElementRef.current = null;
                     }
                 }
-            }, 2000);
+            }, 800);
         };
 
         const handleMouseOut = () => {
@@ -335,6 +331,28 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
         };
     }, []);
 
+    const interactiveElementsRef = useRef<HTMLElement[]>([]);
+
+    // Periodically update the list of interactive elements to avoid DOM scanning on every frame
+    useEffect(() => {
+        const scanElements = () => {
+            // Focus on common interactive tags and elements with specific data/role attributes
+            // Scanning 'body *' on every frame was the source of the performance drop
+            const allElements = Array.from(document.querySelectorAll('button, a, input, [role="button"], [data-one], .cursor-pointer')) as HTMLElement[];
+            interactiveElementsRef.current = allElements.filter(el => {
+                const elRect = el.getBoundingClientRect();
+                return elRect.width > 2 && elRect.height > 2 &&
+                    el.offsetParent !== null &&
+                    window.getComputedStyle(el).opacity !== '0' &&
+                    window.getComputedStyle(el).visibility !== 'hidden';
+            });
+        };
+
+        const interval = setInterval(scanElements, 1000); // Scan once per second
+        scanElements();
+        return () => clearInterval(interval);
+    }, []);
+
     const updateLight = useCallback(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
@@ -362,18 +380,8 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
         let closestPoint = { x: targetRef.current.x, y: targetRef.current.y };
         let newCurrentElement: HTMLElement | null = null;
 
-        const allElements = Array.from(document.querySelectorAll('body *')) as HTMLElement[];
-        const interactiveElements = allElements.filter(el => {
-            const elRect = el.getBoundingClientRect();
-            // Filter out elements that are too small, hidden, or not interactive
-            return elRect.width > 10 && elRect.height > 10 &&
-                el.offsetParent !== null &&
-                window.getComputedStyle(el).pointerEvents !== 'none' &&
-                window.getComputedStyle(el).opacity !== '0' &&
-                window.getComputedStyle(el).visibility !== 'hidden';
-        });
-
-        interactiveElements.forEach(el => {
+        // Use the cached list of elements instead of scanning the DOM
+        interactiveElementsRef.current.forEach(el => {
             const distance = getDistanceToElementEdge(targetRef.current.x, targetRef.current.y, el);
             if (distance < 80 && distance < closestDistance) { // Check proximity
                 closestDistance = distance;
@@ -446,8 +454,8 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
             prev
                 .map(msg => ({
                     ...msg,
-                    life: msg.life - 1,
-                    opacity: Math.min((msg.life / 150) * 0.7, 0.7) // Start fading immediately, max 70% opacity
+                    life: msg.life - 3, // Faster decay — 3x speed
+                    opacity: Math.min((msg.life / 100) * 0.8, 0.8) // Fade quickly
                 }))
                 .filter(msg => msg.life > 0)
         );
@@ -456,19 +464,15 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
     // Listen to system/Oracle messages
     useEffect(() => {
         const unregister = registerBubbleCallback((text) => {
-            // Spawn message above the current light position
-            setChatMessages(prev => [
-                ...prev,
-                {
+            // Clear ALL previous hover hints, keep only the newest one
+            setChatMessages([{
                     id: `oracle-${Date.now()}`,
                     text: text,
                     x: lightRef.current.x,
                     y: lightRef.current.y - 60, // Above the orb
-                    opacity: 0.9, // Higher opacity for system messages
-                    life: 400 + text.length * 5 // Longer life based on text length
-                }
-            ]);
-            lastChatTimeRef.current = Date.now();
+                    opacity: 0.9,
+                    life: Math.min(180 + text.length * 1.5, 300) // Capped at ~5 seconds max
+                }]);
             lastChatTimeRef.current = Date.now();
         });
         return () => { unregister(); };
@@ -636,24 +640,26 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 pointer-events-none z-20"
+                className="absolute inset-0 pointer-events-none z-[9999]"
                 style={{ mixBlendMode: 'difference' }}
             />
 
             {chatMessages.map(msg => (
                 <div
                     key={msg.id}
-                    className="absolute z-50 flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-2.5 py-1.5 text-xs shadow-lg transition-opacity duration-300"
+                    className="fixed z-[10000] flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-2.5 py-1.5 text-xs shadow-lg transition-opacity duration-300"
                     style={{
                         left: msg.x,
                         top: msg.y,
                         opacity: msg.opacity,
                         transform: 'translateX(-50%) translateY(-100%)',
                         pointerEvents: 'none',
-                        whiteSpace: 'nowrap'
+                        maxWidth: '400px',
+                        whiteSpace: 'normal',
+                        wordBreak: 'break-word'
                     }}
                 >
-                    <MessageSquareText className="h-3 w-3" />
+                    <MessageSquareText className="h-3 w-3 shrink-0" />
                     <span>{msg.text}</span>
                 </div>
             ))}

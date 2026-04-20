@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useKernel } from '../store/kernel';
 import { Sparkles, PackageCheck } from 'lucide-react';
-import { PLATOON_SQUADS, PLATOON_DOMAINS } from '../constants/platoon';
+import { NEXUS_SQUADS, NEXUS_AGENTS, NexusAgent, CATEGORY_COLORS } from '../constants/platoon';
 
 export const CheckoutHandler: React.FC = () => {
     const [purchasedItems, setPurchasedItems] = useState<{ type: string, id: string, name?: string }[]>([]);
@@ -11,12 +11,36 @@ export const CheckoutHandler: React.FC = () => {
     const openPwaSidebar = useKernel(state => state.openPwaSidebar);
     const openSquadSidebar = useKernel(state => state.openSquadSidebar);
 
+    // Helper to open an agent in the sidebar using new data shape
+    const openAgentSidebar = (agent: NexusAgent) => {
+        const squad = NEXUS_SQUADS.find(s => s.agentIds.includes(agent.id));
+        openPwaSidebar({
+            id: agent.id,
+            label: agent.name,
+            parentLabel: squad?.name || agent.category,
+            role: agent.role,
+            pain: agent.toolCard?.useThisWhen?.join('; ') || '',
+            artifact: agent.toolCard?.outputDelivered?.join(', ') || '',
+            purpose: agent.toolCard?.purpose || agent.description,
+            mission: agent.description,
+            preFlight: {
+                deployWhen: agent.toolCard?.useThisWhen?.join(', ') || '',
+                abstainWhen: agent.toolCard?.doNotUseWhen?.join(', ') || '',
+            },
+            inputs: agent.toolCard?.inputNeeded || '',
+            deliverables: agent.toolCard?.outputDelivered || [],
+            oracleInsight: agent.oracleInsight,
+            prevNode: agent.suggestedPreviousNode || '',
+            nextNode: agent.suggestedNextNode || '',
+        });
+    };
+
     useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
         const purchasedParam = searchParams.get('purchased');
 
         if (purchasedParam) {
-            // Expected format: ?purchased=node:SE,squad:squad-1,node:NX
+            // Expected format: ?purchased=node:SE,squad:SQUAD1,node:NX
             const items = purchasedParam.split(',');
             const processedItems: { type: string, id: string, name?: string }[] = [];
 
@@ -25,22 +49,12 @@ export const CheckoutHandler: React.FC = () => {
                 if (type && id) {
                     if (type === 'node') {
                         unlockNode(id);
-                        // Find node name for UI
-                        let nodeName = "Unknown Node";
-                        let nodeObj = null;
-                        for (const domain of PLATOON_DOMAINS) {
-                            const found = domain.nodes.find(n => n.id === id);
-                            if (found) {
-                                nodeName = found.name;
-                                nodeObj = found;
-                                break;
-                            }
-                        }
-                        processedItems.push({ type, id, name: nodeName });
+                        const agent = NEXUS_AGENTS.find(a => a.id === id);
+                        processedItems.push({ type, id, name: agent?.name || "Unknown Node" });
 
                     } else if (type === 'squad') {
                         unlockSquad(id);
-                        const squad = PLATOON_SQUADS.find(s => s.id === id);
+                        const squad = NEXUS_SQUADS.find(s => s.id === id);
                         processedItems.push({ type, id, name: squad?.name || "Unknown Squad" });
                     }
                 }
@@ -53,18 +67,8 @@ export const CheckoutHandler: React.FC = () => {
                 // If only 1 item, open it directly
                 const item = processedItems[0];
                 if (item.type === 'node') {
-                    for (const domain of PLATOON_DOMAINS) {
-                        const node = domain.nodes.find(n => n.id === item.id);
-                        if (node) {
-                            openPwaSidebar({
-                                ...node,
-                                label: node.name,
-                                parentLabel: domain.name,
-                                parentSquadId: domain.id
-                            } as any);
-                            break;
-                        }
-                    }
+                    const agent = NEXUS_AGENTS.find(a => a.id === item.id);
+                    if (agent) openAgentSidebar(agent);
                 } else if (item.type === 'squad') {
                     openSquadSidebar(item.id);
                 }
@@ -106,18 +110,8 @@ export const CheckoutHandler: React.FC = () => {
                             <button
                                 onClick={() => {
                                     if (item.type === 'node') {
-                                        for (const domain of PLATOON_DOMAINS) {
-                                            const node = domain.nodes.find(n => n.id === item.id);
-                                            if (node) {
-                                                openPwaSidebar({
-                                                    ...node,
-                                                    label: node.name,
-                                                    parentLabel: domain.name,
-                                                    parentSquadId: domain.id
-                                                } as any);
-                                                break;
-                                            }
-                                        }
+                                        const agent = NEXUS_AGENTS.find(a => a.id === item.id);
+                                        if (agent) openAgentSidebar(agent);
                                     } else {
                                         openSquadSidebar(item.id);
                                     }
