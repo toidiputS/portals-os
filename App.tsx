@@ -65,6 +65,68 @@ const App: React.FC = () => {
     };
   }, [theme]);
 
+   const addDeliverable = useKernel((state) => state.addDeliverable);
+  const setAgentStatus = useKernel((state) => state.setAgentStatus);
+  const setIsMobile = useKernel((state) => state.setIsMobile);
+  const openWindow = useKernel((state) => state.openWindow);
+  const initialGreetingSpoken = useKernel((state) => state.initialGreetingSpoken);
+  const setInitialGreetingSpoken = useKernel((state) => state.setInitialGreetingSpoken);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [setIsMobile]);
+
+  // Auto-open logic removed per user request
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const { type, agentId, agentName, content, timestamp } = event.data || {};
+
+      switch (type) {
+        case "SUBMIT_DELIVERABLE":
+          if (content) {
+            addDeliverable({
+              id: Math.random().toString(36).substr(2, 9),
+              agentId: agentId || "unknown",
+              agentName: agentName || "Agent",
+              content,
+              timestamp: timestamp || new Date().toISOString(),
+              status: "pending",
+            });
+            console.log(`[KERNEL] Received deliverable from ${agentName || agentId}`);
+          }
+          break;
+
+        case "AGENT_READY":
+          console.log(`[KERNEL] Uplink Established: ${agentName || agentId} is online.`);
+          if (agentId) setAgentStatus(agentId, "online");
+          break;
+
+        case "AGENT_HEARTBEAT":
+          if (agentId) setAgentStatus(agentId, "online");
+          break;
+
+        case "AGENT_ERROR":
+          console.error(`[KERNEL] Connection Error: ${agentId} reported a failure.`);
+          if (agentId) setAgentStatus(agentId, "error");
+          break;
+
+        default:
+          // Ignore other messages
+          break;
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [addDeliverable, setAgentStatus]);
+
+
   return (
     <AnimatePresence mode="sync">
       {!hasWelcomed ? (

@@ -22,7 +22,6 @@ import { Component as ShatterButton } from "../@/components/ui/shatter-button";
 // AUDIO CONSTANTS
 // ============================================================================
 // 15 different welcome audio messages that play randomly when user submits email
-const welcomeAudio = "/assets/audio/welcome.mp3";
 const welcomeAudio1 = "/assets/audio/welcome_1.mp3";
 const welcomeAudio2 = "/assets/audio/welcome_2.mp3";
 const welcomeAudio3 = "/assets/audio/welcome_3.mp3";
@@ -44,6 +43,10 @@ const welcomeAudio18 = "/assets/audio/welcome_18.mp3";
 const welcomeAudio19 = "/assets/audio/welcome_19.mp3";
 const welcomeAudio20 = "/assets/audio/welcome_20.mp3";
 const welcomeAudio21 = "/assets/audio/welcome_21.mp3";
+const welcomeAudio22 = "/assets/audio/welcome_22.mp3";
+const welcomeAudio23 = "/assets/audio/welcome_23.mp3";
+const welcomeAudio24 = "/assets/audio/welcome_24.mp3";
+const welcomeAudio25 = "/assets/audio/welcome_25.mp3";
 // ============================================================================
 // TYPE DEFINITIONS
 // ============================================================================
@@ -250,7 +253,7 @@ const WelcomeScreen: React.FC = () => {
   // ------------------------------------------------------------------------
   const [isFadingOut, setIsFadingOut] = useState(false);  // Controls exit animation
   const [isShatterAnimating, setIsShatterAnimating] = useState(false); // Controls shatter animation delay
-  const [showEmailEntry, setShowEmailEntry] = useState(collectedEmails.length === 0); // Show email field for new users
+  const [showEmailEntry, setShowEmailEntry] = useState(false); // ALWAYS require the user to press the button to reveal email entry
 
   // ------------------------------------------------------------------------
   // HANDLER: Random Welcome Audio
@@ -258,7 +261,6 @@ const WelcomeScreen: React.FC = () => {
   // Selects and plays one of 15 random welcome messages
   const playRandomWelcomeMessage = () => {
     const welcomeAudios = [
-      welcomeAudio,
       welcomeAudio1,
       welcomeAudio2,
       welcomeAudio3,
@@ -280,12 +282,17 @@ const WelcomeScreen: React.FC = () => {
       welcomeAudio19,
       welcomeAudio20,
       welcomeAudio21,
+      welcomeAudio22,
+      welcomeAudio23,
+      welcomeAudio24,
+      welcomeAudio25,
     ];
 
     const randomAudio =
       welcomeAudios[Math.floor(Math.random() * welcomeAudios.length)];
     playAudio(randomAudio, undefined, 0.3); // Set volume to 30%
   };
+
 
   // ------------------------------------------------------------------------
   // VALIDATOR: Email Format
@@ -388,24 +395,13 @@ const WelcomeScreen: React.FC = () => {
       </div>
 
       <div className="relative w-full max-w-md flex items-center justify-center" style={{ zIndex: 20 }}>
-        {/* ============ TITLE SECTION ============ */}
-        {/* Brand name with subtle fade-in - positioned below center */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.75 }}
-          transition={{ duration: 5, delay: 0.5, ease: "easeOut" }}
-          className="absolute top-96 left-0 right-0 text-center"
-        >
-          <h1 className="text-4xl font-bold text-white" style={{ letterSpacing: '0.3em' }}>The Youniverse</h1>
-        </motion.div>
-
-        {/* ============ SHATTER BUTTON - RETURNING USERS ============ */}
-        {/* Shows for users who have submitted email before - explodes to reveal email field */}
+        {/* ============ SHATTER BUTTON ============ */}
+        {/* Explodes to reveal email field */}
         {(!showEmailEntry || isShatterAnimating) && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
             className="flex items-center justify-center"
           >
             <ShatterButton
@@ -419,19 +415,30 @@ const WelcomeScreen: React.FC = () => {
           </motion.div>
         )}
 
-        {/* ============ EMAIL COLLECTION SECTION ============ */}
-        {/* Interactive email field - shows for new users or after button click */}
+        {/* ============ EMAIL COLLECTION SECTION & TITLE ============ */}
+        {/* Interactive email field and title - shows after button click */}
         {showEmailEntry && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
+            className="flex flex-col items-center w-full"
           >
             <EmailFieldComponent
               placeholder="Enter Email"
               onSubmit={handleEmailSubmit}
               disabled={false}
             />
+            
+            {/* Brand name title that appears after clicking */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.75 }}
+              transition={{ duration: 2, delay: 0.2, ease: "easeOut" }}
+              className="absolute top-96 left-0 right-0 text-center pointer-events-none"
+            >
+              <h1 className="text-4xl font-bold text-white" style={{ letterSpacing: '0.3em' }}>The Youniverse</h1>
+            </motion.div>
           </motion.div>
         )}
       </div>

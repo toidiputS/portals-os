@@ -17,218 +17,48 @@ import {
   List,
   CheckSquare,
   Quote,
+  Check,
+  X,
+  FileDown,
 } from "lucide-react";
-
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  starred: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface Page {
-  id: string;
-  title: string;
-  content: string;
-  children: string[];
-  parentId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { useKernel } from "../../store/kernel";
 
 const Not: React.FC = () => {
-  const [notes, setNotes] = useState<Note[]>([
-    {
-      id: "1",
-      title: "Getting Started",
-      content:
-        "Welcome to your Not workspace! This is a demo of the note-taking functionality.",
-      tags: ["welcome", "tutorial"],
-      starred: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "2",
-      title: "Project Ideas",
-      content:
-        "1. AI-powered task manager\n2. Smart calendar integration\n3. Voice-to-text notes",
-      tags: ["ideas", "project"],
-      starred: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  const notNotes = useKernel((state) => state.notNotes);
+  const createProject = useKernel((state) => state.createNotNotesProject);
+  const selectProject = useKernel((state) => state.selectNotNotesProject);
+  const approveDeliverable = useKernel((state) => state.approveDeliverable);
+  const rejectDeliverable = useKernel((state) => state.rejectDeliverable);
+  const updateArtifact = useKernel((state) => state.updateArtifact);
 
-  const [pages, setPages] = useState<Page[]>([
-    {
-      id: "1",
-      title: "Workspace",
-      content: "Your main workspace",
-      children: ["2", "3"],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "2",
-      title: "Personal",
-      content: "Personal notes and thoughts",
-      children: [],
-      parentId: "1",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      id: "3",
-      title: "Work",
-      content: "Professional projects and notes",
-      children: [],
-      parentId: "1",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  const projects = Object.values(notNotes.projects);
+  const currentProject = notNotes.currentProjectId 
+    ? notNotes.projects[notNotes.currentProjectId] 
+    : null;
 
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
-  const [selectedPage, setSelectedPage] = useState<Page | null>(pages[0]);
-  const [view, setView] = useState<"notes" | "pages">("pages");
   const [searchQuery, setSearchQuery] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [editTitle, setEditTitle] = useState("");
-  const [editContent, setEditContent] = useState("");
+  const [editArtifact, setEditArtifact] = useState("");
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
-  const filteredNotes = notes.filter(
-    (note) =>
-      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+  const filteredProjects = projects.filter(
+    (project) =>
+      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.artifact.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const filteredPages = pages.filter(
-    (page) =>
-      page.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      page.content.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const createNote = () => {
-    const newNote: Note = {
-      id: Date.now().toString(),
-      title: "Untitled Note",
-      content: "",
-      tags: [],
-      starred: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    setNotes([newNote, ...notes]);
-    setSelectedNote(newNote);
-    setIsEditing(true);
-    setEditTitle(newNote.title);
-    setEditContent(newNote.content);
+  const handleCreateProject = () => {
+    const title = prompt("Enter project title:", "New Project");
+    if (title) {
+      createProject(title);
+    }
   };
 
-  const createPage = () => {
-    const newPage: Page = {
-      id: Date.now().toString(),
-      title: "New Page",
-      content: "",
-      children: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    setPages([...pages, newPage]);
-    setSelectedPage(newPage);
-    setIsEditing(true);
-    setEditTitle(newPage.title);
-    setEditContent(newPage.content);
-  };
-
-  const saveNote = () => {
-    if (selectedNote) {
-      const updatedNotes = notes.map((note) =>
-        note.id === selectedNote.id
-          ? {
-              ...note,
-              title: editTitle || "Untitled Note",
-              content: editContent,
-              updatedAt: new Date(),
-            }
-          : note
-      );
-      setNotes(updatedNotes);
-      setSelectedNote(
-        updatedNotes.find((n) => n.id === selectedNote.id) || null
-      );
+  const handleSaveArtifact = () => {
+    if (currentProject) {
+      updateArtifact(currentProject.id, editArtifact);
       setIsEditing(false);
     }
-  };
-
-  const savePage = () => {
-    if (selectedPage) {
-      const updatedPages = pages.map((page) =>
-        page.id === selectedPage.id
-          ? {
-              ...page,
-              title: editTitle || "Untitled Page",
-              content: editContent,
-              updatedAt: new Date(),
-            }
-          : page
-      );
-      setPages(updatedPages);
-      setSelectedPage(
-        updatedPages.find((p) => p.id === selectedPage.id) || null
-      );
-      setIsEditing(false);
-    }
-  };
-
-  const deleteNote = (noteId: string) => {
-    setNotes(notes.filter((note) => note.id !== noteId));
-    if (selectedNote?.id === noteId) {
-      setSelectedNote(null);
-      setIsEditing(false);
-    }
-  };
-
-  const toggleStar = (noteId: string) => {
-    setNotes(
-      notes.map((note) =>
-        note.id === noteId ? { ...note, starred: !note.starred } : note
-      )
-    );
-  };
-
-  const addTag = (noteId: string, tag: string) => {
-    if (tag.trim()) {
-      setNotes(
-        notes.map((note) =>
-          note.id === noteId && !note.tags.includes(tag)
-            ? { ...note, tags: [...note.tags, tag], updatedAt: new Date() }
-            : note
-        )
-      );
-    }
-  };
-
-  const removeTag = (noteId: string, tagToRemove: string) => {
-    setNotes(
-      notes.map((note) =>
-        note.id === noteId
-          ? {
-              ...note,
-              tags: note.tags.filter((tag) => tag !== tagToRemove),
-              updatedAt: new Date(),
-            }
-          : note
-      )
-    );
   };
 
   useEffect(() => {
@@ -237,278 +67,186 @@ const Not: React.FC = () => {
     }
   }, [isEditing]);
 
-  return (
-    <div className="h-full flex bg-gray-50">
-      {/* Sidebar */}
-      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="flex items-center gap-2 mb-4">
-            <button
-              onClick={() => setView("pages")}
-              className={`px-3 py-1 rounded text-sm ${
-                view === "pages"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              Pages
-            </button>
-            <button
-              onClick={() => setView("notes")}
-              className={`px-3 py-1 rounded text-sm ${
-                view === "notes"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              Notes
-            </button>
-          </div>
+  useEffect(() => {
+    if (currentProject && !isEditing) {
+      setEditArtifact(currentProject.artifact);
+    }
+  }, [currentProject, isEditing]);
 
+  return (
+    <div className="h-full flex bg-[#0F111A] text-white">
+      {/* Sidebar */}
+      <div className="w-80 bg-[#161B22] border-r border-white/10 flex flex-col">
+        {/* Header */}
+        <div className="p-4 border-b border-white/10">
+          <h2 className="text-sm font-black uppercase tracking-widest text-purple-400 mb-4 flex items-center gap-2">
+            <FileText size={16} />
+            Artifacts
+          </h2>
+          
           {/* Search */}
           <div className="relative mb-3">
             <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              size={16}
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              size={14}
             />
             <input
-              id="searchInput"
-              name="search"
               type="text"
-              placeholder="Search..."
+              placeholder="Search artifacts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-9 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-purple-500"
             />
           </div>
 
-          {/* Create Button */}
           <button
-            onClick={view === "notes" ? createNote : createPage}
-            className="w-full flex items-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+            onClick={handleCreateProject}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold transition-all"
           >
-            <Plus size={16} />
-            {view === "notes" ? "New Note" : "New Page"}
+            <Plus size={14} />
+            NEW PROJECT
           </button>
         </div>
 
-        {/* Content List */}
-        <div className="flex-1 overflow-y-auto">
-          {view === "notes" ? (
-            <div className="p-2">
-              {filteredNotes.map((note) => (
-                <div
-                  key={note.id}
-                  onClick={() => setSelectedNote(note)}
-                  className={`p-3 rounded-lg mb-2 cursor-pointer transition-colors ${
-                    selectedNote?.id === note.id
-                      ? "bg-blue-50 border-blue-200"
-                      : "hover:bg-gray-50"
-                  } border border-transparent`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-gray-900 truncate">
-                        {note.title}
-                      </h3>
-                      <p className="text-sm text-gray-500 line-clamp-2 mt-1">
-                        {note.content}
-                      </p>
-                      <div className="flex items-center gap-2 mt-2">
-                        {note.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1 ml-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleStar(note.id);
-                        }}
-                        aria-label={
-                          note.starred
-                            ? "Remove from favorites"
-                            : "Add to favorites"
-                        }
-                        className={`p-1 rounded ${
-                          note.starred
-                            ? "text-yellow-500"
-                            : "text-gray-400 hover:text-yellow-500"
-                        }`}
+        {/* Project List */}
+        <div className="flex-1 overflow-y-auto p-2">
+          {filteredProjects.map((project) => (
+            <div
+              key={project.id}
+              onClick={() => selectProject(project.id)}
+              className={`p-3 rounded-lg mb-1 cursor-pointer transition-all border ${
+                currentProject?.id === project.id
+                  ? "bg-purple-500/20 border-purple-500/50"
+                  : "border-transparent hover:bg-white/5"
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <FileText size={14} className={currentProject?.id === project.id ? "text-purple-400" : "text-gray-500"} />
+                <span className="text-xs font-medium truncate">{project.title}</span>
+              </div>
+              <div className="text-[10px] text-gray-500 mt-1">
+                Updated {new Date(project.updatedAt).toLocaleDateString()}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pending Deliverables Section */}
+        {notNotes.pendingDeliverables.length > 0 && (
+          <div className="p-4 border-t border-white/10 bg-purple-900/10">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3">
+              Incoming Deliverables ({notNotes.pendingDeliverables.length})
+            </h3>
+            <div className="space-y-2">
+              {notNotes.pendingDeliverables.map((d) => (
+                <div key={d.id} className="bg-white/5 border border-white/10 p-2 rounded-lg text-[10px]">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-purple-300">{d.agentName}</span>
+                    <div className="flex gap-1">
+                      <button 
+                        onClick={() => approveDeliverable(d.id)}
+                        className="p-1 hover:bg-emerald-500/20 text-emerald-400 rounded transition-colors"
+                        title="Approve & Append"
                       >
-                        <Star
-                          size={14}
-                          fill={note.starred ? "currentColor" : "none"}
-                        />
+                        <Check size={12} />
+                      </button>
+                      <button 
+                        onClick={() => rejectDeliverable(d.id)}
+                        className="p-1 hover:bg-red-500/20 text-red-400 rounded transition-colors"
+                        title="Reject"
+                      >
+                        <X size={12} />
                       </button>
                     </div>
                   </div>
+                  <p className="text-gray-400 line-clamp-2 italic">"{d.content}"</p>
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="p-2">
-              {filteredPages.map((page) => (
-                <div
-                  key={page.id}
-                  onClick={() => setSelectedPage(page)}
-                  className={`p-3 rounded-lg mb-2 cursor-pointer transition-colors ${
-                    selectedPage?.id === page.id
-                      ? "bg-blue-50 border-blue-200"
-                      : "hover:bg-gray-50"
-                  } border border-transparent`}
-                >
-                  <div className="flex items-center gap-2">
-                    <FileText size={16} className="text-gray-400" />
-                    <span className="font-medium text-gray-900">
-                      {page.title}
-                    </span>
-                    {page.children.length > 0 && (
-                      <ChevronRight size={14} className="text-gray-400" />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {selectedNote || selectedPage ? (
+      <div className="flex-1 flex flex-col relative overflow-hidden">
+        {currentProject ? (
           <>
             {/* Toolbar */}
-            <div className="p-4 border-b border-gray-200 bg-white">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {view === "notes" ? (
-                    <>
-                      <FileText size={18} className="text-gray-500" />
-                      <span className="text-sm text-gray-500">
-                        {selectedNote ? "Note" : "No note selected"}
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <FileText size={18} className="text-gray-500" />
-                      <span className="text-sm text-gray-500">
-                        {selectedPage ? "Page" : "No page selected"}
-                      </span>
-                    </>
-                  )}
+            <div className="p-4 border-b border-white/10 bg-[#161B22]/50 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <h1 className="text-lg font-bold text-white">{currentProject.title}</h1>
+                <div className="flex items-center gap-1 px-2 py-0.5 bg-white/5 rounded text-[10px] text-gray-500 uppercase tracking-tighter">
+                  <FileDown size={10} />
+                  {currentProject.deliverables.length} Deliverables
                 </div>
-                <div className="flex items-center gap-2">
-                  {!isEditing ? (
+              </div>
+              <div className="flex items-center gap-2">
+                {!isEditing ? (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded text-xs font-bold transition-all"
+                  >
+                    <Edit3 size={14} />
+                    EDIT MANUALLY
+                  </button>
+                ) : (
+                  <div className="flex items-center gap-2">
                     <button
-                      onClick={() => {
-                        setIsEditing(true);
-                        setEditTitle(
-                          selectedNote?.title || selectedPage?.title || ""
-                        );
-                        setEditContent(
-                          selectedNote?.content || selectedPage?.content || ""
-                        );
-                      }}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-sm transition-colors"
+                      onClick={() => setIsEditing(false)}
+                      className="px-3 py-1.5 text-gray-400 hover:text-white text-xs font-bold transition-all"
                     >
-                      <Edit3 size={14} />
-                      Edit
+                      CANCEL
                     </button>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => setIsEditing(false)}
-                        className="px-3 py-1.5 text-gray-600 hover:text-gray-800 text-sm transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={view === "notes" ? saveNote : savePage}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    <button
+                      onClick={handleSaveArtifact}
+                      className="px-4 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs font-bold transition-all"
+                    >
+                      SAVE ARTIFACT
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 p-6 bg-white">
+            {/* Editor/Viewer */}
+            <div className="flex-1 overflow-y-auto bg-[radial-gradient(circle_at_top_right,rgba(139,92,246,0.05),transparent)]">
               {isEditing ? (
-                <div className="space-y-4">
-                  <input
-                    id="editTitleInput"
-                    name="editTitle"
-                    type="text"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    placeholder="Title..."
-                    className="w-full text-3xl font-bold border-none outline-none placeholder-gray-300"
-                  />
+                <div className="h-full p-8 max-w-4xl mx-auto">
                   <textarea
                     ref={editorRef}
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    placeholder="Start writing..."
-                    className="w-full h-96 border-none outline-none resize-none placeholder-gray-400 text-gray-700 leading-relaxed"
+                    value={editArtifact}
+                    onChange={(e) => setEditArtifact(e.target.value)}
+                    placeholder="Compile your final deliverable here..."
+                    className="w-full h-full bg-transparent border-none outline-none resize-none text-gray-300 leading-relaxed font-mono text-sm placeholder-white/10"
                   />
                 </div>
               ) : (
-                <div className="max-w-4xl">
-                  <h1 className="text-3xl font-bold mb-6 text-gray-900">
-                    {selectedNote?.title || selectedPage?.title}
-                  </h1>
-                  <div className="prose prose-gray max-w-none">
-                    <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-                      {selectedNote?.content ||
-                        selectedPage?.content ||
-                        "No content"}
+                <div className="p-12 max-w-4xl mx-auto">
+                  <div className="prose prose-invert prose-purple max-w-none">
+                    <div className="whitespace-pre-wrap text-gray-300 leading-relaxed font-mono text-sm selection:bg-purple-500/30">
+                      {currentProject.artifact || "No content yet. Approve some deliverables to start building."}
                     </div>
                   </div>
-
-                  {/* Tags for notes */}
-                  {selectedNote && selectedNote.tags.length > 0 && (
-                    <div className="mt-8 pt-6 border-t border-gray-200">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Tag size={16} className="text-gray-400" />
-                        {selectedNote.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
           </>
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-              <FileText size={48} className="text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {view === "notes" ? "No note selected" : "No page selected"}
-              </h3>
-              <p className="text-gray-500">
-                {view === "notes"
-                  ? "Select a note from the sidebar or create a new one"
-                  : "Select a page from the sidebar or create a new one"}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center p-8">
+              <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-white/10">
+                <FileText size={40} className="text-gray-600" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">No Active Project</h3>
+              <p className="text-gray-500 text-sm max-w-xs mx-auto">
+                Create a new project or select an existing one to start compiling agent deliverables into final artifacts.
               </p>
+              <button
+                onClick={handleCreateProject}
+                className="mt-6 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-purple-900/20"
+              >
+                Start Your First Artifact
+              </button>
             </div>
           </div>
         )}

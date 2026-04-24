@@ -11,6 +11,7 @@ import {
   WindowInstance,
   Theme,
 } from "../types";
+import { NEXUS_AGENTS } from "../constants/platoon";
 
 const useKernelStore = create<KernelState>()(
   persist(
@@ -40,8 +41,16 @@ const useKernelStore = create<KernelState>()(
       theme: "dark",
       initialGreetingSpoken: false,
       micPermissionGranted: false,
+      isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
       projectFolders: [], // User's project folder bookmarks
       currentPath: "/", // Current directory in virtual filesystem
+      
+      // Not Notes Initial State
+      notNotes: {
+        projects: {},
+        currentProjectId: null,
+        pendingDeliverables: [],
+      },
 
       // Access Control
       unlockedNodes: [],
@@ -125,9 +134,18 @@ const useKernelStore = create<KernelState>()(
           size,
           zIndex: get().nextZIndex,
           minimized: false,
-          snapState: "none",
+          snapState: get().isMobile ? "maximized" : "none",
           metadata,
         };
+
+        if (get().isMobile) {
+          newWindow.position = { x: 0, y: 0 };
+          newWindow.size = { 
+            width: typeof window !== 'undefined' ? window.innerWidth : size.width, 
+            height: typeof window !== 'undefined' ? window.innerHeight - 48 : size.height 
+          };
+        }
+
         set((state) => ({
           windows: [...state.windows, newWindow],
           nextZIndex: state.nextZIndex + 1,
@@ -136,10 +154,18 @@ const useKernelStore = create<KernelState>()(
           isSidebarOpen: false,
         }));
       },
-      closeWindow: (id) =>
+      closeWindow: (id) => {
+        const win = get().windows.find((w) => w.id === id);
+        if (win) {
+          const isAgent = NEXUS_AGENTS.some((a) => a.id === win.appId);
+          if (isAgent) {
+            get().setAgentStatus(win.appId, "offline");
+          }
+        }
         set((state) => ({
           windows: state.windows.filter((w) => w.id !== id),
-        })),
+        }));
+      },
       closeWindowByAppId: (appId) => {
         const windowToClose = get()
           .windows.filter((w) => w.appId === appId)
@@ -484,6 +510,124 @@ const useKernelStore = create<KernelState>()(
             : [...state.unlockedSquads, squadId]
         })),
       setSubscriptionTier: (tier) => set({ subscriptionTier: tier }),
+
+      // Not Notes Methods Implementation
+      addDeliverable: (deliverable) => {
+        set((state) => ({
+          notNotes: {
+            ...state.notNotes,
+            pendingDeliverables: [...state.notNotes.pendingDeliverables, deliverable],
+          },
+        }));
+      },
+
+      approveDeliverable: (id) => {
+        set((state) => {
+          const deliverable = state.notNotes.pendingDeliverables.find(d => d.id === id);
+          if (!deliverable) return state;
+
+          const updatedDeliverable = { ...deliverable, status: 'approved' as const };
+          const remainingPending = state.notNotes.pendingDeliverables.filter(d => d.id !== id);
+          
+          const currentProjectId = state.notNotes.currentProjectId;
+          if (!currentProjectId) {
+            // If no project, we still move it to "history" or just clear it?
+            // User said: "Oracle calls the tool... deliverable gets handed to not notes"
+            // For now, let's just clear it if no project is active, or auto-create one.
+            return {
+              notNotes: {
+                ...state.notNotes,
+                pendingDeliverables: remainingPending,
+              }
+            };
+          }
+
+          const project = state.notNotes.projects[currentProjectId];
+          const updatedProject = {
+            ...project,
+            deliverables: [...project.deliverables, id],
+            artifact: project.artifact + "\n\n" + deliverable.content,
+            updatedAt: new Date().toISOString(),
+          };
+
+          return {
+            notNotes: {
+              ...state.notNotes,
+              pendingDeliverables: remainingPending,
+              projects: {
+                ...state.notNotes.projects,
+                [currentProjectId]: updatedProject,
+              }
+            }
+          };
+        });
+      },
+
+      rejectDeliverable: (id) => {
+        set((state) => ({
+          notNotes: {
+            ...state.notNotes,
+            pendingDeliverables: state.notNotes.pendingDeliverables.filter(d => d.id !== id),
+          },
+        }));
+      },
+
+      createNotNotesProject: (title) => {
+        const id = nanoid();
+        const newProject = {
+          id,
+          title,
+          artifact: `# ${title}\n\nProject started on ${new Date().toLocaleDateString()}\n\n`,
+          deliverables: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        set((state) => ({
+          notNotes: {
+            ...state.notNotes,
+            projects: { ...state.notNotes.projects, [id]: newProject },
+            currentProjectId: id,
+          },
+        }));
+        return id;
+      },
+
+      selectNotNotesProject: (id) => {
+        set((state) => ({
+          notNotes: {
+            ...state.notNotes,
+            currentProjectId: id,
+          },
+        }));
+      },
+
+      updateArtifact: (projectId, content) => {
+        set((state) => {
+          const project = state.notNotes.projects[projectId];
+          if (!project) return state;
+          return {
+            notNotes: {
+              ...state.notNotes,
+              projects: {
+                ...state.notNotes.projects,
+                [projectId]: { ...project, artifact: content, updatedAt: new Date().toISOString() },
+              },
+            },
+          };
+        });
+      },
+
+      // Agent Status Implementation
+      agentStatus: {},
+      setAgentStatus: (agentId, status) => {
+        set((state) => ({
+          agentStatus: {
+            ...state.agentStatus,
+            [agentId]: status
+          }
+        }));
+      },
+      setIsMobile: (status) => set({ isMobile: status }),
     }),
     {
       name: "win11-portfolio-storage",
@@ -502,6 +646,7 @@ const useKernelStore = create<KernelState>()(
           ...state.gemini,
           isLoading: false,
         },
+        notNotes: state.notNotes, // Persist Not Notes projects and history
       }),
     }
   )

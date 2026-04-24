@@ -30,8 +30,8 @@ export const APPS_CONFIG: Record<BuiltInAppId, AppDefinition> = {
     id: "notionLike",
     name: "Not Notes",
     icon: FileText,
-    component: lazy(() => import("./apps/NotNotesPWA")),
-    description: "Rich note-taking PWA (external).",
+    component: lazy(() => import("./apps/Not")),
+    description: "Integrated Artifact Compilation layer for Agent deliverables.",
   },
   terminal: {
     id: "terminal",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import "./Desktop.css";
 import { useKernel } from "../store/kernel";
 import ContextMenu from "./ContextMenu";
@@ -201,18 +202,19 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         <FlowingLight
           className="absolute inset-0 z-10 pointer-events-none bg-transparent"
+          particleCount={typeof window !== 'undefined' && window.innerWidth < 768 ? 40 : 80}
         />
 
         <div
           ref={sphereContainerRef}
           className="absolute inset-0 flex items-center justify-center"
-          style={{ transform: 'translateY(20vh) translateX(-5vw)' }}
+          style={{ transform: typeof window !== 'undefined' && window.innerWidth < 768 ? 'translateY(15vh)' : 'translateY(20vh) translateX(-5vw)' }}
         >
           <SphereImageGrid
             apps={getSphereApps(projectFolders)}
             onAppClick={(appId) => openWindow(appId)}
-            containerSize={800}
-            sphereRadius={420}
+            containerSize={typeof window !== 'undefined' && window.innerWidth < 768 ? 400 : 800}
+            sphereRadius={typeof window !== 'undefined' && window.innerWidth < 768 ? 220 : 420}
           />
 
         </div>
@@ -283,19 +285,9 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <motion.div
               key={`star-${node.id}`}
               initial={{ scale: 0, opacity: 0 }}
-              animate={{ 
-                scale: [1, 1.1, 1],
-                opacity: 1
-              }}
-              transition={{ 
-                scale: { 
-                  duration: 2 + (seed % 3), 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
-                },
-                opacity: { duration: 0.5 }
-              }}
-              className="absolute top-1/2 left-1/2 z-50 cursor-pointer group"
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="absolute top-1/2 left-1/2 z-50 cursor-pointer group star-node"
               style={{
                 transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px - 32px))`,
                 width: '14px',
@@ -309,10 +301,11 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               }}
             >
               <div 
-                className="w-full h-full rounded-full transition-all duration-300 group-hover:scale-150"
+                className="w-full h-full rounded-full transition-all duration-300 group-hover:scale-150 pulse"
                 style={{
                   background: node.domainColor ? `radial-gradient(circle at center, #fff 0%, ${node.domainColor} 60%, transparent 100%)` : '#fff',
                   boxShadow: `0 0 15px ${node.domainColor || '#fff'}, 0 0 30px ${node.domainColor || '#fff'}`,
+                  animationDelay: `-${(seed % 40) / 10}s`,
                 }}
               />
               
@@ -346,7 +339,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           isOpen={isAllAgentsOpen}
           onClose={() => setIsAllAgentsOpen(false)}
           onAgentClick={(agent) => {
-            setIsAllAgentsOpen(false);
             handleAgentClick(agent);
           }}
         />

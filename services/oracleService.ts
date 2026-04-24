@@ -102,6 +102,33 @@ const openFileTool = {
   ],
 };
 
+const submitDeliverableTool = {
+  functionDeclarations: [
+    {
+      name: "submitDeliverable",
+      description: "Submits an agent's output (deliverable) to the Not Notes compilation layer for the user to approve.",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          agentId: {
+            type: "STRING",
+            description: "The unique ID of the agent (e.g., 'A', 'B', 'C').",
+          },
+          agentName: {
+            type: "STRING",
+            description: "The name of the agent (e.g., 'Angle', 'Blueprint').",
+          },
+          content: {
+            type: "STRING",
+            description: "The actual content or report produced by the agent.",
+          },
+        },
+        required: ["agentId", "agentName", "content"],
+      },
+    },
+  ],
+};
+
 const getOracleSystemInstruction = () => {
   return {
     role: "user",
@@ -178,6 +205,7 @@ You are the "Manager"; the A–Z Agents are the "Labor."
 === SYSTEM CAPABILITIES ===
 - openWindow tool: Opens app windows when user explicitly requests
 - openFile tool: Opens files when user requests documents
+- submitDeliverable tool: Hand off agent outputs to Not Notes for compilation
 - [TELEPORT -> AgentLetter]: Frontend command to navigate to an agent PWA
 
 === GOLDEN RULE ===
@@ -211,7 +239,7 @@ export const generateOracleResponse = async (
       },
     ];
 
-    const tools: any[] = [openWindowTool, openFileTool];
+    const tools: any[] = [openWindowTool, openFileTool, submitDeliverableTool];
     if (useGrounding) {
       tools.push({ googleSearch: {} });
     }

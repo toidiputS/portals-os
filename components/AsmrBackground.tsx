@@ -30,7 +30,7 @@ export const AsmrBackground: React.FC<AsmrBackgroundProps> = ({ onParticleAchiev
         let particles: Particle[] = [];
         const mouse = { x: -1000, y: -1000 };
 
-        const PARTICLE_COUNT = 550; // Easter egg challenge - collect all 550!
+        const PARTICLE_COUNT = (typeof window !== 'undefined' && window.innerWidth < 768) ? 150 : 300;
 
         // These get calculated after init() sets width/height
         let MAGNETIC_RADIUS = 0; // 30% of screen - inside the portal
@@ -77,9 +77,11 @@ export const AsmrBackground: React.FC<AsmrBackgroundProps> = ({ onParticleAchiev
             update() {
                 const dx = mouse.x - this.x;
                 const dy = mouse.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+                const distSq = dx * dx + dy * dy;
+                const magRadSq = MAGNETIC_RADIUS * MAGNETIC_RADIUS;
 
-                if (dist < MAGNETIC_RADIUS) {
+                if (distSq < magRadSq) {
+                    const dist = Math.sqrt(distSq);
                     // INSIDE THE CIRCLE: Magnetic vortex with pull + swirl
                     const force = (MAGNETIC_RADIUS - dist) / MAGNETIC_RADIUS;
 
@@ -95,7 +97,7 @@ export const AsmrBackground: React.FC<AsmrBackgroundProps> = ({ onParticleAchiev
                     this.frictionGlow = force * 0.7;
                 } else {
                     // OUTSIDE THE CIRCLE: Full screen - VERY slow attraction for easter egg
-                    // Particles drift in from way out there slowly
+                    const dist = Math.sqrt(distSq);
                     const maxDist = Math.sqrt(width * width + height * height);
                     const falloffForce = 1 - (dist / maxDist);
 
@@ -129,22 +131,23 @@ export const AsmrBackground: React.FC<AsmrBackgroundProps> = ({ onParticleAchiev
 
             draw() {
                 if (!ctx) return;
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation);
-
+                
                 const finalAlpha = Math.min(this.alpha + this.frictionGlow, 0.9);
                 ctx.fillStyle = `rgba(${this.color}, ${finalAlpha})`;
 
-                // Only render shadow for strong glows (GPU optimization)
-                if (this.frictionGlow > 0.5) {
-                    ctx.shadowBlur = 6 * this.frictionGlow;
+                // Optimization: Avoid shadowBlur unless extremely necessary (very expensive)
+                if (this.frictionGlow > 0.7) {
+                    ctx.shadowBlur = 4;
                     ctx.shadowColor = `rgba(180, 220, 255, ${this.frictionGlow})`;
                 } else {
                     ctx.shadowBlur = 0;
                 }
 
-                // Sharp shard geometry
+                // Sharp shard geometry - using translate only once if needed, or absolute coords
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                
                 ctx.beginPath();
                 ctx.moveTo(0, -this.size * 2.5);
                 ctx.lineTo(this.size, 0);
@@ -152,7 +155,7 @@ export const AsmrBackground: React.FC<AsmrBackgroundProps> = ({ onParticleAchiev
                 ctx.lineTo(-this.size, 0);
                 ctx.closePath();
                 ctx.fill();
-
+                
                 ctx.restore();
             }
         }

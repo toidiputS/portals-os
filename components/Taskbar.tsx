@@ -17,6 +17,10 @@ const Taskbar: React.FC = () => {
   const activeWindowId = useKernel((state) => state.activeWindowId);
   const focusWindow = useKernel((state) => state.focusWindow);
   const minimizeWindow = useKernel((state) => state.minimizeWindow);
+  const isMobile = useKernel((state) => state.isMobile);
+
+  const bumpSize = isMobile ? 36 : BUMP_SIZE;
+  const bumpSpacing = isMobile ? 42 : BUMP_SPACING;
 
   const openApps = useMemo(() => {
     return windows
@@ -33,9 +37,7 @@ const Taskbar: React.FC = () => {
   }
 
   // Calculate starting position - after the start menu and circle menu buttons
-  // Start menu is at left corner, circle menu is at center
-  // Position open app bumps between them, starting from left side
-  const startX = 100; // Start after the corner speed bump
+  const startX = isMobile ? 60 : 100;
 
   return (
     <>
@@ -43,7 +45,7 @@ const Taskbar: React.FC = () => {
         if (!app) return null;
         const Icon = app.icon;
         const isActive = win.id === activeWindowId && !win.minimized;
-        const xPosition = startX + (index * BUMP_SPACING);
+        const xPosition = startX + (index * bumpSpacing);
 
         return (
           <motion.button
@@ -59,10 +61,10 @@ const Taskbar: React.FC = () => {
             }}
             className="fixed bottom-0 flex items-center justify-center cursor-pointer outline-none z-40"
             style={{
-              width: BUMP_SIZE,
-              height: BUMP_SIZE,
+              width: bumpSize,
+              height: bumpSize,
               left: xPosition,
-              marginBottom: -BUMP_SIZE / 2, // Only show top half
+              marginBottom: -bumpSize / 2, // Only show top half
             }}
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

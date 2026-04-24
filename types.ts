@@ -164,4 +164,47 @@ export interface KernelState {
   // Virtual filesystem actions
   navigateToPath: (path: string) => void;
   openFile: (fileId: string) => void;
+
+  // Not Notes State
+  notNotes: {
+    projects: Record<string, NotNotesProject>;
+    currentProjectId: string | null;
+    pendingDeliverables: NotNotesDeliverable[];
+  };
+
+  // Not Notes Methods
+  addDeliverable: (deliverable: NotNotesDeliverable) => void;
+  approveDeliverable: (id: string) => void;
+  rejectDeliverable: (id: string) => void;
+  createNotNotesProject: (title: string) => string;
+  selectNotNotesProject: (id: string) => void;
+  updateArtifact: (projectId: string, content: string) => void;
+
+  // Agent Connectivity Tracking
+  agentStatus: Record<string, "offline" | "online" | "error">;
+  setAgentStatus: (
+    agentId: string,
+    status: "offline" | "online" | "error"
+  ) => void;
+
+  isMobile: boolean;
+  setIsMobile: (status: boolean) => void;
+}
+
+export interface NotNotesDeliverable {
+  id: string;
+  agentId: string;
+  agentName: string;
+  content: string;
+  timestamp: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface NotNotesProject {
+  id: string;
+  title: string;
+  artifact: string;
+  deliverables: string[]; // IDs of approved deliverables
+  createdAt: string;
+  updatedAt: string;
 }

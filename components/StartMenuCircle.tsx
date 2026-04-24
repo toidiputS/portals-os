@@ -16,7 +16,7 @@ interface StartMenuCircleProps {
 }
 
 const BUTTON_SIZE = 48;
-const CIRCLE_RADIUS = 220; // Larger radius to spread out icons
+const CIRCLE_RADIUS = typeof window !== 'undefined' && window.innerWidth < 768 ? 140 : 220;
 
 const StartMenuCircle: React.FC<StartMenuCircleProps> = ({
     isOpen,

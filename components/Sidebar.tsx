@@ -47,9 +47,10 @@ const Sidebar: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -350 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-0 left-0 bottom-12 w-[350px] bg-black/90 backdrop-blur-xl border-r border-white/10 shadow-2xl z-1000 p-6 flex flex-col gap-6 overflow-y-auto font-sans"
+          className="absolute top-0 left-0 bottom-12 bg-black/90 backdrop-blur-xl border-r border-white/10 shadow-2xl z-[2000] p-6 flex flex-col gap-6 overflow-y-auto font-sans"
           style={{
-            boxShadow: selectedPwa ? `inset -4px 0 20px -10px ${accentColor}` : 'none'
+            boxShadow: selectedPwa ? `inset -4px 0 20px -10px ${accentColor}` : 'none',
+            width: typeof window !== 'undefined' && window.innerWidth < 768 ? '100%' : '350px',
           }}
         >
           {/* Header */}
@@ -97,7 +98,6 @@ const Sidebar: React.FC = () => {
                           <Star className={`w-5 h-5 ${favoriteNodes.includes(selectedPwa.id) ? 'fill-yellow-400 text-yellow-400' : ''}`} />
                         </button>
                       </div>
-                      <span className="px-2 py-1 bg-white/10 text-[10px] tracking-wider text-white/80 border border-white/20 whitespace-nowrap ml-4 rounded">NODE // {selectedPwa.id}</span>
                     </div>
                     <p className="text-[11px] text-white/50 tracking-widest uppercase mb-4 relative z-10">ROLE // <span className="text-white/90">{selectedPwa.role || "N/A"}</span></p>
 

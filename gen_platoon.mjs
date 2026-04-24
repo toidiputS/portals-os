@@ -4,17 +4,74 @@ const agents = JSON.parse(readFileSync("D:\\CSV's\\nexus-agents-2026-04-19.json"
 
 // Old squad name mappings
 const SQUAD_META = {
-  'SQUAD1': { name: 'Legacy Vault: Chairman & Exit Readiness', colorHex: '#6366f1', colorName: 'Indigo', description: 'Transforms founder-run companies into sellable, chairman-led assets.' },
-  'SQUAD2': { name: 'OPS IRON: Operations Playbook', colorHex: '#0d9488', colorName: 'Teal', description: 'Replaces tribal chaos with a single, coherent operations playbook.' },
-  'SQUAD3': { name: 'CAPITAL FLOOR: Pricing & Profit', colorHex: '#dc2626', colorName: 'Crimson', description: 'Gives you a pricing matrix, unit economics model, and yield map.' },
-  'SQUAD4': { name: 'GROWTH ENGINE: Acquisition & Launch', colorHex: '#2563eb', colorName: 'Royal Blue', description: 'Acquisition roadmap, hooks, outreach scripts, and launch schedules.' },
-  'SQUAD5': { name: 'CASH VELOCITY: Offer & Conversion', colorHex: '#06b6d4', colorName: 'Cyan', description: 'Validated offers, DM scripts, jolt campaigns, and scarcity protocols.' },
-  'SQUAD6': { name: 'TRUST SHIELD: Compliance & Retention', colorHex: '#059669', colorName: 'Emerald', description: 'Redlined contracts, churn maps, crisis response, and reputation radar.' },
-  'SQUAD7': { name: 'BRAND ALIVE: Voice & Content', colorHex: '#db2777', colorName: 'Magenta', description: 'Brand voice map, content library, distribution, and tribal strategy.' },
-  'SQUAD8': { name: 'INTEL CORE: Competitive Recon', colorHex: '#ca8a04', colorName: 'Gold', description: 'North star roadmap, rival intel reports, forensics, and sizing.' },
-  'SQUAD9': { name: 'SIGNAL: SEO & Keyword', colorHex: '#84cc16', colorName: 'Olive', description: 'SEO roadmap, winnable keywords, content briefs, and backlinks.' },
-  'SQUAD10': { name: 'CONVERT: Cart & Checkout', colorHex: '#b45309', colorName: 'Copper', description: 'Optimized pages, recovery sequences, upsells, and trust signals.' },
+  'SQUAD1': { name: 'LEGACY VAULT: Exit Readiness', colorHex: '#6366f1', colorName: 'Indigo', description: 'Transforms founder-run companies into sellable, chairman-led assets.' },
+  
+  // OPS IRON SPLITS (SQUAD2)
+  'SQUAD2A': { name: 'OPS IRON: Foundation', colorHex: '#0d9488', colorName: 'Teal', description: 'Core SOPs, playbooks, and organizational workflows.' },
+  'SQUAD2B': { name: 'OPS IRON: Automation', colorHex: '#0891b2', colorName: 'Cyan', description: 'Technical stacks, automation scripts, and data dictionaries.' },
+  'SQUAD2C': { name: 'OPS IRON: Team & HR', colorHex: '#059669', colorName: 'Emerald', description: 'Hiring, training, and cultural alignment systems.' },
+  'SQUAD2D': { name: 'OPS IRON: Resilience', colorHex: '#b91c1c', colorName: 'Red', description: 'Risk mitigation, crisis management, and change protocols.' },
+
+  // CAPITAL FLOOR SPLITS (SQUAD3)
+  'SQUAD3A': { name: 'CAPITAL FLOOR: Unit Economics', colorHex: '#dc2626', colorName: 'Crimson', description: 'Pricing matrices, unit economics, and margin audits.' },
+  'SQUAD3B': { name: 'CAPITAL FLOOR: Fiscal Control', colorHex: '#991b1b', colorName: 'Maroon', description: 'Forecasting, budgeting, and 13-week cash flow models.' },
+
+  'SQUAD4': { name: 'GROWTH ENGINE: Acquisition', colorHex: '#2563eb', colorName: 'Royal Blue', description: 'Acquisition roadmaps, hooks, and launch schedules.' },
+
+  // CASH VELOCITY SPLITS (SQUAD5)
+  'SQUAD5A': { name: 'CASH VELOCITY: Conversion', colorHex: '#06b6d4', colorName: 'Cyan', description: 'VSLs, DM scripts, and high-intensity closing protocols.' },
+  'SQUAD5B': { name: 'CASH VELOCITY: Offer Scoping', colorHex: '#0891b2', colorName: 'Dark Cyan', description: 'Validated offers, scarcity, and scoping logic.' },
+  'SQUAD5C': { name: 'CASH VELOCITY: Follow-up', colorHex: '#0e7490', colorName: 'Ocean', description: 'Jolt campaigns and automated follow-up sequences.' },
+
+  'SQUAD6': { name: 'TRUST SHIELD: Compliance', colorHex: '#059669', colorName: 'Emerald', description: 'Redlined contracts and retention maps.' },
+
+  // BRAND ALIVE SPLITS (SQUAD7)
+  'SQUAD7A': { name: 'BRAND ALIVE: Identity', colorHex: '#db2777', colorName: 'Magenta', description: 'Brand voice, vision, and core narrative assets.' },
+  'SQUAD7B': { name: 'BRAND ALIVE: Distribution', colorHex: '#be185d', colorName: 'Rose', description: 'Multi-channel distribution and syndication frequency.' },
+  'SQUAD7C': { name: 'BRAND ALIVE: Tribal', colorHex: '#9d174d', colorName: 'Wine', description: 'Community engagement and tribal loyalty loops.' },
+
+  'SQUAD8': { name: 'INTEL CORE: Recon', colorHex: '#ca8a04', colorName: 'Gold', description: 'North star roadmaps and competitive intel reports.' },
+  'SQUAD9': { name: 'SIGNAL: SEO', colorHex: '#84cc16', colorName: 'Olive', description: 'SEO roadmaps and winnable keyword briefs.' },
+  'SQUAD10': { name: 'CONVERT: Cart', colorHex: '#b45309', colorName: 'Copper', description: 'Optimized checkout pages and recovery sequences.' },
 };
+
+// Separate COMMAND (Oracle) from the rest
+const oracleAgent = agents.find(a => a.squadId === 'COMMAND');
+// Strip createdAt/updatedAt — they aren't in the NexusAgent interface
+const nonCommandAgents = agents
+  .filter(a => a.squadId !== 'COMMAND')
+  .map(({ createdAt, updatedAt, ...rest }) => rest);
+
+// ==== SPLIT LARGE SQUADS (Max ~8-10 agents) ====
+const NEW_SQUAD_META = {};
+for (const [squadId, meta] of Object.entries(SQUAD_META)) {
+  const squadAgents = nonCommandAgents.filter(a => a.squadId === squadId);
+  
+  if (squadAgents.length > 10) {
+    const numChunks = Math.ceil(squadAgents.length / 9);
+    const chunkSize = Math.ceil(squadAgents.length / numChunks);
+    const roman = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+    
+    for (let i = 0; i < numChunks; i++) {
+      const chunkAgents = squadAgents.slice(i * chunkSize, (i + 1) * chunkSize);
+      const newSquadId = squadId + '_' + (i + 1);
+      
+      NEW_SQUAD_META[newSquadId] = {
+        name: meta.name + ' ' + roman[i],
+        colorHex: meta.colorHex,
+        colorName: meta.colorName,
+        description: meta.description
+      };
+      
+      // Update the squadId for these agents in memory
+      chunkAgents.forEach(a => a.squadId = newSquadId);
+    }
+  } else {
+    NEW_SQUAD_META[squadId] = meta;
+  }
+}
+
+const FINAL_SQUAD_META = NEW_SQUAD_META;
 
 const CATEGORY_COLORS = {
   'Marketing': '#db2777',
@@ -28,16 +85,9 @@ const CATEGORY_COLORS = {
   'Legal': '#ca8a04',
 };
 
-// Separate COMMAND (Oracle) from the rest
-const oracleAgent = agents.find(a => a.squadId === 'COMMAND');
-// Strip createdAt/updatedAt — they aren't in the NexusAgent interface
-const nonCommandAgents = agents
-  .filter(a => a.squadId !== 'COMMAND')
-  .map(({ createdAt, updatedAt, ...rest }) => rest);
-
 let output = `// ============================================================
 // NEXUS AGENT SYSTEM — Auto-generated from nexus-agents-2026-04-19.json
-// Total: ${agents.length} agents, ${Object.keys(SQUAD_META).length} squads + 1 Oracle
+// Total: ${agents.length} agents, ${Object.keys(FINAL_SQUAD_META).length} squads + 1 Oracle
 // ============================================================
 
 export interface NexusAgent {
@@ -105,8 +155,8 @@ export const NEXUS_SQUADS: NexusSquad[] = [
 `;
 
 // Build squad data
-for (const squadId of Object.keys(SQUAD_META).sort()) {
-  const meta = SQUAD_META[squadId];
+for (const squadId of Object.keys(FINAL_SQUAD_META).sort()) {
+  const meta = FINAL_SQUAD_META[squadId];
   const squadAgentIds = nonCommandAgents.filter(a => a.squadId === squadId).map(a => a.id);
   output += `  {
     id: "${squadId}",
@@ -187,4 +237,4 @@ export const getNodeById = (nodeId: string): PlatoonNode | undefined => undefine
 `;
 
 writeFileSync('d:\\\\Portals OS\\\\portals-os\\\\constants\\\\platoon.ts', output, 'utf8');
-console.log(`Generated platoon.ts with ${nonCommandAgents.length} agents and ${Object.keys(SQUAD_META).length} squads`);
+console.log(`Generated platoon.ts with ${nonCommandAgents.length} agents and ${Object.keys(FINAL_SQUAD_META).length} squads`);

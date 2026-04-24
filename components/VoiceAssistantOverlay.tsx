@@ -66,6 +66,19 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
                             openFile(fileId);
                             executedActions.push(`Opening file: ${fileId}`);
                         }
+                    } else if (fc.name === 'submitDeliverable') {
+                        const { agentId, agentName, content } = fc.args;
+                        if (content) {
+                            useKernel.getState().addDeliverable({
+                                id: Math.random().toString(36).substr(2, 9),
+                                agentId: agentId || 'unknown',
+                                agentName: agentName || 'Assistant',
+                                content,
+                                timestamp: new Date().toISOString(),
+                                status: 'pending'
+                            });
+                            executedActions.push(`Delivered report from ${agentName || 'Agent'}`);
+                        }
                     }
                 }
             }
@@ -102,6 +115,51 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
         }
     };
 
+    // Auto-greet when Oracle opens in embedded mode
+    const [greeting, setGreeting] = useState<string | null>(null);
+    const [isGreeting, setIsGreeting] = useState(false);
+    const greetedRef = React.useRef(false);
+
+    useEffect(() => {
+        if (embedded && !greetedRef.current) {
+            greetedRef.current = true;
+            setIsGreeting(true);
+
+            // Add the greeting to the chat session
+            const greet = async () => {
+                try {
+                    let sessionId = gemini.currentSessionId;
+                    if (!sessionId) {
+                        sessionId = startNewChat();
+                    }
+
+                    const { text } = await generateOracleResponse(
+                        "The user just entered the Youniverse for the first time in this session. Greet them warmly as Oracle — the AI guide of Portals OS. Keep it brief (2-3 sentences), mystical but friendly. Mention you're here to help them navigate their agents and tools. Do NOT use markdown formatting.",
+                        'gemini-1.5-flash',
+                        [],
+                        false
+                    );
+
+                    const greetingText = text || "Welcome to the Youniverse. I am Oracle — your guide through the Nexus. Ask me anything, or explore the fleet below.";
+                    setGreeting(greetingText);
+
+                    const modelMessage: ChatMessage = { role: 'model', content: greetingText };
+                    addMessageToSession(sessionId, modelMessage);
+                } catch (e) {
+                    setGreeting("Welcome to the Youniverse. I am Oracle — your guide through the Nexus. Ask me anything, or explore the fleet below.");
+                } finally {
+                    setIsGreeting(false);
+                }
+            };
+
+            greet();
+        }
+    }, [embedded]);
+
+    // Get current session messages for embedded view
+    const currentSession = gemini.currentSessionId ? gemini.sessions[gemini.currentSessionId] : null;
+    const messages = currentSession?.messages || [];
+
     if (embedded) {
         return (
             <div className="w-full h-full flex flex-col">
@@ -112,10 +170,29 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                    {/* Embedded mode can just rely on looking at store if needed, but here we don't render them gracefully without hooks so we rely on the parent app for UI in full window. Actually this component handles UI for embedded too. But to cleanly split it, let's keep it minimal since Oracle App has its own message renderer. Wait! Oracle has its own chat map inside `app/Oracle/index.tsx` maybe? I'll leave this empty or minimal. Actually, looking back, the embedded mode here was rendering bubbles too, but now we just render a simple command line if it's rendered embedded here. I'll just use the pill. */}
-                    <div className="text-center text-purple-400/50 mt-10">
-                        Connection established. Oracle Nexus awaiting command.
-                    </div>
+                    {messages.length === 0 && isGreeting && (
+                        <div className="flex justify-start">
+                            <div className="bg-purple-900/30 border border-purple-500/20 rounded-2xl rounded-bl-sm px-4 py-3 max-w-[85%]">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse" />
+                                    <span className="text-purple-300/70 text-xs font-mono">Oracle is manifesting...</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {messages.map((msg, i) => (
+                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div
+                                className={`rounded-2xl px-4 py-3 max-w-[85%] text-sm leading-relaxed ${
+                                    msg.role === 'user'
+                                        ? 'bg-blue-600/30 border border-blue-500/20 rounded-br-sm text-white'
+                                        : 'bg-purple-900/30 border border-purple-500/20 rounded-bl-sm text-purple-100'
+                                }`}
+                            >
+                                {msg.content}
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 <div className="p-4 border-t border-purple-500/20">
@@ -144,37 +221,14 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
 
     return (
         <div className="oracle-nexus-container z-10000">
-            {/* Input - Floating Pill */}
-            <div className={`fixed bottom-24 right-6 transition-all duration-300 ${isChatOpen ? 'opacity-100 pointer-events-auto scale-100' : 'opacity-0 pointer-events-none scale-95 origin-bottom-right'}`}>
-                <div className="w-[300px] bg-black/90 backdrop-blur-xl rounded-full p-1 flex items-center gap-2 border border-purple-500/50 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-                    <input
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                        placeholder={isProcessing ? "Oracle is compiling..." : "Talk to Oracle..."}
-                        disabled={isProcessing}
-                        className="flex-1 bg-transparent border-none px-5 py-2.5 focus:ring-0 text-white placeholder-purple-300/40 text-sm h-full rounded-l-full outline-none"
-                        autoFocus={isChatOpen}
-                    />
-                    <button
-                        onClick={handleSend}
-                        disabled={!input.trim() || isProcessing}
-                        className="p-2 mr-1 rounded-full bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_10px_rgba(168,85,247,0.5)] disabled:opacity-50 disabled:shadow-none transition-all pointer-events-auto"
-                    >
-                        <Send size={16} />
-                    </button>
-                </div>
-            </div>
-
             {/* The Oracle Corner Button */}
             <button
-                onClick={() => setIsChatOpen(!isChatOpen)}
+                onClick={() => openWindow("oracle" as AppId)}
                 className={`
                     fixed -bottom-10 -right-10 pointer-events-auto flex flex-col items-center justify-center 
                     w-24 h-24 rounded-full bg-black/80 backdrop-blur-xl border border-purple-500/40
                     shadow-[0_0_40px_rgba(168,85,247,0.5)] hover:bg-purple-900/60
                     transition-all duration-300 overflow-hidden group
-                    ${isChatOpen ? 'bg-purple-900/80 shadow-[0_0_60px_rgba(168,85,247,0.8)] scale-105' : ''}
                 `}
             >
                 <div className="absolute top-4 left-4 w-6 h-6 rounded-full bg-purple-500/30 group-hover:bg-purple-400/50 blur-sm animate-pulse" />

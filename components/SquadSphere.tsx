@@ -98,25 +98,25 @@ export const SquadSphere: React.FC<SquadSphereProps> = ({
 
           {/* Header */}
           <motion.div
-            className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 z-10"
+            className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 z-10 px-4 max-w-full"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ delay: 0.15 }}
           >
             <div
-              className="w-3 h-3 rounded-full"
+              className="w-3 h-3 rounded-full shrink-0"
               style={{ background: squad.colorHex, boxShadow: `0 0 12px ${squad.colorHex}` }}
             />
-            <h2 className="text-white font-black text-xl tracking-widest uppercase">
+            <h2 className="text-white font-black text-sm sm:text-xl tracking-widest uppercase truncate">
               {squad.name}
             </h2>
-            <span className="text-white/40 text-xs font-mono">
+            <span className="text-white/40 text-[10px] sm:text-xs font-mono shrink-0">
               {agents.length} AGENTS
             </span>
             <button
               onClick={onClose}
-              className="ml-4 p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 transition-colors"
+              className="ml-2 sm:ml-4 p-2 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 transition-colors shrink-0"
             >
               <X className="w-4 h-4 text-white/60" />
             </button>
@@ -133,8 +133,8 @@ export const SquadSphere: React.FC<SquadSphereProps> = ({
             <SphereImageGrid
               apps={agentApps}
               onAppClick={handleAppClick}
-              containerSize={600}
-              sphereRadius={320}
+              containerSize={typeof window !== 'undefined' && window.innerWidth < 768 ? 320 : 600}
+              sphereRadius={typeof window !== 'undefined' && window.innerWidth < 768 ? 170 : 320}
               autoRotate={true}
               autoRotateSpeed={0.25}
               className="squad-sphere-instance"

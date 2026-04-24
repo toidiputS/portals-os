@@ -39,7 +39,7 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
     className = "",
     lightIntensity = 1,
     fogDensity = 0.8,
-    particleCount = 150,
+    particleCount = 80,
     lockTarget
 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -555,8 +555,6 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
             ctx.save();
             ctx.globalAlpha = alpha * proximityAlpha * 0.9;
             ctx.fillStyle = 'white';
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = 'white';
             ctx.beginPath();
             ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
             ctx.fill();
@@ -575,8 +573,6 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
 
             ctx.save();
             ctx.fillStyle = coreGradient;
-            ctx.shadowBlur = 25;
-            ctx.shadowColor = 'white';
             ctx.beginPath();
             ctx.arc(lightRef.current.x, lightRef.current.y, 10, 0, Math.PI * 2);
             ctx.fill();

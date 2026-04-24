@@ -31,6 +31,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
   const updateWindowPosition = useKernel((state) => state.updateWindowPosition);
   const updateWindowSize = useKernel((state) => state.updateWindowSize);
   const isMatrixEffectActive = useKernel((state) => state.isMatrixEffectActive);
+  const isMobile = useKernel((state) => state.isMobile);
 
   const app = useMemo(() => APPS.find((a) => a.id === appId), [appId]);
 
@@ -40,9 +41,8 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
 
   // Sync local state when props change (e.g. from store updates or snapping)
   useEffect(() => {
-    console.log(`[WINDOW] Position update for ${title}: x=${position.x}, y=${position.y}`);
     setLocalPos({ x: position.x, y: position.y });
-  }, [position.x, position.y, title]);
+  }, [position.x, position.y]);
 
   useEffect(() => {
     setLocalSize({ width: size.width, height: size.height });
@@ -51,18 +51,19 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
   // Keyboard shortcut to restore maximized window
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && snapState === "maximized") {
+      if (e.key === "Escape" && snapState === "maximized" && !isMobile) {
         handleMaximizeToggle();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [snapState]);
+  }, [snapState, isMobile]);
 
-  const isSnapped = snapState !== "none";
+  const isSnapped = snapState !== "none" || isMobile;
 
   const handleDragStart = (e: MouseEvent | TouchEvent | PointerEvent) => {
     focusWindow(id);
+    if (isMobile) return;
     if (isSnapped && preSnapSize) {
       const pointerX = "touches" in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
 
@@ -83,6 +84,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
     e: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
+    if (isMobile) return;
     setLocalPos(prev => ({
       x: prev.x + info.delta.x,
       y: prev.y + info.delta.y
@@ -93,6 +95,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
     e: MouseEvent | TouchEvent | PointerEvent,
     info: PanInfo
   ) => {
+    if (isMobile) return;
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
 
@@ -118,7 +121,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
     if (pointerX > screenWidth - cornerSnapZone && isBottomCorner) return snapWindow(id, "bottomRight");
 
     // If we get here, we are NOT snapping to a zone.
-    if (isSnapped) {
+    if (isSnapped && !isMobile) {
       snapWindow(id, "none");
     }
 
@@ -127,10 +130,12 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
   };
 
   const handleMaximizeToggle = () => {
+    if (isMobile) return;
     snapWindow(id, snapState === "maximized" ? "none" : "maximized");
   };
 
   const handleResize = (info: PanInfo, direction: string) => {
+    if (isMobile) return;
     let newWidth = localSize.width;
     let newHeight = localSize.height;
     let newX = localPos.x;
@@ -165,6 +170,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
   };
 
   const handleResizeEnd = () => {
+    if (isMobile) return;
     updateWindowSize(id, localSize);
     updateWindowPosition(id, localPos);
   };
@@ -183,10 +189,10 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
       style={{
         zIndex,
         filter: isMatrixEffectActive ? "blur(8px)" : "none",
-        width: localSize.width,
-        height: localSize.height,
-        left: localPos.x,
-        top: localPos.y,
+        width: isMobile ? '100vw' : localSize.width,
+        height: isMobile ? 'calc(100vh - 48px)' : localSize.height,
+        left: isMobile ? 0 : localPos.x,
+        top: isMobile ? 0 : localPos.y,
       }}
       onMouseDownCapture={() => focusWindow(id)}
     >
@@ -224,20 +230,22 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
             >
               <Minus size={16} />
             </button>
-            <button
-              type="button"
-              onClick={handleMaximizeToggle}
-              className="px-3 h-full hover:bg-[hsl(var(--secondary-hsl))] transition-colors"
-              aria-label={
-                snapState === "maximized" ? "Restore window" : "Maximize window"
-              }
-            >
-              {snapState === "maximized" ? (
-                <Copy size={14} />
-              ) : (
-                <Square size={14} />
-              )}
-            </button>
+            {!isMobile && (
+              <button
+                type="button"
+                onClick={handleMaximizeToggle}
+                className="px-3 h-full hover:bg-[hsl(var(--secondary-hsl))] transition-colors"
+                aria-label={
+                  snapState === "maximized" ? "Restore window" : "Maximize window"
+                }
+              >
+                {snapState === "maximized" ? (
+                  <Copy size={14} />
+                ) : (
+                  <Square size={14} />
+                )}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => closeWindow(id)}
@@ -253,7 +261,7 @@ const Window: React.FC<WindowInstance & { children: React.ReactNode }> = ({
         </main>
       </GlowCard>
 
-      {!isSnapped && (
+      {!isSnapped && !isMobile && (
         <>
           {/* Resize Handles */}
           <motion.div

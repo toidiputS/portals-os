@@ -47,6 +47,14 @@ class PerformanceMonitor {
   private calculateFPS() {
     if (!this.isActive) return;
 
+    // Browsers heavily throttle requestAnimationFrame when tabs are hidden.
+    // Prevent false 'Low FPS' spam when the user is simply in another tab.
+    if (typeof document !== 'undefined' && document.hidden) {
+      this.frameCount = 0;
+      this.lastTime = performance.now();
+      return;
+    }
+
     const currentTime = performance.now();
     this.fps = Math.round((this.frameCount * 1000) / (currentTime - this.lastTime));
     this.frameCount = 0;
