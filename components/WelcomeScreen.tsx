@@ -198,7 +198,7 @@ const WelcomeScreen: React.FC = () => {
               disabled={disabled}
               autoComplete="off"
               spellCheck={false}
-              className="w-full h-12 px-4 !bg-transparent border-none text-white text-center placeholder:text-gray-500 focus:outline-none transition-all font-mono tracking-wider relative z-10"
+              className="w-full h-12 px-4 bg-transparent! border-none text-white text-center placeholder:text-gray-500 focus:outline-none transition-all font-mono tracking-wider relative z-10"
               style={{
                 caretColor: 'white',
                 background: 'none',

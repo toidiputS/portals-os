@@ -181,6 +181,48 @@ const Not: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (currentProject) {
+                      useKernel.getState().compileFinalArtifact(currentProject.id);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold transition-all shadow-lg shadow-emerald-900/20"
+                >
+                  <CheckSquare size={14} />
+                  COMPILE TAKE ACTION ARTIFACT
+                </button>
+
+                <div className="relative group">
+                  <button
+                    className="flex items-center gap-2 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded text-xs font-bold transition-all"
+                  >
+                    <FileDown size={14} />
+                    EXPORT
+                  </button>
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-[#1C2128] border border-white/10 rounded-lg shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all z-50 p-1">
+                    <button 
+                      onClick={() => {
+                        const blob = new Blob([currentProject.artifact], { type: 'text/markdown' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${currentProject.title.replace(/\s+/g, '_')}_Artifact.md`;
+                        a.click();
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-purple-600/20 text-xs rounded transition-colors"
+                    >
+                      Export as Markdown (.md)
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-purple-600/20 text-xs rounded transition-colors opacity-50 cursor-not-allowed">
+                      Export as Docx (.docx)
+                    </button>
+                    <button className="w-full text-left px-3 py-2 hover:bg-purple-600/20 text-xs rounded transition-colors opacity-50 cursor-not-allowed">
+                      Export as PDF (.pdf)
+                    </button>
+                  </div>
+                </div>
+
                 {!isEditing ? (
                   <button
                     onClick={() => setIsEditing(true)}

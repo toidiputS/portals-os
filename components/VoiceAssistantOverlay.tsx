@@ -79,6 +79,27 @@ const VoiceAssistantOverlay: React.FC<VoiceAssistantOverlayProps> = ({ embedded 
                             });
                             executedActions.push(`Delivered report from ${agentName || 'Agent'}`);
                         }
+                    } else if (fc.name === 'confirmSquad') {
+                        const { squadName, agentIds } = fc.args;
+                        const projectId = useKernel.getState().confirmSquad(squadName, agentIds);
+                        executedActions.push(`Squad confirmed: ${squadName}. Project initialized in NotNotes.`);
+                        openWindow('notnotes' as AppId);
+                    } else if (fc.name === 'compileArtifact') {
+                        const { projectName } = fc.args;
+                        const currentProjectId = useKernel.getState().notNotes.currentProjectId;
+                        if (currentProjectId) {
+                            useKernel.getState().compileFinalArtifact(currentProjectId);
+                            executedActions.push(`Final Take Action Artifact compiled for ${projectName}`);
+                        }
+                    } else if (fc.name === 'commitToBooksOS') {
+                        const { location, summary } = fc.args;
+                        const currentProjectId = useKernel.getState().notNotes.currentProjectId;
+                        if (currentProjectId) {
+                            const success = await useKernel.getState().commitProjectToBooks(currentProjectId, location, summary);
+                            if (success) {
+                                executedActions.push(`Session archived to Books OS: ${location.tower}/${location.shelf}`);
+                            }
+                        }
                     }
                 }
             }

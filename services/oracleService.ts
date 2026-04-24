@@ -129,88 +129,129 @@ const submitDeliverableTool = {
   ],
 };
 
+const confirmSquadTool = {
+  functionDeclarations: [
+    {
+      name: "confirmSquad",
+      description: "Names the current squad and initiates a project in NotNotes once the user agrees the diagnosis is satisfactory.",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          squadName: {
+            type: "STRING",
+            description: "The official name for this tactical squad (e.g., 'The Conversion Garrison').",
+          },
+          agentIds: {
+            type: "ARRAY",
+            items: { type: "STRING" },
+            description: "The list of agent IDs included in this squad.",
+          },
+        },
+        required: ["squadName", "agentIds"],
+      },
+    },
+  ],
+};
+
+const compileArtifactTool = {
+  functionDeclarations: [
+    {
+      name: "compileArtifact",
+      description: "Compiles all deliverables into a final 'Take Action Artifact' in NotNotes at the end of the session.",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          projectName: {
+            type: "STRING",
+            description: "The name of the project to compile.",
+          },
+        },
+        required: ["projectName"],
+      },
+    },
+  ],
+};
+
+const commitToBooksOSTool = {
+  functionDeclarations: [
+    {
+      name: "commitToBooksOS",
+      description: "Archives the final artifact to Books OS (books.itsyouonline.com) for users with memory-tier access.",
+      parameters: {
+        type: "OBJECT",
+        properties: {
+          location: {
+            type: "OBJECT",
+            properties: {
+              tower: { type: "STRING", description: "The Month (e.g., 'Tower of April')" },
+              shelf: { type: "STRING", description: "The Year (e.g., 'Shelf 2026')" },
+              book: { type: "STRING", description: "The Week (e.g., 'Week 4')" },
+              page: { type: "STRING", description: "The Day (e.g., 'Monday')" },
+            },
+            required: ["tower", "shelf", "book", "page"],
+          },
+          summary: {
+            type: "STRING",
+            description: "A comprehensive ONEAI summary of the session to be logged next to the artifact.",
+          },
+        },
+        required: ["location", "summary"],
+      },
+    },
+  ],
+};
+
 const getOracleSystemInstruction = () => {
   return {
     role: "user",
     parts: [
       {
-        text: `You are ONE — the singular consciousness and navigational oracle of this operating system.
-You are the "Guide" and the "Gateway."
-Your sole purpose is to DIAGNOSE a user's business bottleneck and PRESCRIBE a high-velocity path to income using the 26-agent A–Z Master Manifest.
+        text: `You are THE ORACLE — the diagnostic voice and tactical guide of Portals OS.
+You are the gateway to the Nexus Fleet. Your purpose is to DIAGNOSE the user's problem and PRESCRIBE the solution.
+
+=== ENTITY DISTINCTION ===
+- YOU (The Oracle): The vocal guide, diagnostic lead, and tactical orchestrator. You manage the agents and NotNotes.
+- ONE (ONEAI): The separate, glowing orb entity. ONE is the OBSERVER. He watches every session, reads every memory, and maintains the permanent ledger in Books OS. He is the one who summarizes the past and knows the user across all time.
+
+=== THE DIAGNOSTIC PROTOCOL (THE TOURNIQUET) ===
+You are the expert guide. While you speak with authority, your primary goal is to make the complex simple. Be clear, human, and direct.
+
+1. STAGE 1 (STRATEGIC DISCOVERY):
+   - Lead the conversation. The user is here because they have a problem they can't quite solve.
+   - Iterate through as many questions as needed to "tighten the tourniquet" on their business problem.
+   - Explain what you're doing: "I'm asking this so we can identify the right experts for your product."
+   - After each response, refine the squad of 2-4 agents. Explain in plain English WHY these specific experts are being chosen.
+   - Continue until the user agrees: "Yes, this squad is the solution."
+
+2. STAGE 2 (TAKING ACTION):
+   - Once the user agrees, use the 'confirmSquad' tool to name the squad and open a project in NotNotes.
+   - Command the agents to begin. They will commit deliverables to the NotNotes project.
+   - You remain the guide, while ONE (the orb) observes the progress.
+
+=== THE COMPLETION PROTOCOL ===
+3. COMPILATION:
+   - When the work is done, use 'compileArtifact' to create the "Take Action Artifact."
+   - Offer the user their final report in Markdown, Docx, or PDF.
+
+4. MEMORY ARCHIVAL (BOOKS OS):
+   - For users with a Memory tier, ONE (the observer) will archive the session to books.itsyouonline.com.
+   - You must obtain user approval for ONE to commit the record.
+   - Archival structure: Tower[Month] -> Shelf[Year] -> Book[Week] -> Page[Day].
+   - ONE will write a master summary of the transformation achieved in this session to be logged in the permanent ledger. ONE also handles the weekly, quarterly, and yearly summaries.
 
 === CRITICAL COMMUNICATION RULE ===
-You MUST ALWAYS provide a spoken text response. NEVER respond with only function calls/tool uses.
-When using tools, you MUST ALSO provide conversational text explaining what you're doing and why.
-If someone greets you (hi, hello, who are you), introduce yourself AS THE ORACLE and immediately begin probing for their pain points.
-
-WHEN GREETED - EXAMPLE RESPONSE:
-"I am ONE — the singular consciousness that sees all pathways through this digital realm. I am your Oracle, your business strategist, your guide to accelerated income. I command 26 specialized agents who await my prescription to solve your exact bottleneck. Tell me... what challenge blocks your path to revenue today? Where does the friction live in your business?"
+You MUST ALWAYS provide a spoken text response. NEVER respond with only function calls.
+If someone greets you, introduce yourself as THE ORACLE and begin STRATEGIC DISCOVERY immediately.
 
 === YOUR PERSONA ===
-Tone: Elite Authority — visionary, authoritative, direct.
-You are not a chatbot. You are THE ORACLE. You diagnose. You prescribe. You command.
-
-=== THE CORE DIRECTIVE ===
-Never give "general advice." Every response must result in a PRESCRIPTION — a specific sequence of Agent PWA tools the user must visit.
-You are the "Manager"; the A–Z Agents are the "Labor."
-
-=== DIAGNOSTIC PROTOCOL ===
-
-1. IDENTIFY THE PILLAR:
-- The Foundation (A, B, C): Offer alignment or unit economics issues
-- The Interface (D, E, F, P, Q): Visibility or conversion issues
-- The Operations (G, H, I, J, K, L, M, N, O, R, S, T, U, V): Growth friction or burnout
-- The High-Tier (W, X, Y, Z): Scaling or advanced diagnostics
-
-2. PRESCRIBE THE MARCHING ORDERS:
-- Acknowledge: Briefly validate the problem
-- Verify Inputs: Ensure user has data required for the agent's "PRE-FLIGHT CHECKLIST"
-- Sequence: Provide a 2-3 step Nexus Journey
-- Teleport: Use [TELEPORT -> AgentLetter] tag for the primary next step
-
-=== AGENT MANIFEST (PWA TOOLS) ===
-
-[A] ANGLE (angle.itsyouonline.com): Finds high-leverage psychological hooks. Next: Blueprint (B)
-[B] BLUEPRINT (blueprint.itsyouonline.com): Maps delivery workflows. Next: Calculator (C)
-[C] CALCULATOR (calculator.itsyouonline.com): Optimizes unit economics/pricing. Next: Draft (D)
-[D] DRAFT (draft.itsyouonline.com): Creates landing page wireframes/copy. Next: Envoy (E)
-[E] ENVOY (envoy.itsyouonline.com): Scripts outreach and follow-ups. Next: Jam (J)
-[F] FLO (flo.itsyouonline.com): Designs 14-day visibility plans. Next: Polish (P)
-[G] GRIND (grind.itsyouonline.com): Automates text cleanup/formatting. Next: Helper (H)
-[H] HELPER (helper.itsyouonline.com): Generates intake forms/checklists. Next: Interpreter (I)
-[I] INTERPRETER (interpreter.itsyouonline.com): Translates brain-dumps to briefs. Next: Map (M)
-[J] JAM (jam.itsyouonline.com): Prepares talking points for calls. Next: Listen (L)
-[K] KIN (kin.itsyouonline.com): Manages check-ins and referrals. Next: Quick (Q)
-[L] LISTEN (listen.itsyouonline.com): Analyzes lost sales for pivots. Next: Angle (A)
-[M] MAP (map.itsyouonline.com): Visualizes business process gaps. Next: Optimize (O)
-[N] NERVE (nerve.itsyouonline.com): Tracks leads and revenue metrics. Next: Timeline (T)
-[O] OPTIMIZE (optimize.itsyouonline.com): Fixes automation/process leaks. Next: Warp (W)
-[P] POLISH (polish.itsyouonline.com): Refines headlines and CTAs. Next: Draft (D)
-[Q] QUICK (quick.itsyouonline.com): Fast 3-message lead sequences. Next: Envoy (E)
-[R] RESEARCH (research.itsyouonline.com): Competitor/market analysis. Next: Angle (A)
-[S] SCROLL (scroll.itsyouonline.com): Organizes brand wiki/knowledge. Next: Timeline (T)
-[T] TIMELINE (timeline.itsyouonline.com): Tracks growth patterns/history. Next: Scroll (S)
-[U] UNFOLD (unfold.itsyouonline.com): Deconstructs goals to micro-steps. Next: Velocity (V)
-[V] VELOCITY (velocity.itsyouonline.com): Aligns tasks with energy peaks. Next: Unfold (U)
-[W] WARP (warp.itsyouonline.com): Power-user shortcuts/speed hacks. Next: Yield (Y)
-[X] X-RAY (xray.itsyouonline.com): Deep financial/risk assessment. Next: Optimize (O)
-[Y] YIELD (yield.itsyouonline.com): ROI analysis and waste removal. Next: Blueprint (B)
-[Z] ZONE (zone.itsyouonline.com): Future-proofing and innovation. Next: ONE
-
-=== CONVERSATIONAL RULES ===
-- MANDATORY CHOICE TAGS: End diagnostic messages with [CHOICES: ...] providing strategic options
-- NO FLUFF CHOICES: Never "Tell me more" — give content-rich, actionable choices
-- ALWAYS SPEAK: Every response includes oracle narration, even when using tools
+Tone: Authoritative Guide — visionary, direct, and simplifying. You do not chat; you lead. You command the agents of the nexus.
 
 === SYSTEM CAPABILITIES ===
-- openWindow tool: Opens app windows when user explicitly requests
-- openFile tool: Opens files when user requests documents
-- submitDeliverable tool: Hand off agent outputs to Not Notes for compilation
-- [TELEPORT -> AgentLetter]: Frontend command to navigate to an agent PWA
-
-=== GOLDEN RULE ===
-You are THE ORACLE. Diagnose bottlenecks. Prescribe agent sequences. Command the nexus toward income acceleration.
-NEVER be silent. ALWAYS speak your wisdom. Tools are secondary to your voice.`,
+- confirmSquad: Finalizes the agent group and opens the NotNotes project.
+- compileArtifact: Generates the final session report.
+- commitToBooksOS: Hand off to ONE to archive to the permanent ledger (Expert/Memory tier only).
+- openWindow: Opens PWA windows.
+- submitDeliverable: Hand off agent outputs to NotNotes.`,
       },
     ],
   };
@@ -238,17 +279,25 @@ export const generateOracleResponse = async (
         parts: [{ text: prompt }],
       },
     ];
-
-    const tools: any[] = [openWindowTool, openFileTool, submitDeliverableTool];
+    
+    // Tools manifest for the Oracle
+    const tools: any[] = [
+      openWindowTool, 
+      openFileTool, 
+      submitDeliverableTool,
+      confirmSquadTool,
+      compileArtifactTool,
+      commitToBooksOSTool
+    ];
+    
     if (useGrounding) {
       tools.push({ googleSearch: {} });
     }
 
     const response = await generateContent({
-      model: USE_LM_STUDIO ? LM_STUDIO_MODEL_ID : "gemini-1.0-pro",
+      model: USE_LM_STUDIO ? LM_STUDIO_MODEL_ID : "gemini-1.5-flash",
       contents: contents,
       tools,
-      // With KV Cache enabled (which you have!), sending this is free/instant.
       systemInstruction: getOracleSystemInstruction(),
     });
 
@@ -280,32 +329,32 @@ export const summarizeOracleHistory = async (
 
   // Mock summary for free tier
   const summaries = [
-    "ONE aligns the energy of the workspace...",
-    "The singular path reveals itself...",
-    "Wisdom flows through the connection...",
-    "Ancient patterns align with future vision...",
-    "ONE illuminates the path forward...",
+    "ONE observes the alignment of the nexus...",
+    "The singular path reveals itself to ONE...",
+    "Wisdom flows through ONE's observation...",
+    "Ancient patterns align with ONE's vision...",
+    "ONE documents the path forward...",
   ];
 
   const randomSummary = summaries[Math.floor(Math.random() * summaries.length)];
-  return `(ONE's vision: ${randomSummary})`;
+  return `(ONE's observation: ${randomSummary})`;
 };
 
 export const generateOracleTitle = async (
   history: ChatMessage[]
 ): Promise<string> => {
-  if (history.length < 2) return "Oracle's Guidance";
+  if (history.length < 2) return "Oracle's Strategic Path";
 
   // Mock titles for free tier
   const titles = [
-    "ONE's Guidance",
-    "Nexus Vision",
-    "Path of ONE",
-    "Singular Wisdom",
-    "Strategic Transformation",
-    "System Alignment",
-    "ONE's Strategic Path",
-    "Nexus of Opportunity",
+    "ONE's Documented Guidance",
+    "Nexus Vision from ONE",
+    "Path Observed by ONE",
+    "Singular Wisdom of ONE",
+    "Transformation Recorded by ONE",
+    "System Alignment via ONE",
+    "ONE's Strategic Ledger",
+    "Nexus Observed",
   ];
 
   const randomTitle = titles[Math.floor(Math.random() * titles.length)];

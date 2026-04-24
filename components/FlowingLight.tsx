@@ -59,6 +59,8 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
     const lastHoveredElementRef = useRef<HTMLElement | null>(null);
     const explainedContextsRef = useRef<Set<string>>(new Set());
     const isProcessingRef = useRef(false);
+    const lastTappedElementRef = useRef<HTMLElement | null>(null);
+    const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
         const handleMouseOver = (e: MouseEvent) => {
@@ -122,13 +124,72 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
             }
         };
 
+        const handleMobileTapCapture = async (e: MouseEvent) => {
+            if (typeof window === 'undefined' || window.innerWidth >= 768) return;
+
+            const target = e.target as HTMLElement;
+            // Find the nearest interactive ancestor
+            let interactiveEl: HTMLElement | null = null;
+            let el: HTMLElement | null = target;
+            for (let i = 0; i < 5 && el; i++) {
+                if (el.dataset.one || el.tagName === 'BUTTON' || el.tagName === 'A' || el.classList.contains('cursor-pointer') || el.getAttribute('role') === 'button') {
+                    interactiveEl = el;
+                    break;
+                }
+                el = el.parentElement;
+            }
+
+            if (!interactiveEl) return;
+
+            // If it's the same element as last time, let the click through
+            if (lastTappedElementRef.current === interactiveEl) {
+                lastTappedElementRef.current = null;
+                if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+                return;
+            }
+
+            // Otherwise, intercept and show hint
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            lastTappedElementRef.current = interactiveEl;
+            if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
+            tapTimeoutRef.current = setTimeout(() => {
+                lastTappedElementRef.current = null;
+            }, 3000); // 3 seconds to confirm the tap
+
+            // Move orb immediately to tap location
+            const rect = canvasRef.current?.getBoundingClientRect();
+            if (rect) {
+                mouseRef.current = { x: e.clientX, y: e.clientY };
+                lightRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            }
+
+            // Trigger hint immediately
+            let context = interactiveEl.dataset.one || interactiveEl.title || interactiveEl.getAttribute('aria-label') || interactiveEl.innerText?.trim() || "";
+            if (context) {
+                try {
+                    const truncated = context.length > 150 ? context.slice(0, 150) + '…' : context;
+                    const { showSpeechBubble } = await import('./speechBubbleUtils');
+                    showSpeechBubble(truncated);
+                } catch (err) {
+                    console.error("Mobile hint failed", err);
+                }
+            }
+        };
+
         window.addEventListener('mouseover', handleMouseOver);
         window.addEventListener('mouseout', handleMouseOut);
+        // Using capture: true to intercept clicks before they reach component handlers
+        window.addEventListener('click', handleMobileTapCapture, { capture: true });
 
         return () => {
             window.removeEventListener('mouseover', handleMouseOver);
             window.removeEventListener('mouseout', handleMouseOut);
+            window.removeEventListener('click', handleMobileTapCapture, { capture: true });
             if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+            if (tapTimeoutRef.current) clearTimeout(tapTimeoutRef.current);
         };
     }, []);
 
@@ -341,10 +402,13 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
             const allElements = Array.from(document.querySelectorAll('button, a, input, [role="button"], [data-one], .cursor-pointer')) as HTMLElement[];
             interactiveElementsRef.current = allElements.filter(el => {
                 const elRect = el.getBoundingClientRect();
+                // For fixed/absolute elements, offsetParent might be null, so we check if it has dimensions
+                // and isn't explicitly hidden by CSS.
+                const style = window.getComputedStyle(el);
                 return elRect.width > 2 && elRect.height > 2 &&
-                    el.offsetParent !== null &&
-                    window.getComputedStyle(el).opacity !== '0' &&
-                    window.getComputedStyle(el).visibility !== 'hidden';
+                    style.display !== 'none' &&
+                    style.opacity !== '0' &&
+                    style.visibility !== 'hidden';
             });
         };
 
@@ -632,18 +696,18 @@ export const FlowingLight: React.FC<FlowingLightProps> = ({
     return (
         <div
             ref={containerRef}
-            className={cn("relative w-full h-screen bg-background overflow-hidden", className)}
+            className={cn("relative w-full h-screen bg-transparent overflow-hidden", className)}
         >
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 pointer-events-none z-[9999]"
+                className="absolute inset-0 pointer-events-none z-9999"
                 style={{ mixBlendMode: 'difference' }}
             />
 
             {chatMessages.map(msg => (
                 <div
                     key={msg.id}
-                    className="fixed z-[10000] flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-2.5 py-1.5 text-xs shadow-lg transition-opacity duration-300"
+                    className="fixed z-10000 flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-2.5 py-1.5 text-xs shadow-lg transition-opacity duration-300"
                     style={{
                         left: msg.x,
                         top: msg.y,

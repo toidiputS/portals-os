@@ -200,10 +200,6 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       >
         {isMatrixEffectActive && <MatrixRain />}
 
-        <FlowingLight
-          className="absolute inset-0 z-10 pointer-events-none bg-transparent"
-          particleCount={typeof window !== 'undefined' && window.innerWidth < 768 ? 40 : 80}
-        />
 
         <div
           ref={sphereContainerRef}
@@ -341,6 +337,12 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           onAgentClick={(agent) => {
             handleAgentClick(agent);
           }}
+        />
+
+        {/* ONEAI Observer — highest layer, follows everywhere */}
+        <FlowingLight
+          className="fixed inset-0 z-10001 pointer-events-none bg-transparent"
+          particleCount={typeof window !== 'undefined' && window.innerWidth < 768 ? 40 : 80}
         />
       </main>
     </PortalLayout>

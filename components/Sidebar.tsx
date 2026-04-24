@@ -1,7 +1,11 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useKernel } from "../store/kernel";
-import { ExternalLink, ShieldAlert, Target, Lightbulb, Zap, AlertCircle, Info, Star, Rocket } from "lucide-react";
+import { 
+  ExternalLink, ShieldAlert, Target, Lightbulb, Zap, AlertCircle, 
+  Info, Star, Rocket, Activity, Cpu, ArrowLeft, ArrowRight,
+  Database, Network, Fingerprint
+} from "lucide-react";
 import { NEXUS_SQUADS, NEXUS_AGENTS, CATEGORY_COLORS } from "../constants/platoon";
 import { GlowCard } from "./GlowCard";
 
@@ -47,10 +51,10 @@ const Sidebar: React.FC = () => {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -350 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-0 left-0 bottom-12 bg-black/90 backdrop-blur-xl border-r border-white/10 shadow-2xl z-[2000] p-6 flex flex-col gap-6 overflow-y-auto font-sans"
+          className="absolute top-0 left-0 bottom-12 bg-black/40 backdrop-blur-3xl border-r border-white/10 shadow-2xl z-2000 p-6 flex flex-col gap-6 overflow-y-auto font-sans custom-scrollbar"
           style={{
-            boxShadow: selectedPwa ? `inset -4px 0 20px -10px ${accentColor}` : 'none',
-            width: typeof window !== 'undefined' && window.innerWidth < 768 ? '100%' : '350px',
+            boxShadow: selectedPwa ? `inset -4px 0 30px -10px ${accentColor}` : 'none',
+            width: typeof window !== 'undefined' && window.innerWidth < 768 ? '100%' : '400px',
           }}
         >
           {/* Header */}
@@ -103,27 +107,33 @@ const Sidebar: React.FC = () => {
 
                     {/* Category badge */}
                     {agentData && (
-                      <div className="mb-4 relative z-10">
-                        <span
-                          className="text-[10px] font-mono tracking-wider px-2 py-1 rounded-full border"
-                          style={{
-                            color: CATEGORY_COLORS[agentData.category] || '#fff',
-                            borderColor: `${CATEGORY_COLORS[agentData.category] || '#fff'}40`,
-                            background: `${CATEGORY_COLORS[agentData.category] || '#fff'}10`,
-                          }}
-                        >
-                          {agentData.category}
-                        </span>
-                        {parentSquad && (
-                          <span className="text-[10px] font-mono tracking-wider px-2 py-1 rounded-full border ml-2"
+                      <div className="mb-4 relative z-10 flex flex-wrap gap-2">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[9px] text-white/30 uppercase tracking-tighter">Primary Domain</span>
+                          <span
+                            className="text-[10px] font-mono tracking-wider px-2 py-1 rounded-md border"
                             style={{
-                              color: parentSquad.colorHex,
-                              borderColor: `${parentSquad.colorHex}40`,
-                              background: `${parentSquad.colorHex}10`,
+                              color: CATEGORY_COLORS[agentData.category] || '#fff',
+                              borderColor: `${CATEGORY_COLORS[agentData.category] || '#fff'}40`,
+                              background: `${CATEGORY_COLORS[agentData.category] || '#fff'}10`,
                             }}
                           >
-                            {parentSquad.name}
+                            {agentData.category}
                           </span>
+                        </div>
+                        {parentSquad && (
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[9px] text-white/30 uppercase tracking-tighter">Tactical Squad</span>
+                            <span className="text-[10px] font-mono tracking-wider px-2 py-1 rounded-md border"
+                              style={{
+                                color: parentSquad.colorHex,
+                                borderColor: `${parentSquad.colorHex}40`,
+                                background: `${parentSquad.colorHex}10`,
+                              }}
+                            >
+                              {parentSquad.name}
+                            </span>
+                          </div>
                         )}
                       </div>
                     )}
@@ -138,27 +148,81 @@ const Sidebar: React.FC = () => {
                     </div>
 
                     {/* Mission & Oracle Insight */}
-                    <div className="border-l-2 border-purple-400/50 pl-4 py-2 relative z-10">
+                    <div className="border-l-2 border-cyan-400/30 pl-4 py-2 relative z-10 mb-6">
                       <div className="flex items-center gap-2 mb-2">
-                        <Target className="w-4 h-4 text-purple-400 shrink-0" />
-                        <h4 className="text-[11px] font-bold text-purple-400 tracking-widest uppercase">MISSION PARAMETERS</h4>
+                        <Fingerprint className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <h4 className="text-[11px] font-bold text-cyan-400 tracking-widest uppercase">MISSION PARAMETERS</h4>
                       </div>
-                      <p className="text-sm text-white/80 leading-relaxed mb-3">{selectedPwa.mission || "N/A"}</p>
+                      <p className="text-xs text-white/60 leading-relaxed mb-4 italic font-sans">{selectedPwa.mission || "N/A"}</p>
 
                       {selectedPwa.oracleInsight && (
-                        <div className="bg-white/5 border border-white/10 rounded p-3 italic text-xs text-white/60">
-                          "{selectedPwa.oracleInsight}"
+                        <div className="relative group">
+                           <div className="absolute -inset-1 bg-linear-to-r from-purple-600 to-blue-600 rounded blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                           <div className="relative bg-black/40 border border-white/5 rounded p-3 text-[11px] text-purple-200/70 font-mono leading-relaxed">
+                            <span className="text-purple-400 font-bold mr-2">ORACLE:</span>
+                            "{selectedPwa.oracleInsight}"
+                           </div>
                         </div>
                       )}
                     </div>
+
+                    {/* Node Telemetry */}
+                    <div className="grid grid-cols-2 gap-2 mb-2 relative z-10">
+                       <div className="bg-white/5 rounded-lg p-3 border border-white/5">
+                          <div className="flex items-center gap-2 mb-1">
+                             <Activity className="h-3 w-3 text-white/20" />
+                             <span className="text-[9px] uppercase text-white/30 tracking-tighter">Latency</span>
+                          </div>
+                          <div className="text-xs font-mono text-white/60">{(agentData?.id.charCodeAt(0) || 0) % 50 + 12}ms</div>
+                       </div>
+                       <div className="bg-white/5 rounded-lg p-3 border border-white/5">
+                          <div className="flex items-center gap-2 mb-1">
+                             <Database className="h-3 w-3 text-white/20" />
+                             <span className="text-[9px] uppercase text-white/30 tracking-tighter">Memory</span>
+                          </div>
+                          <div className="text-xs font-mono text-white/60">{(agentData?.id.charCodeAt(1) || 0) % 20 + 4}GB L3</div>
+                       </div>
+                    </div>
                   </GlowCard>
                 </div>
+
+                {/* Nexus Network Map */}
+                {(selectedPwa.prevNode || selectedPwa.nextNode) && (
+                  <div className="bg-white/3 border border-white/5 p-4 rounded-xl mb-4">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Network className="w-4 h-4 text-white/20" />
+                      <h4 className="text-[10px] font-bold text-white/20 tracking-[0.2em] uppercase">Nexus Connectivity Map</h4>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex-1 text-center">
+                        <span className="block text-[8px] text-white/20 uppercase mb-1">Previous</span>
+                        <div className="p-2 bg-white/5 rounded border border-white/5 text-[10px] font-mono text-white/40 truncate">
+                          {selectedPwa.prevNode || "NULL"}
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-white/10 shrink-0 mt-3" />
+                      <div className="flex-1 text-center">
+                        <span className="block text-[8px] text-white/20 uppercase mb-1">Current</span>
+                        <div className="p-2 bg-cyan-500/10 rounded border border-cyan-500/20 text-[10px] font-mono text-cyan-400 font-bold">
+                          {selectedPwa.id}
+                        </div>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-white/10 shrink-0 mt-3" />
+                      <div className="flex-1 text-center">
+                        <span className="block text-[8px] text-white/20 uppercase mb-1">Next Node</span>
+                        <div className="p-2 bg-white/5 rounded border border-white/5 text-[10px] font-mono text-white/40 truncate">
+                          {selectedPwa.nextNode || "NULL"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Tool Card — how to use this agent */}
                 {agentData?.toolCard && (
                   <div className="space-y-3">
                     {/* Purpose */}
-                    <div className="bg-white/[0.03] border border-white/10 p-4 rounded">
+                    <div className="bg-white/3 border border-white/10 p-4 rounded">
                       <div className="flex items-center gap-2 mb-2">
                         <Info className="w-4 h-4 text-cyan-400 shrink-0" />
                         <h4 className="text-[11px] font-bold text-cyan-400 tracking-widest uppercase">PURPOSE</h4>
@@ -200,7 +264,7 @@ const Sidebar: React.FC = () => {
                       <div className="bg-blue-500/5 border border-blue-500/20 p-4 rounded">
                         <div className="flex items-center gap-2 mb-2">
                           <Rocket className="w-4 h-4 text-blue-400 shrink-0" />
-                          <h4 className="text-[11px] font-bold text-blue-400 tracking-widest uppercase">OUTPUT DELIVERED</h4>
+                          <h4 className="text-[11px] font-bold text-blue-400 tracking-widest uppercase text-linear-to-r from-blue-400 to-cyan-400">COMMITS TO NOTNOTES</h4>
                         </div>
                         <ul className="space-y-1">
                           {agentData.toolCard.outputDelivered.map((item: string, idx: number) => (
@@ -232,6 +296,22 @@ const Sidebar: React.FC = () => {
                     )}
                   </div>
                 )}
+
+                {/* Expert Session Notice */}
+                <div className="bg-cyan-500/5 border border-cyan-500/10 p-5 rounded-2xl mb-4 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Cpu className="h-12 w-12 text-cyan-400" />
+                  </div>
+                  <div className="flex items-center gap-3 mb-3 relative z-10">
+                    <div className="h-2 w-2 rounded-full bg-cyan-500 animate-ping" />
+                    <h4 className="text-[10px] font-bold text-cyan-400 tracking-[0.2em] uppercase">Independent Node Lifecycle</h4>
+                  </div>
+                  <p className="text-xs text-white/40 leading-relaxed italic relative z-10">
+                    Nexus Expert Session initialized. This node operates as an independent specialist. 
+                    All verified deliverables are committed to <span className="text-white/60 font-bold">NotNotes</span> for artifact compilation. 
+                    Node resets memory state at session termination.
+                  </p>
+                </div>
 
                 {/* LAUNCH AGENT Button */}
                 <div className="mt-4 pt-4 border-t border-white/10 shrink-0">
