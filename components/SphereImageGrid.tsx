@@ -50,6 +50,7 @@ export interface AppDefinition {
   icon?: React.ComponentType<{ className?: string }>;
   description?: string;
   color?: string;
+  category?: string;
 }
 
 export interface SphereImageGridProps {
@@ -63,6 +64,7 @@ export interface SphereImageGridProps {
   baseImageScale?: number;
   hoverScale?: number;
   perspective?: number;
+  perspectiveOrigin?: string;
   autoRotate?: boolean;
   autoRotateSpeed?: number;
   className?: string;
@@ -127,15 +129,16 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   apps = [],
   onAppClick,
   containerSize = 500,
-  sphereRadius = 800,
-  dragSensitivity = 0.4,
+  sphereRadius = 1000,
+  dragSensitivity = 0.3,
   momentumDecay = 0.985, // Slippery - natural roll to a crawl (was 0.95)
   maxRotationSpeed = 2,
-  baseImageScale = 0.5,
+  baseImageScale = 0.08,
   hoverScale = 2,
-  perspective = 3000,
+  perspective = 2000,
+  perspectiveOrigin = "50% 50%",
   autoRotate = true,
-  autoRotateSpeed = 0.4,
+  autoRotateSpeed = 0.2,
   className = "",
 }) => {
   // ==========================================
@@ -171,7 +174,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       "--sig-perspective",
       `${perspective}px`
     );
-  }, [containerSize, perspective]);
+
+    if (perspectiveOrigin) {
+      containerRef.current.style.setProperty(
+        "--sig-perspective-origin",
+        perspectiveOrigin
+      );
+    }
+  }, [containerSize, perspective, perspectiveOrigin]);
   // ==========================================
   // COMPUTED VALUES
   // ==========================================
@@ -211,17 +221,17 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       // Fibonacci sphere algorithm for even distribution
       const t = i / (imageCount - 1); // 0 to 1
       const inclination = Math.acos(1 - 2 * t); // phi angle
-      const azimuth = Math.PI * (1.5 + Math.sqrt(3)) * i; // golden angle
+      const azimuth = Math.PI * (2 + Math.sqrt(3)) * i; // golden angle
 
       // Convert to degrees and adjust range
       let phi = (inclination * 180) / Math.PI; // 0° to 180°
       let theta = (azimuth * 180) / Math.PI; // 0° to many rotations
 
       // Adjust phi range for better visibility (avoid extreme poles)
-      phi = 10 + (phi / 160) * 160; // 20° to 160° range
+      phi = 10 + (phi / 80) * 60; // 20° to 160° range
 
       // Normalize theta to 0-360°
-      theta = theta % 360;
+      theta = theta % 900;
 
       positions.push({
         theta,
@@ -261,19 +271,19 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       const worldPos: Position3D = { x, y, z };
 
-      const fadeZoneStart = -actualSphereRadius * 0.4;
-      const fadeZoneEnd = -actualSphereRadius * 0.8;
+      const fadeZoneStart = 0; // Start fading exactly as they cross into the portal
+      const fadeZoneEnd = -actualSphereRadius * 0.15; // Fully disappear shortly after crossing
       const isVisible = worldPos.z > fadeZoneEnd;
 
       let fadeOpacity = 1;
       if (worldPos.z <= fadeZoneStart) {
         fadeOpacity = Math.max(
-          0.1, // Never fully invisible, keep that starry background
+          0, // Allow them to become completely invisible to improve performance
           (worldPos.z - fadeZoneEnd) / (fadeZoneStart - fadeZoneEnd)
         );
       }
 
-      const isPoleImage = pos.phi < 20 || pos.phi > 140;
+      const isPoleImage = pos.phi < 60 || pos.phi > 140;
 
       const distanceFromCenter = Math.sqrt(
         worldPos.x * worldPos.x + worldPos.y * worldPos.y
@@ -281,12 +291,12 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       const maxDistance = actualSphereRadius;
       const distanceRatio = Math.min(distanceFromCenter / maxDistance, 1);
 
-      const distancePenalty = isPoleImage ? 0.4 : 0.7;
+      const distancePenalty = isPoleImage ? 1 : 0.7;
       const centerScale = Math.max(0.2, 1 - distanceRatio * distancePenalty);
 
       // Deep perspective scaling
-      const zScale = (worldPos.z + actualSphereRadius) / (actualSphereRadius * 2);
-      const scale = centerScale * (0.5 + zScale * 1.5);
+      const zScale = (worldPos.z + actualSphereRadius) / (actualSphereRadius * 3);
+      const scale = centerScale * (0.8 + zScale * 2.2);
 
       return {
         ...worldPos,
@@ -331,7 +341,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
           const overlap = minDistance - distance;
           const reductionFactor = Math.max(
             0.4,
-            1 - (overlap / minDistance) * 0.6
+            1 - (overlap / minDistance) * 0.4
           );
           adjustedScale = Math.min(
             adjustedScale,
@@ -588,6 +598,19 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   }, []);
 
   const portalCenter = getPortalCenter();
+  
+  // Extract perspective origin for parallax calculation
+  const originPct = useMemo(() => {
+    let xPct = 0.5;
+    let yPct = 0.5;
+    if (perspectiveOrigin) {
+      const [xStr, yStr] = perspectiveOrigin.split(" ");
+      xPct = parseFloat(xStr) / 100;
+      yPct = parseFloat(yStr) / 100;
+    }
+    return { xPct: isNaN(xPct) ? 0.5 : xPct, yPct: isNaN(yPct) ? 0.5 : yPct };
+  }, [perspectiveOrigin]);
+
   const renderIconNode = useCallback(
     (app: AppDefinition, index: number) => {
       const position = worldPositions[index];
@@ -600,6 +623,19 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
         ? Math.min(hoverScale, hoverScale / position.scale)
         : 1;
 
+      // Compute parallax shift to simulate 3D perspective vanishing point.
+      // Normalized Z from -1 (far, inside portal) to 1 (close, popping out).
+      const normalizedZ = position.z / actualSphereRadius; 
+      
+      // We want the "far center" to stay fixed (shift=0), and only the "close center" to shift.
+      // depthFactor is 0 at far back (z = -1) and 1 at front (z = 1).
+      // Wait, earlier we found pos.z > 0 is close! So z=-1 is far.
+      const depthFactor = (normalizedZ + 1) / 2;
+      
+      const parallaxIntensity = 300; // Max pixels of shift at the very front
+      const shiftX = - (originPct.xPct - 0.5) * parallaxIntensity * depthFactor;
+      const shiftY = - (originPct.yPct - 0.5) * parallaxIntensity * depthFactor;
+
       return (
         <LaunchIconWrapper
           key={`${app.id}-${index}`}
@@ -609,19 +645,31 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
             position: "absolute",
             width: `${imageSize}px`,
             height: `${imageSize}px`,
-            left: `${containerSize / 2}px`,
-            top: `${containerSize / 2}px`,
+            left: "50%",
+            top: "50%",
             opacity: position.fadeOpacity ?? 1,
-            transform: `translate3d(${position.x ?? 0}px, ${position.y ?? 0}px, ${position.z ?? 0}px) translate(-50%, -50%) scale(${finalScale})`,
+            transform: `translate3d(${position.x + shiftX}px, ${position.y + shiftY}px, ${position.z}px) translate(-50%, -50%) scale(${finalScale})`,
             zIndex: position.zIndex ?? 0,
             cursor: "pointer",
           }}
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}
-          title={app.name}
         >
-          {/* Constellation LOD: Show a star for small/distant nodes, icon for close ones */}
-          {position.scale > 0.4 ? (
+          {/* Instant Tooltip */}
+          {isHovered && (
+            <div 
+              className="absolute top-full left-1/2 -translate-x-1/2 mt-4 px-3 py-1.5 bg-black/90 border border-white/20 rounded-lg text-white font-bold text-[10px] tracking-widest whitespace-nowrap shadow-[0_0_20px_rgba(0,0,0,0.8)] pointer-events-none"
+              style={{
+                // Reverse the scale so tooltip text isn't huge or tiny, bounded to keep it readable
+                transform: `translateX(-50%) scale(${1 / Math.max(0.5, finalScale)})`,
+                zIndex: 999999
+              }}
+            >
+              {app.name}
+            </div>
+          )}
+          {/* Constellation LOD: Show a star for extremely distant nodes, otherwise icon */}
+          {position.scale > 0.05 ? (
             typeof app.icon === 'string' ? (
               <div className="w-full h-full flex items-center justify-center rounded-full bg-white/5 border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
                 <User

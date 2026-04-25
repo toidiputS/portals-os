@@ -72,7 +72,12 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       const agent = NEXUS_AGENTS.find(a => a.id === nodeId);
       if (!agent) return null;
       const squad = NEXUS_SQUADS.find(s => s.agentIds.includes(nodeId));
-      return { ...agent, domainColor: squad?.colorHex || CATEGORY_COLORS[agent.category] || '#fff', squadName: squad?.name || agent.category };
+      return {
+        ...agent,
+        domainColor: squad?.colorHex || CATEGORY_COLORS[agent.category] || '#fff',
+        squadName: squad?.name || agent.category,
+        squadId: squad?.id || agent.squadId,
+      };
     }).filter(Boolean);
   }, [favoriteNodes]);
 
@@ -204,13 +209,13 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div
           ref={sphereContainerRef}
           className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{ transform: typeof window !== 'undefined' && window.innerWidth < 768 ? 'translateY(12vh)' : 'translateY(10vh) translateX(-5vw)' }}
+          style={{ transform: typeof window !== 'undefined' && window.innerWidth < 768 ? 'translateY(12vh)' : 'translateY(0vh) translateX(-12vw)' }}
         >
-          <div className="pointer-events-auto">
+          <div className="pointer-events-auto w-full h-full relative">
             <SphereImageGrid
               apps={getSphereApps(projectFolders)}
-              containerSize={3000}
-              sphereRadius={550}
+              containerSize={725}
+              sphereRadius={350}
               onAppClick={(appId) => {
                 const agent = NEXUS_AGENTS.find(a => a.id === appId);
                 if (agent) {
@@ -221,7 +226,10 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     parentLabel: agent.category,
                     parentSquadId: agent.squadId,
                     role: agent.role,
+                    pain: agent.toolCard?.useThisWhen?.join(", "),
                     purpose: agent.toolCard?.purpose,
+                    mission: agent.description,
+                    inputs: agent.toolCard?.inputNeeded,
                     deliverables: agent.toolCard?.outputDelivered,
                     oracleInsight: agent.oracleInsight,
                     prevNode: agent.suggestedPreviousNode,
@@ -231,11 +239,87 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   openWindow(appId);
                 }
               }}
-              perspective={3000}
-              autoRotateSpeed={0.12}
-              baseImageScale={0.035}
-              hoverScale={3.5}
+              perspective={50}
+              perspectiveOrigin="100% 50%"
+              autoRotateSpeed={.1}
+              baseImageScale={0.1}
+              hoverScale={1.5}
             />
+
+            {/* Render Favorite Stars as Constellations outside the Sphere */}
+            {favoriteNodeData.map((node: any) => {
+              if (!node) return null;
+
+              // 1. Group by Squad for Constellation Base Angle
+              const squadIndex = NEXUS_SQUADS.findIndex(s => s.id === node.squadId);
+              // If squad not found, fallback to seed
+              const seed = node.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
+
+              let baseAngle = 0;
+              let indexInSquad = 0;
+              if (squadIndex >= 0) {
+                baseAngle = (squadIndex / NEXUS_SQUADS.length) * Math.PI * 2;
+                const squad = NEXUS_SQUADS[squadIndex];
+                indexInSquad = squad.agentIds.indexOf(node.id);
+                if (indexInSquad === -1) indexInSquad = seed % 6;
+              } else {
+                baseAngle = (seed * 160.5) * (Math.PI / 100);
+              }
+
+              // 2. Constellation Shape deterministic offsets
+              // Create a constellation pattern (dots clustered around the base angle)
+              const angleOffset = (Math.sin(indexInSquad * 1.14) * 3.15) + (indexInSquad * 1.03);
+              const angle = baseAngle + angleOffset;
+
+              // 3. Radius pushing them OUTSIDE the main portal/sphere
+              // The SphereRadius is ~400, so we place these around 450-550
+              const baseR = typeof window !== 'undefined' ? Math.min(window.innerHeight * 0.45, 450) : 450;
+              const rOffset = Math.cos(indexInSquad * 3.7) * 300;
+              const r = baseR + rOffset;
+
+              const dx = Math.cos(angle) * r;
+              const dy = Math.sin(angle) * r;
+
+              return (
+                <motion.div
+                  key={`star-${node.id}`}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute top-1/2 left-1/2 z-50 cursor-pointer group star-node pointer-events-auto"
+                  style={{
+                    transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px - 32px))`,
+                    width: '14px',
+                    height: '14px',
+                  }}
+                  // Larger invisible hover area for ONE orb interaction
+                  data-one={`${node.name} — ${node.role}. ${node.description}. Click to open forensic dossier.`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAgentClick(node as NexusAgent);
+                  }}
+                >
+                  <div
+                    className="w-full h-full rounded-full transition-all duration-300 group-hover:scale-150 pulse"
+                    style={{
+                      background: node.domainColor ? `radial-gradient(circle at center, #fff 0%, ${node.domainColor} 60%, transparent 100%)` : '#fff',
+                      boxShadow: `0 0 15px ${node.domainColor || '#fff'}, 0 0 30px ${node.domainColor || '#fff'}`,
+                      animationDelay: `-${(seed % 40) / 10}s`,
+                    }}
+                  />
+
+                  {/* Pulsing outer ring */}
+                  <div
+                    className="absolute inset-0 rounded-full animate-ping opacity-20"
+                    style={{ backgroundColor: node.domainColor || '#fff' }}
+                  />
+
+                  <span className="text-[10px] text-white absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 backdrop-blur-md px-2 py-1 rounded border border-white/10 pointer-events-none z-50">
+                    {node.name}
+                  </span>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 
@@ -285,62 +369,7 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           }}
         />
 
-        {/* Render Favorite Stars (Linked to the Central Portal) */}
-        {favoriteNodeData.map((node: any) => {
-          if (!node) return null;
-          // Deterministic random position based on ID string characters
-          const seed = node.id.split('').reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
 
-          // Distribute stars seamlessly using golden angle approximation
-          const angle = (seed * 137.5) * (Math.PI / 180);
-
-          // Radius between 60px and 250px to keep them clustered inside the portal ring
-          const maxR = typeof window !== 'undefined' ? Math.min(window.innerHeight * 0.25, 250) : 200;
-          const r = 60 + ((seed * 43) % maxR);
-
-          const dx = Math.cos(angle) * r;
-          const dy = Math.sin(angle) * r;
-
-          return (
-            <motion.div
-              key={`star-${node.id}`}
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="absolute top-1/2 left-1/2 z-50 cursor-pointer group star-node"
-              style={{
-                transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px - 32px))`,
-                width: '14px',
-                height: '14px',
-              }}
-              // Larger invisible hover area for ONE orb interaction
-              data-one={`${node.name} — ${node.role}. ${node.description}. Click to open forensic dossier.`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAgentClick(node as NexusAgent);
-              }}
-            >
-              <div 
-                className="w-full h-full rounded-full transition-all duration-300 group-hover:scale-150 pulse"
-                style={{
-                  background: node.domainColor ? `radial-gradient(circle at center, #fff 0%, ${node.domainColor} 60%, transparent 100%)` : '#fff',
-                  boxShadow: `0 0 15px ${node.domainColor || '#fff'}, 0 0 30px ${node.domainColor || '#fff'}`,
-                  animationDelay: `-${(seed % 40) / 10}s`,
-                }}
-              />
-              
-              {/* Pulsing outer ring */}
-              <div 
-                className="absolute inset-0 rounded-full animate-ping opacity-20"
-                style={{ backgroundColor: node.domainColor || '#fff' }}
-              />
-
-              <span className="text-[10px] text-white absolute top-full left-1/2 -translate-x-1/2 mt-2 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 backdrop-blur-md px-2 py-1 rounded border border-white/10 pointer-events-none z-50">
-                {node.name}
-              </span>
-            </motion.div>
-          );
-        })}
 
         {/* SquadSphere — opens when a squad speed bump is clicked */}
         {activeSquad && (

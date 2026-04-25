@@ -61,6 +61,7 @@ export interface AppDefinition {
   component: React.LazyExoticComponent<React.ComponentType<any>>;
   description: string;
   isCustom?: boolean; // Flag for user-created folder shortcuts
+  category?: string; // App domain/squad category for sphere clustering
 }
 
 export interface WindowInstance {
