@@ -81,11 +81,12 @@ export const SquadSphere: React.FC<SquadSphereProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[900] flex flex-col items-center justify-end pb-[8vh]"
+          className="fixed inset-0 z-900 flex flex-col items-center justify-end pb-[8vh]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
+          onClick={(e) => e.stopPropagation()}
         >
           {/* Backdrop — transparent so portal shows through */}
           <motion.div
@@ -124,7 +125,7 @@ export const SquadSphere: React.FC<SquadSphereProps> = ({
 
           {/* Re-use SphereImageGrid with agent data */}
           <motion.div
-            className="relative z-[5]"
+            className="relative z-5"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}

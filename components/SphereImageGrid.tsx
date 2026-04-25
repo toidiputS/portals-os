@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from "react"
 import { LaunchIconWrapper } from "./LaunchIconWrapper";
 import "./SphereImageGrid.css";
 import { AppId } from "../types";
+import { Sparkles, User } from "lucide-react";
 import { performanceMonitor, throttle } from "../lib/performanceUtils";
 
 /**
@@ -48,6 +49,7 @@ export interface AppDefinition {
   title?: string;
   icon?: React.ComponentType<{ className?: string }>;
   description?: string;
+  color?: string;
 }
 
 export interface SphereImageGridProps {
@@ -87,8 +89,8 @@ interface MousePosition {
 // ==========================================
 
 const SPHERE_MATH = {
-  degreesToRadians: (degrees: number): number => degrees * (Math.PI / 180),
-  radiansToDegrees: (radians: number): number => radians * (180 / Math.PI),
+  degreesToRadians: (degrees: number): number => degrees * (Math.PI / 80),
+  radiansToDegrees: (radians: number): number => radians * (80 / Math.PI),
 
   sphericalToCartesian: (
     radius: number,
@@ -102,7 +104,7 @@ const SPHERE_MATH = {
 
   calculateDistance: (
     pos: Position3D,
-    center: Position3D = { x: 0, y: 0, z: 0 }
+    center: Position3D = { x: 10, y: 10, z: 0 }
   ): number => {
     const dx = pos.x - center.x;
     const dy = pos.y - center.y;
@@ -126,12 +128,12 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
   onAppClick,
   containerSize = 500,
   sphereRadius = 800,
-  dragSensitivity = 0.5,
+  dragSensitivity = 0.4,
   momentumDecay = 0.985, // Slippery - natural roll to a crawl (was 0.95)
-  maxRotationSpeed = 3,
-  baseImageScale = 0.1,
+  maxRotationSpeed = 2,
+  baseImageScale = 0.5,
   hoverScale = 2,
-  perspective = 50,
+  perspective = 3000,
   autoRotate = true,
   autoRotateSpeed = 0.4,
   className = "",
@@ -209,14 +211,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       // Fibonacci sphere algorithm for even distribution
       const t = i / (imageCount - 1); // 0 to 1
       const inclination = Math.acos(1 - 2 * t); // phi angle
-      const azimuth = Math.PI * (1 + Math.sqrt(3)) * i; // golden angle
+      const azimuth = Math.PI * (1.5 + Math.sqrt(3)) * i; // golden angle
 
       // Convert to degrees and adjust range
       let phi = (inclination * 180) / Math.PI; // 0° to 180°
       let theta = (azimuth * 180) / Math.PI; // 0° to many rotations
 
       // Adjust phi range for better visibility (avoid extreme poles)
-      phi = 20 + (phi / 160) * 140; // 20° to 160° range
+      phi = 10 + (phi / 160) * 160; // 20° to 160° range
 
       // Normalize theta to 0-360°
       theta = theta % 360;
@@ -245,7 +247,7 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       let x = pos.radius * Math.sin(phiRad) * Math.cos(thetaRad);
       let y = pos.radius * Math.cos(phiRad);
-      let z = pos.radius * Math.sin(phiRad) * Math.sin(thetaRad);
+      let z = pos.radius * Math.sin(phiRad) * Math.sin(thetaRad) * 1.5;
 
       const x1 = x * Math.cos(rotYRad) + z * Math.sin(rotYRad);
       const z1 = -x * Math.sin(rotYRad) + z * Math.cos(rotYRad);
@@ -259,14 +261,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
 
       const worldPos: Position3D = { x, y, z };
 
-      const fadeZoneStart = -150;
-      const fadeZoneEnd = -200;
+      const fadeZoneStart = -actualSphereRadius * 0.4;
+      const fadeZoneEnd = -actualSphereRadius * 0.8;
       const isVisible = worldPos.z > fadeZoneEnd;
 
       let fadeOpacity = 1;
       if (worldPos.z <= fadeZoneStart) {
         fadeOpacity = Math.max(
-          0,
+          0.1, // Never fully invisible, keep that starry background
           (worldPos.z - fadeZoneEnd) / (fadeZoneStart - fadeZoneEnd)
         );
       }
@@ -280,9 +282,11 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
       const distanceRatio = Math.min(distanceFromCenter / maxDistance, 1);
 
       const distancePenalty = isPoleImage ? 0.4 : 0.7;
-      const centerScale = Math.max(0.3, 1 - distanceRatio * distancePenalty);
+      const centerScale = Math.max(0.2, 1 - distanceRatio * distancePenalty);
 
-      const scale = centerScale;
+      // Deep perspective scaling
+      const zScale = (worldPos.z + actualSphereRadius) / (actualSphereRadius * 2);
+      const scale = centerScale * (0.5 + zScale * 1.5);
 
       return {
         ...worldPos,
@@ -616,7 +620,24 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
           onMouseLeave={() => setHoveredIndex(null)}
           title={app.name}
         >
-          {app.icon && <app.icon className="w-full h-full" />}
+          {/* Constellation LOD: Show a star for small/distant nodes, icon for close ones */}
+          {position.scale > 0.4 ? (
+            typeof app.icon === 'string' ? (
+              <div className="w-full h-full flex items-center justify-center rounded-full bg-white/5 border border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                <User
+                  className="w-1/2 h-1/2"
+                  style={{ color: app.color || 'white', filter: `drop-shadow(0 0 5px ${app.color || 'white'})` }}
+                />
+              </div>
+            ) : (
+              app.icon && <app.icon className="w-full h-full" />
+            )
+          ) : (
+            <div
+              className="w-2 h-2 rounded-full sig-star-node shadow-[0_0_8px_rgba(255,255,255,0.8)]"
+              style={{ backgroundColor: app.color || 'white' }}
+            />
+          )}
         </LaunchIconWrapper>
       );
     },

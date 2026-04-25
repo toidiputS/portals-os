@@ -203,16 +203,40 @@ const Desktop: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
         <div
           ref={sphereContainerRef}
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ transform: typeof window !== 'undefined' && window.innerWidth < 768 ? 'translateY(15vh)' : 'translateY(20vh) translateX(-5vw)' }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{ transform: typeof window !== 'undefined' && window.innerWidth < 768 ? 'translateY(12vh)' : 'translateY(10vh) translateX(-5vw)' }}
         >
-          <SphereImageGrid
-            apps={getSphereApps(projectFolders)}
-            onAppClick={(appId) => openWindow(appId)}
-            containerSize={typeof window !== 'undefined' && window.innerWidth < 768 ? 400 : 800}
-            sphereRadius={typeof window !== 'undefined' && window.innerWidth < 768 ? 220 : 420}
-          />
-
+          <div className="pointer-events-auto">
+            <SphereImageGrid
+              apps={getSphereApps(projectFolders)}
+              containerSize={3000}
+              sphereRadius={550}
+              onAppClick={(appId) => {
+                const agent = NEXUS_AGENTS.find(a => a.id === appId);
+                if (agent) {
+                  // Map NexusAgent to the expected PWA sidebar type
+                  openPwaSidebar({
+                    id: agent.id,
+                    label: agent.name,
+                    parentLabel: agent.category,
+                    parentSquadId: agent.squadId,
+                    role: agent.role,
+                    purpose: agent.toolCard?.purpose,
+                    deliverables: agent.toolCard?.outputDelivered,
+                    oracleInsight: agent.oracleInsight,
+                    prevNode: agent.suggestedPreviousNode,
+                    nextNode: agent.suggestedNextNode
+                  });
+                } else {
+                  openWindow(appId);
+                }
+              }}
+              perspective={3000}
+              autoRotateSpeed={0.12}
+              baseImageScale={0.035}
+              hoverScale={3.5}
+            />
+          </div>
         </div>
 
         {children}

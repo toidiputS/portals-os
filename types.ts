@@ -189,6 +189,15 @@ export interface KernelState {
 
   isMobile: boolean;
   setIsMobile: (status: boolean) => void;
+
+  // Tactical Actions
+  confirmSquad: (squadName: string, agentIds: string[]) => string;
+  compileFinalArtifact: (projectId: string) => string | null;
+  commitProjectToBooks: (
+    projectId: string,
+    location: { tower: string; shelf: string; book: string; page: string },
+    summary: string
+  ) => Promise<boolean>;
 }
 
 export interface NotNotesDeliverable {

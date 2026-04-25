@@ -629,7 +629,7 @@ const useKernelStore = create<KernelState>()(
       },
 
       // Squad Confirmation & Project Sync
-      confirmSquad: (squadName, agentIds) => {
+      confirmSquad: (squadName: string, agentIds: string[]) => {
         const projectId = get().createNotNotesProject(squadName);
         set((state) => ({
           unlockedSquads: [...state.unlockedSquads, squadName],
@@ -640,7 +640,7 @@ const useKernelStore = create<KernelState>()(
       },
 
       // Compilation & Archival
-      compileFinalArtifact: (projectId) => {
+      compileFinalArtifact: (projectId: string) => {
         const project = get().notNotes.projects[projectId];
         if (!project) return null;
 
@@ -662,9 +662,9 @@ Implement the primary directives outlined above to accelerate revenue.
         return finalArtifact;
       },
 
-      commitProjectToBooks: async (projectId, location, summary) => {
+      commitProjectToBooks: async (projectId: string, location: { tower: string; shelf: string; book: string; page: string }, summary: string) => {
         const tier = get().subscriptionTier;
-        if (tier !== 'expert' && tier !== 'lifetime') {
+        if (tier !== 'platoon') {
           console.warn("Memory tier required for Books OS archival.");
           return false;
         }

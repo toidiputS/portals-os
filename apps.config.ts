@@ -7,7 +7,7 @@ import {
   OracleIcon,
   PotatoCometIcon,
 } from "./components/icons";
-import { NEXUS_AGENTS } from "./constants/platoon";
+import { NEXUS_AGENTS, CATEGORY_COLORS } from "./constants/platoon";
 
 
 // CLEAN SLATE: Only the 6 core apps you requested
@@ -135,15 +135,28 @@ export const getAllApps = (
 
 
 /**
- * Get apps for the floating sphere - just the potato comet
+ * Get apps for the floating sphere - The full Nexus constellation
  */
 export const getSphereApps = (
   _projectFolders: ProjectFolder[]
 ): any[] => {
-  return [{
-    id: 'potatoComet' as AppId,
-    name: 'Potato Comet',
-    icon: PotatoCometIcon,
-    description: 'A flaming potato hauling ass through the cosmos',
-  }];
+  // Map all Nexus agents to the sphere definition
+  const agents = NEXUS_AGENTS.map((agent: any) => ({
+    id: agent.id as AppId,
+    name: agent.name,
+    icon: agent.icon, // Restore actual agent icons (emoji URLs)
+    description: agent.description,
+    color: CATEGORY_COLORS[agent.category] || '#fff', // Pass the category color for the constellation
+  }));
+
+  // Add the Potato Comet as the core of the constellation
+  return [
+    {
+      id: 'potatoComet' as AppId,
+      name: 'Potato Comet',
+      icon: PotatoCometIcon,
+      description: 'A flaming potato hauling ass through the cosmos',
+    },
+    ...agents
+  ];
 };

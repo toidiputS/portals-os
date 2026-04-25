@@ -76,6 +76,7 @@ export const AllAgentsPanel: React.FC<AllAgentsPanelProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={(e) => e.stopPropagation()}
         >
           {/* LEFT SIDEBAR - NAVIGATION */}
           <AnimatePresence>
